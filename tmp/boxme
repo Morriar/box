@@ -65,21 +65,20 @@ run() {
 		return 0
 	fi
 
+	mkdir -p $BOX_OUT/tests
+	local out=$BOX_OUT/tests/$name
+	export BOX_RUN_OUT=$out
+
 	if [ "$cmd" = "status" ]; then
 		status "$name"
 		return 0
 	fi
 
+
 	# Run the command
-	mkdir -p $BOX_OUT/tests
-	local out=$BOX_OUT/tests/$name
-	export BOX_RUN_OUT=$out
 	rm $out.* 2> /dev/null || true
 	echo "$@" > $out.cmd
 	local code=0
-
-	#env | grep BOX_
-
 	saferun $BOX_WORK "$@" > $out.out 2> $out.err || code=$?
 
 	# Process, check and aggregate the results
@@ -88,7 +87,7 @@ run() {
 	echo $code > $out.code
 	local res=tests/$name.res
 	if [ -e "$res" ]; then
-		if diff -u $res $out.out > $out.diff; then
+		if ! diff -u $res $out.out > $out.diff; then
 			echo "diff -u $res $out.out" > $out.fail
 		fi
 	else
@@ -97,7 +96,12 @@ run() {
 			sed 's|^|\t|' $out.err >> $out.fail
 		fi
 	fi
-	if [ ! -e $out.fail ]; then
+
+	local res
+	if [ -e $out.fail ]; then
+		res=1
+	else
+		res=0
 		touch $out.pass
 	fi
 
@@ -106,6 +110,8 @@ run() {
 
 	unset BOX_RUN_NAME
 	unset BOX_RUN_OUT
+
+	return $res
 }
 
 # Run the command into a specific jail
@@ -139,7 +145,7 @@ status() {
 		cat $out.pass
 		echo ""
 	elif [ -e $out.fail ]; then
-		echo -n "[FAIL] $name."
+		echo -n "[FAIL] $name. "
 		cat $out.fail
 		echo ""
 		return 1
@@ -172,6 +178,7 @@ prepare_core() {
 	cp -ra tests/*.in $BOX_WORK/tests
 	cp -ra $BOX_SRC $BOX_WORK/src
 	cp -ra Makefile $BOX_WORK/
+	cp -ra *.sh $BOX_WORK/
 }
 
 # Function called when the engine need to build the source, whatever this means
@@ -192,7 +199,7 @@ build() {
 check() {
 for i in tests/*.in; do
 	local name=$(basename "$i" .in)
-	run "$name" bin/hello "$i" && true
+	runtestcase "$name" "$i"
 done
 }
 
