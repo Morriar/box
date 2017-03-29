@@ -77,7 +77,10 @@ run() {
 	rm $out.* 2> /dev/null || true
 	echo "$@" > $out.cmd
 	local code=0
-	./safe_run $BOX_WORK "$@" > $out.out 2> $out.err || code=$?
+
+	#env | grep BOX_
+
+	saferun $BOX_WORK "$@" > $out.out 2> $out.err || code=$?
 
 	# Process, check and aggregate the results
 	# TODO: move in a subfunction?
@@ -103,6 +106,23 @@ run() {
 
 	unset BOX_RUN_NAME
 	unset BOX_RUN_OUT
+}
+
+# Run the command into a specific jail
+#
+# $1 is the directory to jail
+# the rest is the command
+#
+# TODO: Improve and make configurable
+saferun() {
+	local dir=$1
+	shift
+
+	# Simple cd, no jail
+	( set +e; cd "$dir" && exec "$@"; )
+
+	# Use firejail
+	#firejail --quiet --private="$dir" --seccomp -- "$@"
 }
 
 # Display the status of the test named $1 without running it not .
@@ -215,7 +235,7 @@ while getopts ":s:o:v" opt; do
 		s)
 			export BOX_SRC=$OPTARG
 			;;
-		s)
+		o)
 			export BOX_OUT=$OPTARG
 			;;
 		v)
