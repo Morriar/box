@@ -3,4 +3,4 @@ all:
 	nitc src/hello.nit --dir bin
 
 check:
-	./tests.sh
+	./boxme tests

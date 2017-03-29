@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# WIP of a test command
+# See the README for usage
 
 # File hierarchy
 #
@@ -193,14 +193,6 @@ runtestcase() {
 	return 1
 }
 
-# My implementation 
-# TODO
-runtestcase() {
-	run "$1" bin/hello $(cat "$2")
-}
-
-export BOX_OUT=out
-
 # The main part of the script
 main() {
 	prepare
@@ -208,15 +200,33 @@ main() {
 	check
 }
 
+export BOX_OUT=out
+
+# Source the local configuration
+if [ ! -f boxme.local.sh ]; then
+	echo >&1 "boxme.local.sh Does not exists, are-you in a BOX directory?"
+	exit 1
+fi
+. boxme.local.sh
+
 # The entry-point of the script
 cmd=$1
-shift
 case "$cmd" in
-	help)
-		echo "Non!"
+	help|"")
+		cat<<-END
+		boxme: check submission for programming exercices and competitions.
+
+		Usage: boxme command [arguments]
+
+		Commands:
+		  help   display this help
+		  list   list all testcases
+		  status the status of each testcases
+		  tests  execure all testcases
+		END
 		exit 0
 		;;
-	list|status|test)
+	list|status|tests)
 		# TODO filter specific tests?
 		:
 		;;
