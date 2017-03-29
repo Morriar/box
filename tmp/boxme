@@ -76,8 +76,8 @@ run() {
 	export BOX_RUN_OUT=$out
 	rm $out.* 2> /dev/null || true
 	echo "$@" > $out.cmd
-	./safe_run $BOX_WORK "$@" > $out.out 2> $out.err
-	local code=$?
+	local code=0
+	./safe_run $BOX_WORK "$@" > $out.out 2> $out.err || code=$?
 
 	# Process, check and aggregate the results
 	# TODO: move in a subfunction?
@@ -150,7 +150,7 @@ prepare_core() {
 	export BOX_WORK=$BOX_OUT/work
 	mkdir -p $BOX_WORK/tests
 	cp -ra tests/*.in $BOX_WORK/tests
-	cp -ra src/ $BOX_WORK/
+	cp -ra $BOX_SRC $BOX_WORK/src
 	cp -ra Makefile $BOX_WORK/
 }
 
@@ -172,7 +172,7 @@ build() {
 check() {
 for i in tests/*.in; do
 	local name=$(basename "$i" .in)
-	run "$name" bin/hello "$i"
+	run "$name" bin/hello "$i" && true
 done
 }
 
@@ -195,12 +195,13 @@ runtestcase() {
 
 # The main part of the script
 main() {
-	prepare
-	build
+	prepare &&
+	build &&
 	check
 }
 
 export BOX_OUT=out
+export BOX_SRC=src
 
 # Source the local configuration
 if [ ! -f boxme.local.sh ]; then
@@ -208,6 +209,29 @@ if [ ! -f boxme.local.sh ]; then
 	exit 1
 fi
 . boxme.local.sh
+
+while getopts ":s:o:v" opt; do
+	case "$opt" in
+		s)
+			export BOX_SRC=$OPTARG
+			;;
+		s)
+			export BOX_OUT=$OPTARG
+			;;
+		v)
+			((BOX_VERB += 1))
+			export BOX_VERB
+			;;
+		\?)
+			echo >&2 "Invalid option: -$OPTARG"
+			;;
+		:)
+			echo >&2 "Option -$OPTARG requires an argument."
+			exit 1
+			;;
+	esac
+done
+shift $(($OPTIND - 1))
 
 # The entry-point of the script
 cmd=$1
@@ -226,9 +250,13 @@ case "$cmd" in
 		END
 		exit 0
 		;;
-	list|status|tests)
+	list|status)
 		# TODO filter specific tests?
 		:
+		;;
+	tests)
+		# TODO filter specific tests?
+		test -e "$BOX_OUT" && rm -r "$BOX_OUT"
 		;;
 	*)
 		echo 2>&1 "Unknown command $cmd. Use the command 'help'."
