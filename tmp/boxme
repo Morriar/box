@@ -15,8 +15,6 @@
 # * BOX_RUN_OUT the output basename for the current command metadata. (set by `run`)
 #   It is set by default to '$BOX_OUT/tests/$BOX_RUN_NAME'
 
-set -e
-
 # This run a single command in a jailed work directory and log its results.
 #
 # $1 is the unique name of the command (used to read an produce metadata)
