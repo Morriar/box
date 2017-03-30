@@ -4,5 +4,4 @@ all:
 
 check:
 	-../boxme tests
-	-../boxme -s src2 -o out2 tests
-	-../boxme -s src3 -o out3 tests
+	-for d in submissions/*; do ../boxme -s $d tests; done
