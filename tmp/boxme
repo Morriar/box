@@ -121,7 +121,7 @@ checkrun_core() {
 	fi
 
 	# Check the saved .res file if any
-	local res=tests/$name.res
+	local res=$BOX_OUT/xtests/$name.res
 	if [ -e "$res" ]; then
 		echo "diff -u $res $out.out" >> $out.log
 		if ! diff -u $res $out.out > $out.diff; then
@@ -178,10 +178,49 @@ prepare_core() {
 	export BOX_WORK=$BOX_OUT/work
 	mkdir -p $BOX_WORK/tests
 	mkdir -p $BOX_WORK/bin
-	cp -ra tests/*.in $BOX_WORK/tests
+	mkdir -p $BOX_OUT/xtests
+
+	if [ -d tests ]; then
+		cp -ra tests/*.in $BOX_WORK/tests
+		cp -ra tests/* $BOX_OUT/xtests
+	elif [ -f tests.txt ]; then
+		explode_tests "tests.txt" "$BOX_OUT/xtests"
+		cp -ra $BOX_OUT/xtests/*.in $BOX_WORK/tests
+	fi
 	cp -ra $BOX_SRC $BOX_WORK/src
-	cp -ra Makefile $BOX_WORK/
-	cp -ra bin/*.sh $BOX_WORK/bin/
+	cp -ra Makefile $BOX_WORK/ || true
+	cp -ra bin/*.sh $BOX_WORK/bin/ || true
+}
+
+# Transform a oto single file testsuite into a BOX directory testsuite
+#
+# $1 is the file to explode
+# $2 is the destination base directory (it must exists).
+#
+# Each test will be named with a basename of the file to explode + number.
+explode_tests() {
+	local file=$1
+	local dir=$2
+	local base=`basename "$file" .txt`
+
+	local n=0
+	local cur=
+	while read -r line; do
+		case "$line" in
+			===)
+				((n++))
+				cur="$dir/$base$n.in"
+				> "$cur"
+				;;
+			---)
+				cur="$dir/$base$n.res"
+				> "$cur"
+				;;
+			*)
+				echo "$line" >> "$cur"
+				;;
+		esac
+	done < "$file"
 }
 
 # Function called when the engine need to build the source, whatever this means
@@ -200,9 +239,9 @@ build() {
 #
 # You should not override this function.
 check() {
-	for i in tests/*.in; do
+	for i in $BOX_OUT/xtests/*.in; do
 		local name=$(basename "$i" .in)
-		runtestcase "$name" "$i"
+		runtestcase "$name" "tests/$name.in"
 	done
 }
 
