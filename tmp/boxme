@@ -2,32 +2,6 @@
 
 # See the README for usage
 
-# File hierarchy
-#
-# Static:
-#
-# tests/*.in an input of a test case
-# tests/*.res an expected output of a test case
-# tests.sh  this file
-#
-# Input:
-#
-# src/* input user source-files, should be unmodified
-#
-# Output: (could be safely removed)
-#
-# out/work the jailed working dir (copies and produced artefacts)
-# out/work/src a copy of src
-# out/work/tests/*.in a copy of the input of a test case
-# out/tests/* the result for each test case:
-# out/tests/*.cmd the command executed
-# out/tests/*.out the standard output (stdout)
-# out/tests/*.err the standard output for errors (stderr)
-# out/tests/*.code the exit status code
-# out/tests/*.diff the diff with the res file (if any)
-# out/tests/*.fail the test has failed (and why)
-# out/tests/*.pass the test has succeeded (and why)
-
 # Environments variables used trough the script (instead of passing parameters)
 #
 # * BOX_OUT the output directory (to clean)
@@ -74,39 +48,25 @@ run() {
 		return 0
 	fi
 
-
 	# Run the command
 	rm $out.* 2> /dev/null || true
 	echo "$@" > $out.cmd
 	local code=0
-	saferun $BOX_WORK "$@" > $out.out 2> $out.err || code=$?
-
-	# Process, check and aggregate the results
-	# TODO: move in a subfunction?
-	# TODO: how to integrate a user-custom checker?
+	saferun $BOX_WORK "$@" > $out.out 2> $out.err < /dev/null || code=$?
 	echo $code > $out.code
-	local res=tests/$name.res
-	if [ -e "$res" ]; then
-		if ! diff -u $res $out.out > $out.diff; then
-			echo "diff -u $res $out.out" > $out.fail
-		fi
-	else
-		if [ "$code" != "0" ]; then
-			echo "Test exited with $code" > $out.fail
-			sed 's|^|\t|' $out.err >> $out.fail
-		fi
-	fi
 
+	# Check its result
 	local res
-	if [ -e $out.fail ]; then
-		res=1
-	else
+	if checkrun && test ! -e $out.fail; then
 		res=0
 		touch $out.pass
+	else
+		res=1
+		touch $out.fail
 	fi
 
 	# Display the result
-	status "$name"
+	status
 
 	unset BOX_RUN_NAME
 	unset BOX_RUN_OUT
@@ -131,7 +91,45 @@ saferun() {
 	#firejail --quiet --private="$dir" --seccomp -- "$@"
 }
 
-# Display the status of the test named $1 without running it not .
+# Check a run.
+#
+# This function is called when the result of a run is checked.
+# metadata can be read and modified.
+checkrun() {
+	if [ -e "$bin/checktestcase.sh" ]; then
+		bin/checktestcase.sh
+		return
+	fi
+
+	checkrun_core
+}
+
+# Default behavior of 'checkrun'
+checkrun_core() {
+	local name=$BOX_RUN_NAME
+	local out=$BOX_RUN_OUT
+	local code=`cat $out.code`
+
+	# Check the return code first
+	if [ "$code" != "0" ]; then
+		echo "Test exited with $code" > $out.fail
+		sed 's|^|\t|' $out.err >> $out.fail
+		return 1
+	fi
+
+	# Check the saved .res file if any
+	local res=tests/$name.res
+	if [ -e "$res" ]; then
+		if ! diff -u $res $out.out > $out.diff; then
+			echo "diff -u $res $out.out" > $out.fail
+			return 1
+		fi
+	fi
+
+	return 0
+}
+
+# Display the status of the test named $1 without running it not.
 #
 # This just check the content of the out/tests/ directory and display the information to the user.
 status() {
@@ -150,7 +148,7 @@ status() {
 		echo ""
 		return 1
 	else
-		echo -n "[ABORTED] $name."
+		echo "[ABORTED] $name."
 	fi
 	return 0
 }
@@ -175,10 +173,11 @@ prepare() {
 prepare_core() {
 	export BOX_WORK=$BOX_OUT/work
 	mkdir -p $BOX_WORK/tests
+	mkdir -p $BOX_WORK/bin
 	cp -ra tests/*.in $BOX_WORK/tests
 	cp -ra $BOX_SRC $BOX_WORK/src
 	cp -ra Makefile $BOX_WORK/
-	cp -ra *.sh $BOX_WORK/
+	cp -ra bin/*.sh $BOX_WORK/bin/
 }
 
 # Function called when the engine need to build the source, whatever this means
@@ -197,10 +196,10 @@ build() {
 #
 # You should not override this function.
 check() {
-for i in tests/*.in; do
-	local name=$(basename "$i" .in)
-	runtestcase "$name" "$i"
-done
+	for i in tests/*.in; do
+		local name=$(basename "$i" .in)
+		runtestcase "$name" "$i"
+	done
 }
 
 # Run a single test.
@@ -208,16 +207,26 @@ done
 # $1 the name of the test (eg `test1`)
 # $2 the .in file (eg `tests/test1.in`)
 #
-# This IS the important function to override.
-# You must use the `run` command to implement it to the execution is jailed and the metadata are collected.
+# By default, this call
+#
+#     run "$1" bin/runtestcase.sh "$2"
+#
+# You should thus define a 'bin/runtestcase.sh' script that will be executed in the working dir.
+#
+# Alternatively, you can override this function in 'boxme.local.sh'
+# In this case, you must use the `run` command so the execution is jailed and the metadata are collected.
 # E.g.
 #
 #     run "$1" bin/app < "$2"
 #     run "$1" java org.app.Main "$2"
 #     run "$1" src/hello.sh $(cat "$2")
 runtestcase() {
-	echo "runtestcase not implemented" >&2
-	return 1
+	if [ -e "$BOX_WORK/bin/runtestcase.sh" ]; then
+		run "$1" bin/runtestcase.sh "$2"
+	else
+		echo "FatalError: runtestcase not implemented" >&2
+		return 1
+	fi
 }
 
 # The main part of the script
@@ -230,12 +239,10 @@ main() {
 export BOX_OUT=out
 export BOX_SRC=src
 
-# Source the local configuration
-if [ ! -f boxme.local.sh ]; then
-	echo >&1 "boxme.local.sh Does not exists, are-you in a BOX directory?"
-	exit 1
+# Source the local configuration, is any
+if [ -f boxme.local.sh ]; then
+	. boxme.local.sh
 fi
-. boxme.local.sh
 
 while getopts ":s:o:v" opt; do
 	case "$opt" in
@@ -267,13 +274,18 @@ case "$cmd" in
 		cat<<-END
 		boxme: check submission for programming exercices and competitions.
 
-		Usage: boxme command [arguments]
+		Usage: boxme [options] <command> [arguments]
+
+		Options:
+		  -s <dir>  use dir as the source dir ('src/' by default)
+		  -o <dir>  use dir as the output dir ('out/ be default)
+		  -v        be more verbose
 
 		Commands:
-		  help   display this help
-		  list   list all testcases
-		  status the status of each testcases
-		  tests  execure all testcases
+		  help      display this help
+		  list      list all testcases
+		  status    the status of each testcases
+		  tests     execute all testcases
 		END
 		exit 0
 		;;
