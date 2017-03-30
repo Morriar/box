@@ -67,6 +67,7 @@ The results are stored in the out directory.
 * `out/work` is the workdir
 * `out/tests` is the directory with the tests results:
   * `out/tests/*.cmd` the executed command
+  * `out/tests/*.log` a log of various information
   * `out/tests/*.out` the stdout of each test
   * `out/tests/*.err` the stderr of each test
   * `out/tests/*.code` the return value of each test
