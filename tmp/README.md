@@ -11,21 +11,49 @@ The point of the BOX is to be simple to setup, safe enough to run untrusted code
 
 A BOX is a directory with expected files.
 
-In the root of the box
+The root of the box should contains the following files and directory:
 
-* `Makefile` A simple makefile to build the submission. (recommended)
-* `tests/*.in` The inputs of the tests
-  `*` is the name of the test and should be a simple identifier.
-  e.g. `tests/test1.in`.
-* `bin/runtestcase.sh` The script used to run a single test case.
-  The argument is the path of the `.in` file to test.
-  The result should be written to stdout, and error messages to stderr.
-  If the return value is non-zero, the test is considered failed.
-* `tests/*.res` The expected output for the tests, if any
-  The result of `bin/runtestcase.sh` is diffed with it.
-  If there is difference, the test is considered failed.
-* `src/` The base source code.
-* `boxme.local.sh` The local configuration and overriding of the boxme.
+* `Makefile` A simple makefile to build the submission.
+* `tests` The inputs and outputs of each tests
+* `src` The source (or the submission template)
+* `boxme.local.sh` The local configuration and overriding of the boxme. (optional)
+
+### Makefile
+
+The default rule should build the source from the src directory.
+
+The `runone` rule should execute the binany and is used to run a single test case.
+The $(IN) parameter will be the path of the input file.
+The result should be written to stdout, and error messages to stderr.
+If the return value is non-zero, the test is considered failed.
+
+A sample Makefile is
+
+~~~Makefile
+all:
+	mkdir -p bin
+	nitc src/hello.nit --dir bin
+runone:
+	bin/hello "$(IN)"
+~~~
+
+### Tests
+
+The `tests/` directory contains the tests. e.g.
+
+* `tests/test1.in`.
+* `tests/test1.res`.
+* `tests/test2.in`.
+* `tests/test2.res`.
+
+Where `tests/*.in` is the inputs of the tests and `tests/*.res` the expected output.
+
+The result of `make runone` is diffed with it.
+If there is difference, the test is considered failed.
+
+### Source
+
+`src/` is the base source code.
 
 ## The boxme program
 

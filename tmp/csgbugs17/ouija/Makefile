@@ -16,6 +16,9 @@ compile:
 	mkdir -p bin/
 	gcc -O3 -std=c99 src/ouija.c -o bin/ouija
 
+runone:
+	bin/ouija "$(IN)" | strings -e S
+
 check:
 	../../boxme tests
 

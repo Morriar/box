@@ -189,7 +189,6 @@ prepare_core() {
 	fi
 	cp -ra $BOX_SRC $BOX_WORK/src
 	cp -ra Makefile $BOX_WORK/ || true
-	cp -ra bin/*.sh $BOX_WORK/bin/ || true
 }
 
 # Transform a oto single file testsuite into a BOX directory testsuite
@@ -264,10 +263,10 @@ check() {
 #     run "$1" java org.app.Main "$2"
 #     run "$1" src/hello.sh $(cat "$2")
 runtestcase() {
-	if [ -e "$BOX_WORK/bin/runtestcase.sh" ]; then
-		run "$1" bin/runtestcase.sh "$2"
+	if [ -e "Makefile" ]; then
+		run "$1" make -s runone IN="$2"
 	else
-		echo "FatalError: runtestcase not implemented" >&2
+		echo "FatalError: runone not implemented" >&2
 		return 1
 	fi
 }
