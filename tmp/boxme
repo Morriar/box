@@ -51,18 +51,22 @@ run() {
 	# Run the command
 	rm $out.* 2> /dev/null || true
 	echo "$@" > $out.cmd
+	echo "$@" > $out.log
 	local code=0
 	saferun $BOX_WORK "$@" > $out.out 2> $out.err < /dev/null || code=$?
 	echo $code > $out.code
+	echo "Command returned $code" >> $out.log
 
 	# Check its result
 	local res
 	if checkrun && test ! -e $out.fail; then
 		res=0
 		touch $out.pass
+		echo "PASSED" >> $out.log
 	else
 		res=1
 		touch $out.fail
+		echo "FAILED" >> $out.log
 	fi
 
 	# Display the result
@@ -97,6 +101,7 @@ saferun() {
 # metadata can be read and modified.
 checkrun() {
 	if [ -e "$bin/checktestcase.sh" ]; then
+		echo "bin/checktestcase.sh" >> $out.log
 		bin/checktestcase.sh
 		return
 	fi
@@ -120,6 +125,7 @@ checkrun_core() {
 	# Check the saved .res file if any
 	local res=tests/$name.res
 	if [ -e "$res" ]; then
+		echo "diff -u $res $out.out" >> $out.log
 		if ! diff -u $res $out.out > $out.diff; then
 			echo "diff -u $res $out.out" > $out.fail
 			return 1
