@@ -353,6 +353,9 @@ case "$cmd" in
 		  list      list all testcases
 		  status    the status of each testcases
 		  tests     execute all testcases
+		Advanced commands
+		  runone    simple wrapper to make runone
+		  saferun   run a command in a jail. see saferun()
 		END
 		exit 0
 		;;
@@ -369,6 +372,11 @@ case "$cmd" in
 		saferun "$@"
 		exit "$?"
 		;;
+	runone)
+		saferun "$BOX_WORK" make -s runone IN="$2"
+		exit "$?"
+		;;
+
 	*)
 		echo 2>&1 "Unknown command $cmd. Use the command 'help'."
 		exit 1
