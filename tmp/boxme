@@ -175,20 +175,22 @@ prepare() {
 #
 # You should override `prepare` instead of this function.
 prepare_core() {
-	export BOX_WORK=$BOX_OUT/work
-	mkdir -p $BOX_WORK/tests
-	mkdir -p $BOX_WORK/bin
+	# Prepare tests in out/xtests
+	# TODO: public/private tests
 	mkdir -p $BOX_OUT/xtests
 
 	if [ -d tests ]; then
-		cp -ra tests/*.in $BOX_WORK/tests
 		cp -ra tests/* $BOX_OUT/xtests
 	elif [ -f tests.txt ]; then
 		explode_tests "tests.txt" "$BOX_OUT/xtests"
-		cp -ra $BOX_OUT/xtests/*.in $BOX_WORK/tests
 	fi
+
+	export BOX_WORK=$BOX_OUT/work
+	mkdir -p $BOX_WORK/tests
+
+	cp -ra $BOX_OUT/xtests/*.in $BOX_WORK/tests
 	cp -ra $BOX_SRC $BOX_WORK/src
-	cp -ra Makefile $BOX_WORK/ || true
+	cp -ra Makefile $BOX_WORK/
 }
 
 # Transform a oto single file testsuite into a BOX directory testsuite
