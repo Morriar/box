@@ -86,11 +86,20 @@ saferun() {
 	local dir=$1
 	shift
 
-	# Simple cd, no jail
-	( set +e; cd "$dir" && exec "$@"; )
-
-	# Use firejail
-	#firejail --quiet --private="$dir" --seccomp -- "$@"
+	case "$BOX_JAIL" in
+		firejail)
+			# Use firejail
+			firejail --quiet --private="$dir" -- "$@"
+			;;
+		none|copy|'')
+			# Simple cd, no jail
+			( set +e; cd "$dir" && exec "$@"; )
+			;;
+		*)
+			echo >&2 "Error. Unknown jail mode '$BOX_JAIL'"
+			return 1
+			;;
+	esac
 }
 
 # Check a run.
@@ -178,13 +187,17 @@ prepare_core() {
 	# Prepare tests in out/xtests
 	# TODO: public/private tests
 	mkdir -p $BOX_OUT/xtests
-
 	if [ -d tests ]; then
 		cp -ra tests/* $BOX_OUT/xtests
 	elif [ -f tests.txt ]; then
 		explode_tests "tests.txt" "$BOX_OUT/xtests"
 	fi
 
+	# Prepare a working dir
+	if [ "$BOX_JAIL" = "none" ]; then
+		export BOX_WORK=.
+		return
+	fi
 	export BOX_WORK=$BOX_OUT/work
 	mkdir -p $BOX_WORK/tests
 
@@ -282,19 +295,25 @@ main() {
 
 export BOX_OUT=out
 export BOX_SRC=src
+export BOX_JAIL=none
+export BOX_VERB=0
+export BOX_WORK=.
 
 # Source the local configuration, is any
 if [ -f boxme.local.sh ]; then
 	. boxme.local.sh
 fi
 
-while getopts ":s:o:v" opt; do
+while getopts ":s:o:j:v" opt; do
 	case "$opt" in
 		s)
 			export BOX_SRC=$OPTARG
 			;;
 		o)
 			export BOX_OUT=$OPTARG
+			;;
+		j)
+			export BOX_JAIL=$OPTARG
 			;;
 		v)
 			((BOX_VERB += 1))
@@ -323,6 +342,10 @@ case "$cmd" in
 		Options:
 		  -s <dir>  use dir as the source dir ('src/' by default)
 		  -o <dir>  use dir as the output dir ('out/ be default)
+		  -j <mode> set a jail mode:
+		              none      work in the current directory
+		              copy      create a work directory and copy files
+		              firejail  like copy but use firejail
 		  -v        be more verbose
 
 		Commands:
