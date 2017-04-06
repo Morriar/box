@@ -32,6 +32,8 @@ app.use_before("/*", new SessionRefresh)
 
 app.use("/auth", new AuthRouter(config))
 app.use("/api", new APIRouter(config, model))
+
+app.use("/*", new StaticHandler("data"))
 app.use("/*", new StaticHandler("www", "index.html"))
 
 app.use_after("/*", new ConsoleLog)

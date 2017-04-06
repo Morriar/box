@@ -185,6 +185,13 @@ class Box
 		return tests
 	end
 
+	# The box README.md file content
+	var readme: nullable String is lazy do
+		var file = path / "README.md"
+		if not file.file_exists then return null
+		return file.to_path.read_all
+	end
+
 	# Execute a `make` command in the box path
 	fun box_make(command: String...): String do
 		command.add_all(["-C", path, "--no-print-directory"])

@@ -76,6 +76,13 @@ class TestBox
 		assert box.source_files_list == ["src/dir1/file2.src", "src/file1.src"]
 	end
 
+	fun test_box_readme do
+		var box = new Box("data/test_model/box1")
+		assert box.readme == null
+		box = new Box("data/test_model/box4")
+		assert box.readme == "README content\n"
+	end
+
 	fun test_box_active do
 		var box = new Box("data/test_model/box1")
 		assert box.is_active
