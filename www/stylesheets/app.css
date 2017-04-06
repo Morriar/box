@@ -125,3 +125,9 @@ body {
 .datetime-picker-dropdown > li.date-picker-menu div > table .btn-default {
     border: 0;
 }
+
+/* Redef boostrap */
+
+.col-lg-1.nogutter, .col-lg-10.nogutter, .col-lg-11.nogutter, .col-lg-12.nogutter, .col-lg-2.nogutter, .col-lg-3.nogutter, .col-lg-4.nogutter, .col-lg-5.nogutter, .col-lg-6.nogutter, .col-lg-7.nogutter, .col-lg-8.nogutter, .col-lg-9.nogutter, .col-md-1.nogutter, .col-md-10.nogutter, .col-md-11.nogutter, .col-md-12.nogutter, .col-md-2.nogutter, .col-md-3.nogutter, .col-md-4.nogutter, .col-md-5.nogutter, .col-md-6.nogutter, .col-md-7.nogutter, .col-md-8.nogutter, .col-md-9.nogutter, .col-sm-1.nogutter, .col-sm-10.nogutter, .col-sm-11.nogutter, .col-sm-12.nogutter, .col-sm-2.nogutter, .col-sm-3.nogutter, .col-sm-4.nogutter, .col-sm-5.nogutter, .col-sm-6.nogutter, .col-sm-7.nogutter, .col-sm-8.nogutter, .col-sm-9.nogutter, .col-xs-1.nogutter, .col-xs-10.nogutter, .col-xs-11.nogutter, .col-xs-12.nogutter, .col-xs-2.nogutter, .col-xs-3.nogutter, .col-xs-4.nogutter, .col-xs-5.nogutter, .col-xs-6.nogutter, .col-xs-7.nogutter, .col-xs-8.nogutter, .col-xs-9.nogutter {
+	padding: 0;
+}

@@ -62,6 +62,11 @@
 					$http.post(apiUrl + '/boxes/' + bid + '/submit', data)
 						.success(cb)
 						.error(cbErr);
+				},
+				sendSubmission: function(bid, data, cb, cbErr) {
+					$http.put(apiUrl + '/boxes/' + bid + '/submit', data)
+						.success(cb)
+						.error(cbErr);
 				}
 			}
 		}])
@@ -90,7 +95,7 @@
 			}, Errors.handleError);
 		})
 
-		.controller('BoxSubmitCtrl', function(Errors, Boxes, $scope, $stateParams) {
+		.controller('BoxSubmitCtrl', function(Errors, Boxes, $scope, $stateParams, $anchorScroll) {
 			var vm = this;
 
 			$scope.$on('code-change', function(event, file) {
@@ -100,8 +105,13 @@
 			})
 
 			vm.checkSubmission = function() {
+				$('#pendingModal').modal({backdrop: 'static'});
 				Boxes.checkSubmission($stateParams.bId, vm.submission, function(data) {
 					vm.results = data;
+					setTimeout(function() {
+						$('#pendingModal').modal('hide');
+						$anchorScroll('submit');
+					}, 500);
 				}, Errors.handleError);
 			}
 

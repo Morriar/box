@@ -21,6 +21,10 @@
 		cfpLoadingBarProvider.includeSpinner = false;
 	}])
 
+	.run(['$anchorScroll', function($anchorScroll) {
+		$anchorScroll.yOffset = 80;
+	}])
+
 	.config(function ($stateProvider, $locationProvider) {
 		$locationProvider.html5Mode(true);
 		$stateProvider

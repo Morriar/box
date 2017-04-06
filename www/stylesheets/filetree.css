@@ -15,12 +15,15 @@
  */
 
 .filetree {
+	margin-top: 10px;
 	list-style-type: none;
 	padding-left: 0;
 }
 
 .filetree .filetree {
+	margin-top: 0;
 	padding-left: 15px;
+	border-right: none;
 }
 
 .filetree li {
