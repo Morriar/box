@@ -104,6 +104,15 @@ class User
 		return res
 	end
 
+	# Get all the submissions from `user`
+	fun submissions(model: Model): Array[Submission] do
+		var res = new Array[Submission]
+		for id, box in model.boxes do
+			res.add_all box.user_submissions(self)
+		end
+		return res
+	end
+
 	redef fun to_s do return id
 end
 
@@ -202,38 +211,41 @@ class Box
 	fun submissions: Array[Submission] do
 		var res = new Array[Submission]
 		for file in (path / "submissions").files do
-			res.add get_submission(file)
+			var submission = get_submission(file)
+			if submission == null then continue
+			res.add submission
 		end
 		(new SubmissionComparator).sort(res)
 		return res
 	end
 
 	# Get the submission with `id`
-	fun get_submission(id: String): Submission do
-		var files = new Array[SourceFile]
-		for file in source_files_list do
-			files.add new SourceFile(file, (path / "submissions" / id / file).to_path.read_all)
+	fun get_submission(id: String): nullable Submission do
+		if not (path / "submissions" / id).file_exists then return null
+		return new Submission.from_id(self, id)
+	end
+
+	# Get the submissions for user
+	fun user_submissions(user: User): Array[Submission] do
+		var submissions = new Array[Submission]
+		for submission in self.submissions do
+			if submission.user == user.id then submissions.add submission
 		end
-		var submission = new Submission(files)
-		submission.timestamp = id.to_i
-		return submission
+		return submissions
 	end
 
 	# Get the last submission
-	# TODO plug with a user system
-	fun last_submission: Submission do
-		var submissions = self.submissions
+	fun last_submission(user: User): Submission do
+		var submissions = user_submissions(user)
 		if submissions.is_empty then
-			return new Submission(source_files)
+			return new Submission(self, user.id, source_files)
 		end
 		return submissions.last
 	end
 
 	# Check a submission
-	# TODO plug with a user system
 	fun check_submission(submission: Submission): SubmissionResult do
-		var id = submission.create_workspace(self)
-		box_make("SUB=submissions/{id}/src", "check-submission")
+		box_make("SUB=submissions/{submission.id}/src", "check-submission")
 		var out = path / "out/tests"
 		var tests = new HashMap[String, TestResult]
 		for file in out.files do
@@ -256,21 +268,48 @@ class Box
 end
 
 # A box submission
-# TODO plug with a user system
 class Submission
 	super Jsonable
 	super Comparable
 	serialize
 
+	# The box this submission belongs to
+	var box: Box
+
+	# The user who submitted
+	var user: String
+
 	# Submitted files
-	var files: Array[SourceFile]
+	var files: Array[SourceFile] is writable
 
 	# Submission timestamp
 	var timestamp: Int = get_time * 1000
 
+	# The submission id
+	var id: String is lazy do return "{timestamp}_{user}".strip_id
+
+	init do
+		save_files
+	end
+
+	# Create a submission from an existing directory in `box`
+	init from_id(box: Box, id: String) do
+		var parts = id.split("_")
+		self.id = id
+		self.timestamp = parts.shift.to_i
+		var user = parts.join("_")
+
+		var files = new Array[SourceFile]
+		for file in box.source_files_list do
+			files.add new SourceFile(file, (box.path / "submissions" / id / file).to_path.read_all)
+		end
+
+		init(box, user, files)
+	end
+
 	# Create the submission working directory
-	fun create_workspace(box: Box): String do
-		var dir = box.path / "submissions" / timestamp.to_s
+	fun save_files do
+		var dir = box.path / "submissions" / id.to_s
 		dir.mkdir
 
 		for file in files do
@@ -278,11 +317,11 @@ class Submission
 			path.dirname.mkdir
 			file.content.write_to_file(path)
 		end
-
-		return timestamp.to_s
 	end
 
-	redef fun to_s do return timestamp.to_s
+	redef fun ==(o) do return o isa Submission and o.id == self.id
+
+	redef fun to_s do return id.to_s
 end
 
 # A test result
@@ -374,7 +413,7 @@ class SubmissionComparator
 	super DefaultComparator
 
 	redef type COMPARED: Submission
-	redef fun compare(a, b) do return b.timestamp <=> a.timestamp
+	redef fun compare(a, b) do return a.timestamp <=> b.timestamp
 end
 
 redef class String

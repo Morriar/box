@@ -27,10 +27,12 @@ redef class APIRouter
 
 		use("/boxes/", new APIBoxes(config, model))
 		use("/boxes/:bid", new APIBox(config, model))
-		use("/boxes/:bid/submission", new APIBoxSubmission(config, model))
-		use("/boxes/:bid/submission/save", new APIBoxSubmissionSave(config, model))
+		use("/boxes/:bid/submit", new APIBoxSubmit(config, model))
+		use("/boxes/:bid/submissions", new APIBoxUserSubmissions(config, model))
+		use("/boxes/:bid/submissions/:sid", new APIBoxUserSubmission(config, model))
 
 		use("/user/boxes", new APIUserBoxes(config, model))
+		use("/user/submissions", new APIUserSubmissions(config, model))
 	end
 end
 
@@ -95,18 +97,24 @@ end
 # Box submission handler
 #
 # GET: return the last submission
-class APIBoxSubmission
+class APIBoxSubmit
+	super AuthHandler
 	super APIBoxHandler
 
 	redef fun get(req, res) do
 		var box = get_box(req, res)
 		if box == null then return
+		var user = get_auth_user(req, res)
+		if user == null then return
 
-		var submission = box.last_submission
+		var submission = box.last_submission(user)
 		res.json submission
 	end
 
 	redef fun post(req, res) do
+		var user = get_auth_user(req, res)
+		if user == null then return
+
 		var box = get_box(req, res)
 		if box == null then return
 
@@ -118,7 +126,7 @@ class APIBoxSubmission
 			print "Error deserializing submission"
 			return
 		end
-		var submission = new Submission(submission_form.files)
+		var submission = new Submission(box, user.id, submission_form.files)
 		var results = box.check_submission(submission)
 		res.json results
 	end
@@ -127,12 +135,47 @@ end
 # Box submission handler
 #
 # GET: return the last submission
-class APIBoxSubmissionSave
+class APIBoxUserSubmission
+	super AuthHandler
 	super APIBoxHandler
+
+	# Get the submission from `:sid`
+	fun get_submission(req: HttpRequest, res: HttpResponse): nullable Submission do
+		var box = get_box(req, res)
+		if box == null then return null
+		var user = get_auth_user(req, res)
+		if user == null then return null
+
+		var sid = req.param("sid")
+		if sid == null then
+			res.api_error("Missing URI param `sid`", 400)
+			return null
+		end
+		var submission = box.get_submission(sid)
+		if submission == null then
+			res.api_error("Submission `{sid}` not found", 404)
+			return null
+		end
+		if submission.user != user.id then
+			res.api_error("Submission `{sid}` not found", 404)
+			return null
+		end
+		return submission
+	end
+
+	redef fun get(req, res) do
+		var submission = get_submission(req, res)
+		if submission == null then return
+		res.json submission
+	end
 
 	redef fun post(req, res) do
 		var box = get_box(req, res)
 		if box == null then return
+		var user = get_auth_user(req, res)
+		if user == null then return
+		var submission = get_submission(req, res)
+		if submission == null then return
 
 		var post = req.body
 		var deserializer = new JsonDeserializer(post)
@@ -142,9 +185,30 @@ class APIBoxSubmissionSave
 			print "Error deserializing submission"
 			return
 		end
-		var submission = new Submission(submission_form.files)
-		submission.create_workspace(box)
+
+		if submission == box.last_submission(user) then
+			submission.files = submission_form.files
+			submission.save_files
+		else
+			submission = new Submission(box, user.id, submission_form.files)
+		end
 		res.json submission
+	end
+end
+
+# Logged user submissions on a box
+#
+# GET: get user submissions for a box
+class APIBoxUserSubmissions
+	super AuthHandler
+	super APIBoxHandler
+
+	redef fun get(req, res) do
+		var user = get_auth_user(req, res)
+		if user == null then return
+		var box = get_box(req, res)
+		if box == null then return
+		res.json new JsonArray.from(box.user_submissions(user))
 	end
 end
 
@@ -159,6 +223,20 @@ class APIUserBoxes
 		var user = get_auth_user(req, res)
 		if user == null then return
 		res.json new JsonArray.from(user.boxes(model))
+	end
+end
+
+# Logged user submissions
+#
+# GET: get user submissions
+class APIUserSubmissions
+	super AuthHandler
+	super APIBoxHandler
+
+	redef fun get(req, res) do
+		var user = get_auth_user(req, res)
+		if user == null then return
+		res.json new JsonArray.from(user.submissions(model))
 	end
 end
 
