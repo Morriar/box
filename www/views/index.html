@@ -2,6 +2,29 @@
 	<h1>Welcome to MozBox!</h1>
 	<br>
 
+	<p>Select a box to submit your work:</p>
+	<form ng-submit='vm.search()'>
+		<div class='input-group'>
+			<input id='search' type='text' class='form-control' ng-model='vm.searchString'
+				placeholder='Search a box by its id or professor code'>
+			<span class='input-group-btn'>
+				<button class='btn btn-primary' type='button' ng-click='vm.search()'>
+					<span class='glyphicon glyphicon-search' />
+				</button>
+			</span>
+		</div>
+	</form>
+	<br>
+	<div ng-if='vm.boxes && vm.boxes.length == 0'>
+		<p class='text-warning'><i>Nothing found for your query...</i></p>
+	</div>
+	<br>
+
+	<div ng-if='!session'>
+		<h4 class='text-danger'>You must be logged to check and submit your work.</h4>
+	</div>
+	<br>
+
 	<div ng-if='vm.boxes && vm.boxes.length > 0'>
 		<box-list boxes='vm.boxes' />
 	</div>

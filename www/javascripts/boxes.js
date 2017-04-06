@@ -23,6 +23,11 @@
 		.factory('Boxes', [ '$http', function($http) {
 			var apiUrl = '/api';
 			return {
+				search: function(searchString, cb, cbErr) {
+					$http.get(apiUrl + '/search?q=' + searchString)
+						.success(cb)
+						.error(cbErr);
+				},
 				getBoxes: function(cb, cbErr) {
 					$http.get(apiUrl + '/boxes')
 						.success(cb)
@@ -55,6 +60,12 @@
 
 		.controller('BoxesCtrl', function(Errors, Boxes) {
 			var vm = this;
+
+			this.search = function() {
+				Boxes.search(vm.searchString, function(data) {
+					vm.boxes = data;
+				}, Errors.handleError);
+			}
 
 			Boxes.getBoxes(function(data) {
 				vm.boxes = data;
