@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-compile:
+all:
 	mkdir -p bin/
 	javac -d bin/ src/firematches/Main.java \
 		src/firematches/profiles/GPSLocation.java \
@@ -32,11 +32,17 @@ compile:
 		src/firematches/requests/exceptions/CriteriaFormatException.java \
 		src/firematches/requests/exceptions/RequestFormatException.java
 
+files:
+	@find src/firematches -type f -print
+
 runone:
 	java -cp bin/ firematches.Main `cat "$(IN)"`
 
 check:
-	../../boxme tests
+	-../boxme tests
+
+check-submission:
+	@../boxme -s $(SUB) -j copy tests
 
 clean:
 	rm -rf bin/ out/

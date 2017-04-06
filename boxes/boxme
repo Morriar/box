@@ -1,0 +1,386 @@
+#!/bin/bash
+
+# See the README for usage
+
+# Environments variables used trough the script (instead of passing parameters)
+#
+# * BOX_OUT the output directory (to clean)
+#   It contains the various produced files, results and artefact produced by this script.
+#   It is set by default to 'out/'
+# * BOX_WORK the jailed work directory
+#   It is used as the directory where commands are run
+#   It is set by default to '$BOX_OUT/work/'
+# * BOX_RUN_NAME the name of the current command. (set by `run`)
+#   Each executed by `run` need a name and metadata are tracked
+# * BOX_RUN_OUT the output basename for the current command metadata. (set by `run`)
+#   It is set by default to '$BOX_OUT/tests/$BOX_RUN_NAME'
+
+# This run a single command in a jailed work directory and log its results.
+#
+# $1 is the unique name of the command (used to read an produce metadata)
+# the rest is the command to run.
+#
+# Example:
+#
+#     run force_make make -B
+#     run my_test1 bin/app argument
+#
+# The various results of the test will be written in the `out/tests/` directory
+run() {
+	local name=$1
+	export BOX_RUN_NAME=$name
+	shift
+
+	# Special dry-up behavior if 'list' or 'status' commands are given.
+	if [ "$cmd" = "list" ]; then
+		echo "$name: $*"
+		return 0
+	fi
+
+	mkdir -p $BOX_OUT/tests
+	local out=$BOX_OUT/tests/$name
+	export BOX_RUN_OUT=$out
+
+	if [ "$cmd" = "status" ]; then
+		status "$name"
+		return 0
+	fi
+
+	# Run the command
+	rm $out.* 2> /dev/null || true
+	echo "$@" > $out.cmd
+	echo "$@" > $out.log
+	local code=0
+	saferun $BOX_WORK "$@" > $out.out 2> $out.err < /dev/null || code=$?
+	echo $code > $out.code
+	echo "Command returned $code" >> $out.log
+
+	# Check its result
+	local res
+	if checkrun && test ! -e $out.fail; then
+		res=0
+		touch $out.pass
+		echo "PASSED" >> $out.log
+	else
+		res=1
+		touch $out.fail
+		echo "FAILED" >> $out.log
+	fi
+
+	# Display the result
+	status
+
+	unset BOX_RUN_NAME
+	unset BOX_RUN_OUT
+
+	return $res
+}
+
+# Run the command into a specific jail
+#
+# $1 is the directory to jail
+# the rest is the command
+#
+# TODO: Improve and make configurable
+saferun() {
+	local dir=$1
+	shift
+
+	case "$BOX_JAIL" in
+		firejail)
+			# Use firejail
+			firejail --quiet --private="$dir" -- "$@"
+			;;
+		none|copy|'')
+			# Simple cd, no jail
+			( set +e; cd "$dir" && exec "$@"; )
+			;;
+		*)
+			echo >&2 "Error. Unknown jail mode '$BOX_JAIL'"
+			return 1
+			;;
+	esac
+}
+
+# Check a run.
+#
+# This function is called when the result of a run is checked.
+# metadata can be read and modified.
+checkrun() {
+	if [ -e "$bin/checktestcase.sh" ]; then
+		echo "bin/checktestcase.sh" >> $out.log
+		bin/checktestcase.sh
+		return
+	fi
+
+	checkrun_core
+}
+
+# Default behavior of 'checkrun'
+checkrun_core() {
+	local name=$BOX_RUN_NAME
+	local out=$BOX_RUN_OUT
+	local code=`cat $out.code`
+
+	# Check the return code first
+	if [ "$code" != "0" ]; then
+		echo "Test exited with $code" > $out.fail
+		sed 's|^|\t|' $out.err >> $out.fail
+		return 1
+	fi
+
+	# Check the saved .res file if any
+	local res=$BOX_OUT/xtests/$name.res
+	if [ -e "$res" ]; then
+		echo "diff -u $res $out.out" >> $out.log
+		if ! diff -u $res $out.out > $out.diff; then
+			echo "diff -u $res $out.out" > $out.fail
+			return 1
+		fi
+	fi
+
+	return 0
+}
+
+# Display the status of the test named $1 without running it not.
+#
+# This just check the content of the out/tests/ directory and display the information to the user.
+status() {
+	local name=$BOX_RUN_NAME
+	local out=$BOX_RUN_OUT
+
+	if [ ! -e $out.cmd ]; then
+		echo "[NOT RUN] $name."
+	elif [ -e $out.pass ]; then
+		echo -n "[PASS] $name. "
+		cat $out.pass
+		echo ""
+	elif [ -e $out.fail ]; then
+		echo -n "[FAIL] $name. "
+		cat $out.fail
+		echo ""
+		return 1
+	else
+		echo "[ABORTED] $name."
+	fi
+	return 0
+}
+
+# Function called when the engine wants to setup the work directory.
+#
+# pwd is the root directory of the box.
+#
+# By default, this just call `prepare_core "$@"`.
+# Specific scripts can override it and call `prepare_core` themselves.
+prepare() {
+	prepare_core "$@"
+}
+
+# Default behavior of `prepare`
+#
+# * Create the `out` directory structure.
+# * Copy src
+# * Copy tests/*.in
+#
+# You should override `prepare` instead of this function.
+prepare_core() {
+	# Prepare tests in out/xtests
+	# TODO: public/private tests
+	mkdir -p $BOX_OUT/xtests
+	if [ -d tests ]; then
+		cp -ra tests/* $BOX_OUT/xtests
+	elif [ -f tests.txt ]; then
+		explode_tests "tests.txt" "$BOX_OUT/xtests"
+	fi
+
+	# Prepare a working dir
+	if [ "$BOX_JAIL" = "none" ]; then
+		export BOX_WORK=.
+		return
+	fi
+	export BOX_WORK=$BOX_OUT/work
+	mkdir -p $BOX_WORK/tests
+
+	cp -ra $BOX_OUT/xtests/*.in $BOX_WORK/tests
+	cp -ra $BOX_SRC $BOX_WORK/src
+	cp -ra Makefile $BOX_WORK/
+}
+
+# Transform a oto single file testsuite into a BOX directory testsuite
+#
+# $1 is the file to explode
+# $2 is the destination base directory (it must exists).
+#
+# Each test will be named with a basename of the file to explode + number.
+explode_tests() {
+	local file=$1
+	local dir=$2
+	local base=`basename "$file" .txt`
+
+	local n=0
+	local cur=
+	while read -r line; do
+		case "$line" in
+			===)
+				((n++))
+				cur="$dir/$base$n.in"
+				> "$cur"
+				;;
+			---)
+				cur="$dir/$base$n.res"
+				> "$cur"
+				;;
+			*)
+				echo "$line" >> "$cur"
+				;;
+		esac
+	done < "$file"
+}
+
+# Function called when the engine need to build the source, whatever this means
+#
+# By default, this just call `make` if a Makefile is present in the jailed workdir.
+# You might redefine this function but it is often better to implement the build in the Makefile.
+build() {
+	if test -f $BOX_WORK/Makefile; then
+		run "make" "make"
+	fi
+}
+
+# Function called when the engine need to execute all test-cases.
+#
+# Each test-case correspond to a file `tests/*.in` where `*` is the name of the test case.
+#
+# You should not override this function.
+check() {
+	for i in $BOX_OUT/xtests/*.in; do
+		local name=$(basename "$i" .in)
+		runtestcase "$name" "tests/$name.in"
+	done
+}
+
+# Run a single test.
+#
+# $1 the name of the test (eg `test1`)
+# $2 the .in file (eg `tests/test1.in`)
+#
+# By default, this call
+#
+#     run "$1" bin/runtestcase.sh "$2"
+#
+# You should thus define a 'bin/runtestcase.sh' script that will be executed in the working dir.
+#
+# Alternatively, you can override this function in 'boxme.local.sh'
+# In this case, you must use the `run` command so the execution is jailed and the metadata are collected.
+# E.g.
+#
+#     run "$1" bin/app < "$2"
+#     run "$1" java org.app.Main "$2"
+#     run "$1" src/hello.sh $(cat "$2")
+runtestcase() {
+	if [ -e "Makefile" ]; then
+		run "$1" make -s runone IN="$2"
+	else
+		echo "FatalError: runone not implemented" >&2
+		return 1
+	fi
+}
+
+# The main part of the script
+main() {
+	prepare &&
+	build &&
+	check
+}
+
+export BOX_OUT=out
+export BOX_SRC=src
+export BOX_JAIL=none
+export BOX_VERB=0
+export BOX_WORK=.
+
+# Source the local configuration, is any
+if [ -f boxme.local.sh ]; then
+	. boxme.local.sh
+fi
+
+while getopts ":s:o:j:v" opt; do
+	case "$opt" in
+		s)
+			export BOX_SRC=$OPTARG
+			;;
+		o)
+			export BOX_OUT=$OPTARG
+			;;
+		j)
+			export BOX_JAIL=$OPTARG
+			;;
+		v)
+			((BOX_VERB += 1))
+			export BOX_VERB
+			;;
+		\?)
+			echo >&2 "Invalid option: -$OPTARG"
+			;;
+		:)
+			echo >&2 "Option -$OPTARG requires an argument."
+			exit 1
+			;;
+	esac
+done
+shift $(($OPTIND - 1))
+
+# The entry-point of the script
+cmd=$1
+case "$cmd" in
+	help|"")
+		cat<<-END
+		boxme: check submission for programming exercices and competitions.
+
+		Usage: boxme [options] <command> [arguments]
+
+		Options:
+		  -s <dir>  use dir as the source dir ('src/' by default)
+		  -o <dir>  use dir as the output dir ('out/ be default)
+		  -j <mode> set a jail mode:
+		              none      work in the current directory
+		              copy      create a work directory and copy files
+		              firejail  like copy but use firejail
+		  -v        be more verbose
+
+		Commands:
+		  help      display this help
+		  list      list all testcases
+		  status    the status of each testcases
+		  tests     execute all testcases
+		Advanced commands
+		  runone    simple wrapper to make runone
+		  saferun   run a command in a jail. see saferun()
+		END
+		exit 0
+		;;
+	list|status)
+		# TODO filter specific tests?
+		:
+		;;
+	tests)
+		# TODO filter specific tests?
+		test -e "$BOX_OUT" && rm -r "$BOX_OUT"
+		;;
+	saferun)
+		shift
+		saferun "$@"
+		exit "$?"
+		;;
+	runone)
+		saferun "$BOX_WORK" make -s runone IN="$2"
+		exit "$?"
+		;;
+
+	*)
+		echo 2>&1 "Unknown command $cmd. Use the command 'help'."
+		exit 1
+		;;
+esac
+
+main
