@@ -168,6 +168,9 @@ class Box
 		return base_id
 	end
 
+	# Box readable title
+	var title: String is lazy do return config["title"] or else path.basename.strip_id
+
 	# List the box source files paths
 	var source_files_list: Array[String] is lazy do
 		var files = box_make("files").split("\n")
@@ -259,6 +262,7 @@ class Box
 
 	redef fun core_serialize_to(v) do
 		v.serialize_attribute("id", id)
+		v.serialize_attribute("title", title)
 		v.serialize_attribute("is_active", is_active)
 		v.serialize_attribute("closes_at", close_date)
 		v.serialize_attribute("tests", new JsonArray.from(tests))
