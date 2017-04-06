@@ -1,7 +1,13 @@
 <div class='container-fluid'>
 	<h1>
 		{{vm.box.id}}<br>
-		<small>{{vm.box.tests.length}} tests</small>
+		<small>
+			{{vm.box.tests.length}} tests
+			<span ng-if='!vm.box.is_active'>
+				|
+				<span class='text-danger'>box closed</span>
+			</span>
+		</small>
 	</h1>
 	<hr>
 	<br>
