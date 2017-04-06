@@ -1,30 +1,40 @@
 <div class='container-fluid'>
-	<h1>
-		{{vm.box.id}}<br>
-		<small>
+	<div class='col-xs-12 col-sm-3 col-lg-2'>
+		<h3>{{vm.box.id}}</h3>
+		<span class='text-muted'>
+			<span class='glyphicon glyphicon-eye-open' />&nbsp;&nbsp;
 			{{vm.box.tests.length}} tests
-			<span ng-if='vm.box.is_active && vm.box.closes_at'>
-				|
-				<span class='text-danger'>closes at {{vm.box.closes_at | date : "short"}}</span>
+		</span>
+		<span ng-if='vm.box.is_active && vm.box.closes_at'>
+			<br><br>
+			<span class='text-danger'>
+				closes on {{vm.box.closes_at | date:'mediumDate'}}
+				<br>
+				at {{vm.box.closes_at | date:'shortTime'}}
 			</span>
-			<span ng-if='!vm.box.is_active'>
-				|
-				<span class='text-danger'>box closed</span>
-			</span>
-		</small>
-	</h1>
-	<div ng-if='vm.box.readme'>
-		<div ng-bind-html='vm.box.readme' />
+		</span>
+		<span ng-if='!vm.box.is_active'>
+			|
+			<span class='text-danger'>box closed</span>
+		</span>
+		<br>
+		<br>
+		<ul class='nav nav-pills nav-stacked'>
+			<li ui-sref-active='active'>
+				<a ui-sref='box.submit({ bid: vm.box.id })'>
+					<span class='glyphicon glyphicon-cloud-upload' />&nbsp;&nbsp;
+					Check & Submit
+				</a>
+			</li>
+			<li ui-sref-active='active' ng-if='session'>
+				<a ui-sref='box.submissions({ bid: vm.box._id })'>
+					<span class='glyphicon glyphicon-list' />&nbsp;&nbsp;
+					Submissions
+				</a>
+			</li>
+		</ul>
 	</div>
-	<hr>
-	<br>
-
-	<div ng-if='vm.submission.files'>
-		<code-editor files='vm.submission.files' />
-		<button class='btn btn-success' ng-click='vm.checkSubmission()'>Check</button>
-	</div>
-
-	<div ng-if='vm.results'>
-		<test-panel ng-repeat='result in vm.results.test_results' test='result' />
+	<div class='col-xs-12 col-sm-9 col-lg-10'>
+		<ui-view />
 	</div>
 </div>

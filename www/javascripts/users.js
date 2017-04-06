@@ -32,6 +32,11 @@
 					$http.get(apiUrl + '/user/boxes')
 						.success(cb)
 						.error(cbErr);
+				},
+				getSubmissions: function(cb, cbErr) {
+					$http.get(apiUrl + '/user/submissions')
+						.success(cb)
+						.error(cbErr);
 				}
 			}
 		}])
@@ -58,6 +63,13 @@
 
 			Users.getBoxes(function(data) {
 				vm.boxes = data;
+			}, Errors.handleError);
+		})
+
+		.controller('UserSubmissionsCtrl', function(Errors, Users) {
+			var vm = this;
+			Users.getSubmissions(function(data) {
+				vm.submissions = data;
 			}, Errors.handleError);
 		})
 

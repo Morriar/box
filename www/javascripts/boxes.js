@@ -38,18 +38,28 @@
 						.success(cb)
 						.error(cbErr);
 				},
-				getSubmission: function(bid, cb, cbErr) {
-					$http.get(apiUrl + '/boxes/' + bid + '/submission')
+				getSubmissions: function(bid, cb, cbErr) {
+					$http.get(apiUrl + '/boxes/' + bid + '/submissions')
 						.success(cb)
 						.error(cbErr);
 				},
-				saveSubmission: function(bid, data, cb, cbErr) {
-					$http.post(apiUrl + '/boxes/' + bid + '/submission/save', data)
+				getSubmission: function(bid, sid, cb, cbErr) {
+					$http.get(apiUrl + '/boxes/' + bid + '/submissions/' + sid)
+						.success(cb)
+						.error(cbErr);
+				},
+				saveSubmission: function(bid, sid, data, cb, cbErr) {
+					$http.post(apiUrl + '/boxes/' + bid + '/submissions/' + sid, data)
+						.success(cb)
+						.error(cbErr);
+				},
+				lastSubmission: function(bid, cb, cbErr) {
+					$http.get(apiUrl + '/boxes/' + bid + '/submit')
 						.success(cb)
 						.error(cbErr);
 				},
 				checkSubmission: function(bid, data, cb, cbErr) {
-					$http.post(apiUrl + '/boxes/' + bid + '/submission', data)
+					$http.post(apiUrl + '/boxes/' + bid + '/submit', data)
 						.success(cb)
 						.error(cbErr);
 				}
@@ -72,11 +82,20 @@
 			}, Errors.handleError);
 		})
 
-		.controller('BoxCtrl', function(Errors, Boxes, $scope, $stateParams) {
+		.controller('BoxCtrl', function(Errors, Boxes, $stateParams) {
+			var vm = this;
+
+			Boxes.getBox($stateParams.bId, function(data) {
+				vm.box = data;
+			}, Errors.handleError);
+		})
+
+		.controller('BoxSubmitCtrl', function(Errors, Boxes, $scope, $stateParams) {
 			var vm = this;
 
 			$scope.$on('code-change', function(event, file) {
-				Boxes.saveSubmission($stateParams.bId, vm.submission, function(data) {
+				Boxes.saveSubmission(
+					$stateParams.bId, vm.submission.id, vm.submission, function(data) {
 				}, Errors.handleError);
 			})
 
@@ -86,11 +105,22 @@
 				}, Errors.handleError);
 			}
 
-			Boxes.getBox($stateParams.bId, function(data) {
-				vm.box = data;
-			}, Errors.handleError);
-			Boxes.getSubmission($stateParams.bId, function(data) {
-				vm.submission = data;
+			if($stateParams.sId) {
+				Boxes.getSubmission($stateParams.bId, $stateParams.sId, function(data) {
+					vm.submission = data;
+				}, Errors.handleError);
+			} else {
+				Boxes.lastSubmission($stateParams.bId, function(data) {
+					vm.submission = data;
+				}, Errors.handleError);
+			}
+		})
+
+		.controller('BoxUserSubmissionsCtrl', function(Errors, Boxes, $stateParams) {
+			var vm = this;
+
+			Boxes.getSubmissions($stateParams.bId, function(data) {
+				vm.submissions = data;
 			}, Errors.handleError);
 		})
 

@@ -1,0 +1,21 @@
+<div class='container-fluid'>
+	<h3>
+		My submissions
+		<small>{{vm.submissions.length}} submissions</small>
+	</h3>
+
+	<ul ng-if='vm.submissions && vm.submissions.length > 0'>
+		<li ng-repeat='sub in vm.submissions'>
+			Box
+			<a ui-sref='box.submission({bId: sub.box.id, sId: sub.id})'>{{sub.box.id}}</a>
+			@
+			{{sub.timestamp | date:'longDate'}} {{sub.timestamp | date:'mediumTime'}}
+		</li>
+	</ul>
+
+	<div ng-if='!vm.submissions || vm.submissions.length == 0'>
+		<p>Nothing to show here.</p>
+
+		<p>Maybe you should <a ui-sref='home'>submit some work</a>?</p>
+	</div>
+</div>

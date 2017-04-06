@@ -1,0 +1,18 @@
+<div>
+	<div ng-if='vm.box.readme'>
+		<div ng-bind-html='vm.box.readme' />
+		<hr>
+		<br>
+	</div>
+
+	<div ng-if='vm.submission.files'>
+		<code-editor files='vm.submission.files' />
+		<p class='text-center'>
+			<button class='btn btn-success' ng-click='vm.checkSubmission()'>Check</button>
+		</p>
+	</div>
+
+	<div ng-if='vm.results'>
+		<test-panel ng-repeat='result in vm.results.test_results' test='result' />
+	</div>
+</div>

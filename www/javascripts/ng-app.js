@@ -36,7 +36,29 @@
 				url: '/box/{bId}',
 				controller: 'BoxCtrl',
 				controllerAs: 'vm',
-				templateUrl: '/views/box.html'
+				templateUrl: '/views/box.html',
+				abstract: true
+			})
+			.state({
+				name: 'box.submit',
+				url: '',
+				controller: 'BoxSubmitCtrl',
+				controllerAs: 'vm',
+				templateUrl: '/views/box/submit.html'
+			})
+			.state({
+				name: 'box.submission',
+				url: '/submission/{sId}',
+				controller: 'BoxSubmitCtrl',
+				controllerAs: 'vm',
+				templateUrl: '/views/box/submit.html'
+			})
+			.state({
+				name: 'box.submissions',
+				url: '/submissions',
+				controller: 'BoxUserSubmissionsCtrl',
+				controllerAs: 'vm',
+				templateUrl: '/views/box/user-submissions.html'
 			})
 			.state({
 				name: 'user',
@@ -56,6 +78,13 @@
 				controller: 'UserBoxesCtrl',
 				controllerAs: 'vm',
 				templateUrl: '/views/user/boxes.html',
+			})
+			.state({
+				name: 'user.submissions',
+				url: '/submissions',
+				controller: 'UserSubmissionsCtrl',
+				controllerAs: 'vm',
+				templateUrl: '/views/user/submissions.html',
 			})
 			.state({
 				name: 'otherwise',
