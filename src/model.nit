@@ -389,15 +389,28 @@ class SubmissionResult
 	serialize
 
 	# List of executed tests
-	var test_results: Array[TestResult]
+	var tests_results: Array[TestResult]
+
+	# Count of passed tests
+	var tests_passed: Int is lazy do
+		var res = 0
+		for test in tests_results do
+			if test.is_passed then res += 1
+		end
+		return res
+	end
+
+	# Count of failed tests
+	var tests_failed: Int is lazy do
+		var res = 0
+		for test in tests_results do
+			if not test.is_passed then res += 1
+		end
+		return res
+	end
 
 	# Has this submission passed all the tests?
-	var passed: Bool is lazy do
-		for test in test_results do
-			if not test.is_passed then return false
-		end
-		return true
-	end
+	var is_passed: Bool is lazy do return tests_failed == 0
 end
 
 # Editable source file
