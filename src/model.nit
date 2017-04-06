@@ -62,19 +62,17 @@ class Model
 		var boxes = new Array[Box]
 		# Search box by id
 		var box = self.get_box(search)
-		if box != null and box.is_active then boxes.add box
+		if box != null then boxes.add box
 		if not boxes.is_empty then return boxes
 
 		# Search box by title
 		for tbox in self.boxes.values do
-			if not tbox.is_active then continue
 			if tbox.id.split(":").last == search then boxes.add tbox
 		end
 		if not boxes.is_empty then return boxes
 
 		# Lookup boxes by user id
 		for ubox in self.boxes.values do
-			if not ubox.is_active then continue
 			if ubox.owner == search then boxes.add ubox
 		end
 		return boxes
