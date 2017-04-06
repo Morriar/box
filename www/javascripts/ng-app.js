@@ -39,6 +39,25 @@
 				templateUrl: '/views/box.html'
 			})
 			.state({
+				name: 'user',
+				url: '/user',
+				controller: function($scope, $state) {
+					$scope.$on('$stateChangeSuccess', function(){
+						if(!$scope.session) $state.go('home');
+					});
+				},
+				controllerAs: 'vm',
+				templateUrl: '/views/user.html',
+				abstract: true
+			})
+			.state({
+				name: 'user.boxes',
+				url: '/boxes',
+				controller: 'UserBoxesCtrl',
+				controllerAs: 'vm',
+				templateUrl: '/views/user/boxes.html',
+			})
+			.state({
 				name: 'otherwise',
 				url: '*path',
 				template: '<panel404 />'

@@ -27,6 +27,11 @@
 					$http.get(apiUrl + '/user')
 						.success(cb)
 						.error(cbErr);
+				},
+				getBoxes: function(cb, cbErr) {
+					$http.get(apiUrl + '/user/boxes')
+						.success(cb)
+						.error(cbErr);
 				}
 			}
 		}])
@@ -45,6 +50,14 @@
 
 			Users.getAuth(function(data) {
 				$rootScope.session = data;
+			}, Errors.handleError);
+		})
+
+		.controller('UserBoxesCtrl', function(Errors, Users, Boxes, $state) {
+			var vm = this;
+
+			Users.getBoxes(function(data) {
+				vm.boxes = data;
 			}, Errors.handleError);
 		})
 

@@ -1,0 +1,10 @@
+<div>
+	<h3>My boxes</h3>
+	<br>
+	<div ng-if='vm.boxes && vm.boxes.length > 0'>
+		<box-panel ng-repeat='box in vm.boxes' box-id='box._id' box='box' />
+	</div>
+	<div ng-if='!vm.boxes || vm.boxes.length == 0'>
+		<p>Nothing to show here.</p>
+	</div>
+</div>
