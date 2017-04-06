@@ -18,6 +18,31 @@ import popcorn::pop_config
 
 redef class AppConfig
 
+	# --admins
+	var opt_admins = new OptionArray("List of user ids to treat as admin.", "--admins")
+
+	init do
+		super
+		add_option(opt_admins)
+	end
+
+	# List of admin user ids
+	#
+	# See `User::is_admin`
+	fun admin_ids: Array[String] do
+		var opt = opt_admins.value
+		if not opt.is_empty then
+			return opt
+		end
+		var res = new Array[String]
+		for id in (ini["admins"] or else "").split(",") do
+			id = id.trim
+			if id.is_empty then continue
+			res.add id
+		end
+		return res
+	end
+
 	# Site root url to use for some redirect
 	# Useful if behind some reverse proxy
 	fun app_root_url: String do

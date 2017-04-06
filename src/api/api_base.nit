@@ -75,6 +75,22 @@ redef class Box
 	end
 end
 
+redef class User
+	serialize
+
+	# Is this user admin?
+	#
+	# Used by frontend to display admin related controls.
+	var admin = false is writable
+
+	# Is this user an admin?
+	#
+	# Users are admin if their ID matches one in the `AppConfig::admin_ids` list.
+	fun is_admin(config: AppConfig): Bool do
+		return config.admin_ids.has(id)
+	end
+end
+
 # Box description markdown decorator
 #
 # Used to extract assets from box markdown description and make them public in

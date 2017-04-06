@@ -32,6 +32,7 @@ class APIUserAuth
 	redef fun get(req, res) do
 		var user = get_auth_user(req, res)
 		if user == null then return
+		user.admin = user.is_admin(config)
 		res.json user
 	end
 end
