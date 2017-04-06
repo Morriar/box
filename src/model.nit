@@ -153,9 +153,9 @@ class Box
 	# Default is `path.basename`.
 	# Set the key `id` in the INI file to overwritte the default value.
 	var id: String is lazy do
-		var base_id = config["id"] or else path.basename
+		var base_id = config["id"] or else path.basename.strip_id
 		var owner = self.owner
-		if owner != null then return "{owner}:{base_id}"
+		if owner != null then return "{owner}:{base_id}".strip_id
 		return base_id
 	end
 
@@ -375,6 +375,34 @@ class SubmissionComparator
 
 	redef type COMPARED: Submission
 	redef fun compare(a, b) do return b.timestamp <=> a.timestamp
+end
+
+redef class String
+	# Replace sequences of non-alphanumerical characters by underscore (allows semicolons).
+	#
+	# ~~~
+	# assert "abcXYZ123_".strip_id == "abcXYZ123_"
+	# assert ", 'A[]\nB#$_".strip_id == "_A_B_"
+	# assert "abcX::YZ123_".strip_id == "abcX::YZ123_"
+	# ~~~
+	fun strip_id: String
+	do
+		var res = new Buffer
+		var sp = false
+		for c in chars do
+			if c != ':' and not c.is_alphanumeric then
+				sp = true
+				continue
+			end
+			if sp then
+				res.add '_'
+				sp = false
+			end
+			res.add c
+		end
+		if sp then res.add '_'
+		return res.to_s
+	end
 end
 
 # Execute a make command and return the result
