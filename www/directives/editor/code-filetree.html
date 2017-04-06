@@ -1,0 +1,13 @@
+<ul class='filetree'>
+	<li ng-repeat='(path, file) in vm.roots' ng-class='{active: vm.active == file.path}'>
+		<a data-toggle='collapse' data-target='#{{file.id}}' href='#' ng-if='file.children'>
+			<span class='glyphicon glyphicon-folder-close' />&nbsp;&nbsp;{{file.filename}}
+		</a>
+		<div class='collapse in' id='{{file.id}}' ng-if='file.children'>
+			<code-filetree files='file.children' prefix='path' active='vm.active' />
+		</div>
+		<a href='#' ng-click='vm.open(file)' ng-if='!file.children'>
+			<span class='glyphicon glyphicon-file' />&nbsp;&nbsp;{{file.filename}}
+		</a>
+	</li>
+</div>

@@ -1,0 +1,12 @@
+<div class='container-fluid'>
+	<h1>{{vm.box.id}}</h1>
+
+	<div ng-if='vm.submission.files'>
+		<code-editor files='vm.submission.files' />
+		<button class='btn btn-success' ng-click='vm.checkSubmission()'>Check</button>
+	</div>
+
+	<div ng-if='vm.results'>
+		<test-panel ng-repeat='result in vm.results.test_results' test='result' />
+	</div>
+</div>
