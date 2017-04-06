@@ -51,6 +51,32 @@ class Model
 		if not (path / "box.ini").file_exists then return false
 		return true
 	end
+
+	# Search boxes matching `search` from repo
+	#
+	# The search algorithm is the following:
+	# 1 - try to match box where box.id == search
+	# 2 - try to match box where box.title == search
+	# 3 - try to find professor where user.id == search and return the list of active boxes
+	fun search_boxes(search: String): Array[Box] do
+		var boxes = new Array[Box]
+		# Search box by id
+		var box = self.get_box(search)
+		if box != null then boxes.add box
+		if not boxes.is_empty then return boxes
+
+		# Search box by title
+		for tbox in self.boxes.values do
+			if tbox.id.split(":").last == search then boxes.add tbox
+		end
+		if not boxes.is_empty then return boxes
+
+		# Lookup boxes by user id
+		for ubox in self.boxes.values do
+			if ubox.owner == search then boxes.add ubox
+		end
+		return boxes
+	end
 end
 
 # A user can own boxes and make submissions

@@ -22,6 +22,9 @@ import api_auth
 redef class APIRouter
 	redef init do
 		super
+
+		use("/search", new APISearchBoxes(config, model))
+
 		use("/boxes/", new APIBoxes(config, model))
 		use("/boxes/:bid", new APIBox(config, model))
 		use("/boxes/:bid/submission", new APIBoxSubmission(config, model))
@@ -48,6 +51,20 @@ abstract class APIBoxHandler
 			return null
 		end
 		return box
+	end
+end
+
+# GET: search boxes with param `?q=`
+class APISearchBoxes
+	super APIBoxHandler
+
+	redef fun get(req, res) do
+		var q = req.string_arg("q")
+		if q == null then
+			res.json new JsonArray
+			return
+		end
+		res.json new JsonArray.from(model.search_boxes(q.trim))
 	end
 end
 
