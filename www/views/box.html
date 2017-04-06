@@ -1,5 +1,10 @@
 <div class='container-fluid'>
-	<h1>{{vm.box.id}}</h1>
+	<h1>
+		{{vm.box.id}}<br>
+		<small>{{vm.box.tests.length}} tests</small>
+	</h1>
+	<hr>
+	<br>
 
 	<div ng-if='vm.submission.files'>
 		<code-editor files='vm.submission.files' />
