@@ -23,6 +23,9 @@ import popcorn
 abstract class APIHandler
 	super Handler
 
+	# App config
+	var config: AppConfig
+
 	# Box model
 	var model: Model
 end
@@ -30,6 +33,9 @@ end
 # Basic API Router
 class APIRouter
 	super Router
+
+	# App config
+	var config: AppConfig
 
 	# Box model
 	var model: Model

@@ -17,15 +17,15 @@
 # Used for box management and submissions checking.
 module api_boxes
 
-import api_base
+import api_auth
 
 redef class APIRouter
 	redef init do
 		super
-		use("/boxes/", new APIBoxes(model))
-		use("/boxes/:bid", new APIBox(model))
-		use("/boxes/:bid/submission", new APIBoxSubmission(model))
-		use("/boxes/:bid/submission/save", new APIBoxSubmissionSave(model))
+		use("/boxes/", new APIBoxes(config, model))
+		use("/boxes/:bid", new APIBox(config, model))
+		use("/boxes/:bid/submission", new APIBoxSubmission(config, model))
+		use("/boxes/:bid/submission/save", new APIBoxSubmissionSave(config, model))
 	end
 end
 

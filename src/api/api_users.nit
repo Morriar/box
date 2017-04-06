@@ -12,23 +12,26 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-module api
+# User related routes
+module api_users
 
-import api::api_auth_shibuqam
-import api::api_users
-import api::api_boxes
+import model
+import api::api_auth
 
 redef class APIRouter
 	redef init do
 		super
-
-		use("/*", new APIErrorHandler(config, model))
+		use("/user", new APIUserAuth(config, model))
 	end
 end
 
-# Error handler
-class APIErrorHandler
-	super APIHandler
+# Get the API authentificated user
+class APIUserAuth
+	super AuthHandler
 
-	redef fun all(req, res) do res.api_error("Not found", 404)
+	redef fun get(req, res) do
+		var user = get_auth_user(req, res)
+		if user == null then return
+		res.json user
+	end
 end

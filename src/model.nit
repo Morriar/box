@@ -53,6 +53,15 @@ class Model
 	end
 end
 
+class User
+	super Jsonable
+	serialize
+
+	var id: String
+	var name: nullable String is writable
+	var avatar_url: nullable String is writable
+end
+
 # Box
 #
 # A Box is a container for submissions and tests.

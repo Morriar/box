@@ -12,23 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-module api
+module config
 
-import api::api_auth_shibuqam
-import api::api_users
-import api::api_boxes
+import popcorn::pop_config
 
-redef class APIRouter
-	redef init do
-		super
+redef class AppConfig
 
-		use("/*", new APIErrorHandler(config, model))
+	# Site root url to use for some redirect
+	# Useful if behind some reverse proxy
+	fun app_root_url: String do
+		var host = app_host
+		var port = app_port
+		var url = "http://{host}"
+		if port != 80 then url += ":{port}"
+		return ini["app.root_url"] or else url
 	end
-end
-
-# Error handler
-class APIErrorHandler
-	super APIHandler
-
-	redef fun all(req, res) do res.api_error("Not found", 404)
 end

@@ -14,14 +14,26 @@
 
 import api
 
+var config = new AppConfig
+config.parse_options(args)
+
+if config.help then
+	config.usage
+	exit 0
+end
+
 var model = new Model
 model.load_boxes("boxes/")
 
 var app = new App
 
-app.use("/api", new APIRouter(model))
+app.use_before("/*", new SessionInit)
+app.use_before("/*", new SessionRefresh)
+
+app.use("/auth", new AuthRouter(config))
+app.use("/api", new APIRouter(config, model))
 app.use("/*", new StaticHandler("www", "index.html"))
 
 app.use_after("/*", new ConsoleLog)
 
-app.listen("0.0.0.0", 3000)
+app.listen(config.app_host, config.app_port)
