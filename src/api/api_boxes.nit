@@ -54,6 +54,19 @@ abstract class APIBoxHandler
 		end
 		return box
 	end
+
+	# Deserialize a submission form
+	fun deserialize_submission(req: HttpRequest, res: HttpResponse): nullable SubmissionForm do
+		var post = req.body
+		var deserializer = new JsonDeserializer(post)
+		var submission_form = new SubmissionForm.from_deserializer(deserializer)
+		if not deserializer.errors.is_empty then
+			res.error 400
+			print "Error deserializing submission"
+			return null
+		end
+		return submission_form
+	end
 end
 
 # GET: search boxes with param `?q=`
@@ -114,21 +127,33 @@ class APIBoxSubmit
 	redef fun post(req, res) do
 		var user = get_auth_user(req, res)
 		if user == null then return
-
 		var box = get_box(req, res)
 		if box == null then return
+		var submission_form = deserialize_submission(req, res)
+		if submission_form == null then return
 
-		var post = req.body
-		var deserializer = new JsonDeserializer(post)
-		var submission_form = new SubmissionForm.from_deserializer(deserializer)
-		if not deserializer.errors.is_empty then
-			res.error 400
-			print "Error deserializing submission"
-			return
-		end
 		var submission = new Submission(box, user.id, submission_form.files)
 		var results = box.check_submission(submission)
 		res.json results
+	end
+
+	redef fun put(req, res) do
+		var user = get_auth_user(req, res)
+		if user == null then return
+		var box = get_box(req, res)
+		if box == null then return
+
+		if not box.is_active then
+			res.api_error("Box is closed", 403)
+			return
+		end
+
+		var sub_form = deserialize_submission(req, res)
+		if sub_form == null then return
+
+		var submission = new Submission(box, user.id, sub_form.files, sub_form.teamate)
+		submission.approuve
+		res.json submission
 	end
 end
 
@@ -176,15 +201,8 @@ class APIBoxUserSubmission
 		if user == null then return
 		var submission = get_submission(req, res)
 		if submission == null then return
-
-		var post = req.body
-		var deserializer = new JsonDeserializer(post)
-		var submission_form = new SubmissionForm.from_deserializer(deserializer)
-		if not deserializer.errors.is_empty then
-			res.error 400
-			print "Error deserializing submission"
-			return
-		end
+		var submission_form = deserialize_submission(req, res)
+		if submission_form == null then return
 
 		if submission == box.last_submission(user) then
 			submission.files = submission_form.files
@@ -246,4 +264,7 @@ class SubmissionForm
 
 	# Source code to be run
 	var files: Array[SourceFile]
+
+	# Teamate student code if ant
+	var teamate: nullable String
 end

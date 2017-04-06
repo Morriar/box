@@ -14,5 +14,42 @@
 
 	<div ng-if='vm.results'>
 		<test-panel ng-repeat='result in vm.results.test_results' test='result' />
+
+	<div ng-if='session.id && vm.box.is_active'>
+		<h4>3 - Send your work to the professor</h4>
+		<div class='card'>
+			<form ng-submit='vm.sendSubmission()'>
+				<div class='card-left bg-dark bg-primary text-center'>
+					<span class='glyphicon glyphicon-cloud-upload' />
+				</div>
+				<div class='card-body'>
+					<h4>Submit your work</h4>
+					<p>Your work will be deposed as <b>{{session.id}}</b>.</p>
+					<div class='form-inline'>
+						<div class='form-group' ng-class='{"has-error": vm.submitErrors.teammate}'>
+							<label for='teammate'>Add a teammate:</label>
+							<input type='text' class='form-control' id='teammate' placeholder='CODE12345678' ng-model='vm.submission.teammate'>
+							<span class='help-block' ng-if='vm.submitErrors.teammate'>
+								{{vm.submitErrors.teammate}}
+							</span>
+						</div>
+					</div>
+					<br>
+					<div ng-if='!vm.results' class='text-danger'>
+						<p>You should not submit your work until you have tested it.</p>
+					</div>
+					<div ng-if='vm.results && !vm.results.passed' class='text-danger'>
+						<p>You should not submit your work until it passes all the public tests.</p>
+					</div>
+					<div ng-if='vm.submission.is_approuved' class='text-warning'>
+						<p>If you send a new submission it will replace the previous one.</p>
+					</div>
+				</div>
+				<div class='card-footer text-right'>
+					<input type='submit' value='Submit work' class='btn btn-primary' />
+				</div>
+			</form>
+		</div>
+	</div>
 	</div>
 </div>

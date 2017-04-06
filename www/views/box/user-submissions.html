@@ -10,6 +10,7 @@
 			<a ui-sref='box.submission({bId: sub.box.id, sId: sub.id})'>{{sub.box.id}}</a>
 			@
 			{{sub.timestamp | date:'longDate'}} {{sub.timestamp | date:'mediumTime'}}
+			<span ng-if='sub.is_approuved'>(approuved)</span>
 		</li>
 	</ul>
 

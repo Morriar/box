@@ -288,11 +288,20 @@ class Submission
 	# Submitted files
 	var files: Array[SourceFile] is writable
 
+	# Teamate student code if any
+	var teamate: nullable String
+
+	# Submission path
+	var path: String is lazy do return box.path / "submissions" / id
+
 	# Submission timestamp
 	var timestamp: Int = get_time * 1000
 
 	# The submission id
 	var id: String is lazy do return "{timestamp}_{user}".strip_id
+
+	# Is this submission approuved by the student?
+	var is_approuved: Bool is lazy do return (path / "APPROUVED").file_exists
 
 	init do
 		save_files
@@ -300,26 +309,33 @@ class Submission
 
 	# Create a submission from an existing directory in `box`
 	init from_id(box: Box, id: String) do
-		var parts = id.split("_")
+		self.box = box
 		self.id = id
+
+		var parts = id.split("_")
 		self.timestamp = parts.shift.to_i
 		var user = parts.join("_")
 
 		var files = new Array[SourceFile]
 		for file in box.source_files_list do
-			files.add new SourceFile(file, (box.path / "submissions" / id / file).to_path.read_all)
+			files.add new SourceFile(file, (path / file).to_path.read_all)
 		end
 
 		init(box, user, files)
 	end
 
+	# Approuve this submission
+	fun approuve do
+		var signoff = user
+		var teamate = self.teamate
+		if teamate != null then signoff = "{signoff} teamate: {teamate}"
+		signoff.write_to_file(path / "APPROUVED")
+	end
+
 	# Create the submission working directory
 	fun save_files do
-		var dir = box.path / "submissions" / id.to_s
-		dir.mkdir
-
 		for file in files do
-			var path = dir / file.path
+			var path = self.path / file.path
 			path.dirname.mkdir
 			file.content.write_to_file(path)
 		end

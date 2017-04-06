@@ -105,6 +105,23 @@
 				}, Errors.handleError);
 			}
 
+			vm.sendSubmission = function () {
+				vm.submitErrors = {};
+				if(vm.submission.teammate) {
+					if(!/^[A-Z]{4}[0-9]{8}$/.test(vm.submission.teammate)) {
+						vm.submitErrors.teammate = 'Teammate student code seems invalid'
+						return false;
+					}
+				}
+				Boxes.sendSubmission($stateParams.bId, vm.submission, function (data) {
+					$('#submitModal').modal();
+				}, Errors.handleError);
+			};
+
+			Boxes.getBox($stateParams.bId, function(data) {
+				vm.box = data;
+			}, Errors.handleError);
+
 			if($stateParams.sId) {
 				Boxes.getSubmission($stateParams.bId, $stateParams.sId, function(data) {
 					vm.submission = data;
