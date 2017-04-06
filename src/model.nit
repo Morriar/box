@@ -132,8 +132,19 @@ class Box
 		return true
 	end
 
+	# Box closing time
+	var close_date: nullable Int is lazy do
+		var v = config["closes_at"]
+		if v != null then return v.to_i
+		return null
+	end
+
 	# Is this box active?
 	var is_active: Bool is lazy do
+		var date = close_date
+		if date != null then
+			if get_time * 1000 > date then return false
+		end
 		return active
 	end
 
@@ -230,6 +241,7 @@ class Box
 	redef fun core_serialize_to(v) do
 		v.serialize_attribute("id", id)
 		v.serialize_attribute("is_active", is_active)
+		v.serialize_attribute("closes_at", close_date)
 		v.serialize_attribute("tests", new JsonArray.from(tests))
 	end
 

@@ -81,6 +81,15 @@ class TestBox
 		assert box.is_active
 		box = new Box("data/test_model/box4")
 		assert not box.is_active
+		box = new Box("data/test_model/box5")
+		assert not box.is_active
+	end
+
+	fun test_box_close_date do
+		var box = new Box("data/test_model/box1")
+		assert box.close_date == null
+		box = new Box("data/test_model/box5")
+		assert box.close_date == 1491442535000
 	end
 
 	fun test_list_tests do
