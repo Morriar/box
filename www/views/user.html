@@ -1,7 +1,10 @@
 <div class='container-fluid'>
 	<div class='col-xs-12 col-sm-3 col-lg-2'>
-		<h3>{{session.name ? session.name : session._id}}</h3>
-		<h5 class='text-muted'>{{session._id}}</h5>
+		<h3>{{session.name ? session.name : session.id}}</h3>
+		<h5 class='text-muted'>
+			{{session.id}}
+			<span ng-if='session.admin'>(admin)</span>
+		</h5>
 		<div>
 			<img class='avatar' ng-src='{{session.avatar_url}}' width='100%' />
 		</div>

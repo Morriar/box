@@ -7,6 +7,7 @@
 	<li class='dropdown' ng-if='session'>
 		<a class='btn btn-link dropdown-toggle' type='button' data-toggle='dropdown'>
 			{{session.name ? session.name : session._id}}
+			<span ng-if='session.admin'>(admin)</span>
 			<img class='avatar avatar-icon' ng-src='{{session.avatar_url}}' />
 		</a>
 		<ul class='dropdown-menu dropdown-menu-right'>
