@@ -9,6 +9,10 @@
 		<h4><a ui-sref='box({ bId: vm.box.id })'>{{vm.box.id}}</a></h4>
 		<p class='text-muted'>
 			{{vm.box.tests.length}} tests
+			<span ng-if='vm.box.is_active && vm.box.closes_at'>
+				|
+				<span class='text-danger'>closes at {{vm.box.closes_at | date : "short"}}</span>
+			</span>
 			<span ng-if='!vm.box.is_active'>
 				|
 				<span class='text-danger'>box closed</span>

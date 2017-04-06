@@ -3,6 +3,10 @@
 		{{vm.box.id}}<br>
 		<small>
 			{{vm.box.tests.length}} tests
+			<span ng-if='vm.box.is_active && vm.box.closes_at'>
+				|
+				<span class='text-danger'>closes at {{vm.box.closes_at | date : "short"}}</span>
+			</span>
 			<span ng-if='!vm.box.is_active'>
 				|
 				<span class='text-danger'>box closed</span>
