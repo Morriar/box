@@ -76,6 +76,13 @@ class TestBox
 		assert box.source_files_list == ["src/dir1/file2.src", "src/file1.src"]
 	end
 
+	fun test_box_active do
+		var box = new Box("data/test_model/box1")
+		assert box.is_active
+		box = new Box("data/test_model/box4")
+		assert not box.is_active
+	end
+
 	fun test_list_tests do
 		var box = new Box("data/test_model/box4")
 		var tests = box.tests

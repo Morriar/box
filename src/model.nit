@@ -62,17 +62,19 @@ class Model
 		var boxes = new Array[Box]
 		# Search box by id
 		var box = self.get_box(search)
-		if box != null then boxes.add box
+		if box != null and box.is_active then boxes.add box
 		if not boxes.is_empty then return boxes
 
 		# Search box by title
 		for tbox in self.boxes.values do
+			if not tbox.is_active then continue
 			if tbox.id.split(":").last == search then boxes.add tbox
 		end
 		if not boxes.is_empty then return boxes
 
 		# Lookup boxes by user id
 		for ubox in self.boxes.values do
+			if not ubox.is_active then continue
 			if ubox.owner == search then boxes.add ubox
 		end
 		return boxes
@@ -122,6 +124,18 @@ class Box
 
 	# Box owner id if any
 	var owner: nullable String is lazy do return config["owner"]
+
+	# Box active flag
+	var active: Bool is lazy do
+		var v = config["active"]
+		if v != null and v == "false" then return false
+		return true
+	end
+
+	# Is this box active?
+	var is_active: Bool is lazy do
+		return active
+	end
 
 	# Box unique ID
 	#
@@ -215,6 +229,7 @@ class Box
 
 	redef fun core_serialize_to(v) do
 		v.serialize_attribute("id", id)
+		v.serialize_attribute("is_active", is_active)
 		v.serialize_attribute("tests", new JsonArray.from(tests))
 	end
 
