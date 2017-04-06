@@ -30,21 +30,38 @@ class TestModel
 		assert model.is_box("data/test_model/box1")
 		assert model.is_box("data/test_model/box2")
 		assert not model.is_box("data/test_model/box3")
+		assert model.is_box("data/test_model/box4")
 	end
 
 	fun test_load_boxes do
 		model.load_boxes("data/test_model/")
-		assert model.boxes.length == 2
 		assert model.boxes.has_key("box1")
 		assert model.boxes.has_key("BOX2")
 		assert not model.boxes.has_key("box3")
+		assert model.boxes.has_key("terrasa_a:Box4")
 	end
 
 	fun test_get_box do
 		model.load_boxes("data/test_model/")
-		assert model.get_box("box1") != "box1"
-		assert model.get_box("BOX2") != "BOX2"
+		assert model.get_box("box1") != null
+		assert model.get_box("BOX2") != null
 		assert model.get_box("box3") == null
+		assert model.get_box("terrasa_a:Box4") != null
+	end
+end
+
+class TestUser
+	super TestSuite
+
+	fun test_user_boxes do
+		var model = new Model
+		model.load_boxes("data/test_model/")
+
+		var user = new User("terrasa_a")
+		var boxes = user.boxes(model)
+
+		assert boxes.length == 1
+		assert boxes[0].id == "terrasa_a:Box4"
 	end
 end
 
@@ -72,6 +89,14 @@ class TestBox
 		assert files[1].content == "file2 content\n"
 	end
 
+	fun test_source_owner do
+		var box = new Box("data/test_model/box1")
+		assert box.id == "box1"
+		assert box.owner == null
+		box = new Box("data/test_model/box4")
+		assert box.id == "terrasa_a:Box4"
+		assert box.owner == "terrasa_a"
+	end
 end
 
 class TestSourceFile

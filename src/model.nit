@@ -53,13 +53,30 @@ class Model
 	end
 end
 
+# A user can own boxes and make submissions
 class User
 	super Jsonable
 	serialize
 
+	# User unique identifier (from shib uqam)
 	var id: String
+
+	# User name
 	var name: nullable String is writable
+
+	# User avatar url
 	var avatar_url: nullable String is writable
+
+	# Get all the boxes owned by `user`
+	fun boxes(model: Model): Array[Box] do
+		var res = new Array[Box]
+		for id, box in model.boxes do
+			if box.owner == self.id then res.add box
+		end
+		return res
+	end
+
+	redef fun to_s do return id
 end
 
 # Box
@@ -77,11 +94,19 @@ class Box
 	# Always located at `path / "box.ini"`.
 	var config: ConfigTree is lazy do return new ConfigTree(path / "box.ini")
 
+	# Box owner id if any
+	var owner: nullable String is lazy do return config["owner"]
+
 	# Box unique ID
 	#
 	# Default is `path.basename`.
 	# Set the key `id` in the INI file to overwritte the default value.
-	var id: String is lazy do return config["id"] or else path.basename
+	var id: String is lazy do
+		var base_id = config["id"] or else path.basename
+		var owner = self.owner
+		if owner != null then return "{owner}:{base_id}"
+		return base_id
+	end
 
 	# List the box source files paths
 	var source_files_list: Array[String] is lazy do

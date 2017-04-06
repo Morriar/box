@@ -26,6 +26,8 @@ redef class APIRouter
 		use("/boxes/:bid", new APIBox(config, model))
 		use("/boxes/:bid/submission", new APIBoxSubmission(config, model))
 		use("/boxes/:bid/submission/save", new APIBoxSubmissionSave(config, model))
+
+		use("/user/boxes", new APIUserBoxes(config, model))
 	end
 end
 
@@ -126,6 +128,20 @@ class APIBoxSubmissionSave
 		var submission = new Submission(submission_form.files)
 		submission.create_workspace(box)
 		res.json submission
+	end
+end
+
+# Logged user boxes handler
+#
+# GET: get user boxes
+class APIUserBoxes
+	super AuthHandler
+	super APIBoxHandler
+
+	redef fun get(req, res) do
+		var user = get_auth_user(req, res)
+		if user == null then return
+		res.json new JsonArray.from(user.boxes(model))
 	end
 end
 
