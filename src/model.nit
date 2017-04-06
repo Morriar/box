@@ -113,6 +113,8 @@ class User
 		return res
 	end
 
+	redef fun ==(o) do return o isa User and o.id == id
+
 	redef fun to_s do return id
 end
 
@@ -268,6 +270,8 @@ class Box
 		v.serialize_attribute("tests", new JsonArray.from(tests))
 	end
 
+	redef fun ==(o) do return o isa Box and o.id == id
+
 	redef fun to_s do return id
 end
 
@@ -359,6 +363,10 @@ class TestResult
 
 	# diff output
 	var diff: String is lazy do return (path / "{test_name}.diff").to_path.read_all
+
+	redef fun ==(o) do return o isa TestResult and o.path == path
+
+	redef fun to_s do return path
 end
 
 # A submission result
@@ -397,6 +405,8 @@ class SourceFile
 	# File extension
 	var extension: nullable String is lazy do return filename.file_extension
 
+	redef fun ==(o) do return o isa SourceFile and o.path == path
+
 	redef fun to_s do return path
 end
 
@@ -410,6 +420,10 @@ class TestFile
 
 	# Test name
 	var name: String is lazy do return path.basename.strip_extension
+
+	redef fun ==(o) do return o isa TestFile and o.path == path
+
+	redef fun to_s do return path
 end
 
 # Compare submission by timestamp in reverse order
