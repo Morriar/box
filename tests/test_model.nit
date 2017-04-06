@@ -78,7 +78,7 @@ class TestBox
 
 	fun test_box_title do
 		var box = new Box("data/test_model/box1")
-		assert box.title == null
+		assert box.title == "box1"
 		box = new Box("data/test_model/box5")
 		assert box.title == "BOX5"
 	end
