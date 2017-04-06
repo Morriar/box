@@ -22,6 +22,9 @@ all:
 files:
 	@echo "src/romcryption.pep"
 
+list_tests:
+	@ls -1 tests/*.in
+
 runone:
 	echo -n "" > bin/canned_command
 	echo "l" >> bin/canned_command

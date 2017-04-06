@@ -14,3 +14,6 @@
 
 files:
 	@find src -type f -print
+
+list_tests:
+	@ls -1 tests/*.in

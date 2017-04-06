@@ -150,6 +150,16 @@ class Box
 		return res
 	end
 
+	# List the box tests (only the name)
+	var tests: Array[TestFile] is lazy do
+		var tests = new Array[TestFile]
+		for line in box_make("list_tests").split("\n") do
+			if line.is_empty then continue
+			tests.add new TestFile(line.trim)
+		end
+		return tests
+	end
+
 	# Execute a `make` command in the box path
 	fun box_make(command: String...): String do
 		command.add_all(["-C", path, "--no-print-directory"])
@@ -205,6 +215,7 @@ class Box
 
 	redef fun core_serialize_to(v) do
 		v.serialize_attribute("id", id)
+		v.serialize_attribute("tests", new JsonArray.from(tests))
 	end
 
 	redef fun to_s do return id
@@ -310,6 +321,18 @@ class SourceFile
 	var extension: nullable String is lazy do return filename.file_extension
 
 	redef fun to_s do return path
+end
+
+# A test file
+class TestFile
+	super Jsonable
+	serialize
+
+	# Path to the test file
+	var path: String
+
+	# Test name
+	var name: String is lazy do return path.basename.strip_extension
 end
 
 # Compare submission by timestamp in reverse order

@@ -35,6 +35,9 @@ all:
 files:
 	@find src/firematches -type f -print
 
+list_tests:
+	@ls -1 tests/*.in
+
 runone:
 	java -cp bin/ firematches.Main `cat "$(IN)"`
 

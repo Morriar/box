@@ -19,6 +19,9 @@ all:
 files:
 	@find src -type f -print
 
+list_tests:
+	@ls -1 tests/*.in
+
 runone:
 	bin/hello `cat $(IN)`
 
