@@ -43,6 +43,9 @@ end
 class SessionRefresh
 	super Handler
 
+	# App config
+	var config: AppConfig
+
 	redef fun all(req, res) do
 		super
 		var session = req.session

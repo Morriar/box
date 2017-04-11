@@ -28,7 +28,7 @@ model.load_boxes("boxes/")
 var app = new App
 
 app.use_before("/*", new SessionInit)
-app.use_before("/*", new SessionRefresh)
+app.use_before("/*", new SessionRefresh(config))
 
 app.use("/auth", new AuthRouter(config))
 app.use("/api", new APIRouter(config, model))
