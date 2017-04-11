@@ -25,9 +25,15 @@
 		$anchorScroll.yOffset = 80;
 	}])
 
-	.run(function($rootScope, $rootScope, $state) {
+	.run(function(Users, $rootScope, $state) {
 		$rootScope.$on('$stateChangeSuccess', function() {
-			if(!$rootScope.session) $state.go('home');
+			if(!$rootScope.session) {
+				Users.getAuth(function(data) {
+					$rootScope.session = data;
+				}, function() {
+					 $state.go('home');
+				});
+			}
 		})
 	})
 
