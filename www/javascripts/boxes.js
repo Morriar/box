@@ -81,10 +81,6 @@
 					vm.boxes = data;
 				}, Errors.handleError);
 			}
-
-			Boxes.getBoxes(function(data) {
-				vm.boxes = data;
-			}, Errors.handleError);
 		})
 
 		.controller('BoxCtrl', function(Errors, Boxes, $stateParams) {
