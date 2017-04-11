@@ -130,13 +130,15 @@ checkrun_core() {
 	fi
 
 	# Check the saved .res file if any
-	local res=$BOX_OUT/xtests/$name.res
+	local res=`echo tests*/$name.res`
 	if [ -e "$res" ]; then
 		echo "diff -u $res $out.out" >> $out.log
 		if ! diff -u $res $out.out > $out.diff; then
 			echo "diff -u $res $out.out" > $out.fail
 			return 1
 		fi
+	else
+		echo "no res file $res" >> $out.log
 	fi
 
 	return 0
@@ -184,19 +186,21 @@ prepare() {
 #
 # You should override `prepare` instead of this function.
 prepare_core() {
-	# Prepare tests in out/xtests
-	mkdir -p $BOX_OUT/xtests
-	if [ -d tests ]; then
-		cp -ra tests/* $BOX_OUT/xtests
-	elif [ -f tests.txt ]; then
-		explode_tests "tests.txt" "$BOX_OUT/xtests"
+	if [ -f tests.txt ]; then
+		explode_tests "tests.txt" "tests"
 	fi
-	if [ -z "$BOX_PUBLIC" ]; then
-		if [ -d tests-private ]; then
-			cp -ra tests-private/* $BOX_OUT/xtests
-		elif [ -f tests-private.txt ]; then
-			explode_tests "tests-private.txt" "$BOX_OUT/xtests"
-		fi
+	if [ -f tests-private.txt ]; then
+		explode_tests "tests-private.txt" "tests-private"
+	fi
+
+	export BOX_TEST_DIRS=
+
+	if [ -d  tests ]; then
+		export BOX_TEST_DIRS="$BOX_TEST_DIRS tests"
+	fi
+
+	if [ -z "$BOX_PUBLIC" -a -d tests-private ]; then
+		export BOX_TEST_DIRS="$BOX_TEST_DIRS tests-private"
 	fi
 
 	# Prepare a working dir
@@ -205,9 +209,12 @@ prepare_core() {
 		return
 	fi
 	export BOX_WORK=$BOX_OUT/work
-	mkdir -p $BOX_WORK/tests
+	mkdir -p $BOX_WORK
 
-	cp -ra $BOX_OUT/xtests/*.in $BOX_WORK/tests
+	for testdir in $BOX_TEST_DIRS; do
+		mkdir -p $BOX_WORK/$testdir
+		cp -ra $testdir/*.in $BOX_WORK/$testdir
+	done
 	cp -ra src $BOX_WORK/src
 	cp -ra $BOX_SRC/* $BOX_WORK/src
 	cp -ra Makefile $BOX_WORK/
@@ -260,13 +267,11 @@ build() {
 #
 # You should not override this function.
 check() {
-	for i in $BOX_OUT/xtests/*.in; do
-		local name=$(basename "$i" .in)
-		if [ "$BOX_WORK" = "." ]; then
+	for testdir in $BOX_TEST_DIRS; do
+		for i in $testdir/*.in; do
+			local name=$(basename "$i" .in)
 			runtestcase "$name" "$i"
-		else
-			runtestcase "$name" "tests/$name.in"
-		fi
+		done
 	done
 }
 
@@ -317,11 +322,10 @@ status_line() {
 		echo "$sub: not run"
 		return
 	fi
-	local tsts=`ls "$sub/out/xtests/"*.in | wc -l`
 	local runs=`ls "$sub/out/tests/"*.cmd | wc -l`
 	local pass=`ls "$sub/out/tests/"*.pass | wc -l`
 	local fail=`ls "$sub/out/tests/"*.fail | wc -l`
-	echo "$tsts tests, $runs run, $pass passed, $fail failed"
+	echo "$runs run, $pass passed, $fail failed"
 }
 
 # The main part of the script
