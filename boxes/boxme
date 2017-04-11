@@ -319,7 +319,7 @@ submissions() {
 status_line() {
 	local sub=$1
 	if ! test -d "$sub/out"; then
-		echo "$sub: not run"
+		echo "not run"
 		return
 	fi
 	local runs=`ls "$sub/out/tests/"*.cmd | wc -l`
