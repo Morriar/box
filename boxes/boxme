@@ -323,6 +323,7 @@ main() {
 			  list      list all testcases
 			  status    the status of each testcases
 			  tests     execute all testcases
+			  sub <commmand> execute the command on all the submissions
 			Advanced commands
 			  runone    simple wrapper to make runone
 			  saferun   run a command in a jail. see saferun()
@@ -345,6 +346,16 @@ main() {
 		runone)
 			saferun "$BOX_WORK" make -s runone IN="$2"
 			exit "$?"
+			;;
+		sub*)
+			shift
+			for sub in submissions/*/; do
+				echo "# $sub"
+				export BOX_SRC=$sub/src
+				export BOX_OUT=$sub/out
+				main "$@"
+			done
+			exit
 			;;
 		*)
 			echo 2>&1 "Unknown command $cmd. Use the command 'help'."
