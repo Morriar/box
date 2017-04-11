@@ -26,7 +26,7 @@
 	}])
 
 	.run(function($rootScope, $rootScope, $state) {
-		$rootScope.$on('$locationChangeSuccess', function() {
+		$rootScope.$on('$stateChangeSuccess', function() {
 			if(!$rootScope.session) $state.go('home');
 		})
 	})
