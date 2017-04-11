@@ -25,6 +25,12 @@
 		$anchorScroll.yOffset = 80;
 	}])
 
+	.run(function($rootScope, $rootScope, $state) {
+		$rootScope.$on('$locationChangeSuccess', function() {
+			if(!$rootScope.session) $state.go('home');
+		})
+	})
+
 	.config(function ($stateProvider, $locationProvider) {
 		$locationProvider.html5Mode(true);
 		$stateProvider
@@ -67,11 +73,7 @@
 			.state({
 				name: 'user',
 				url: '/user',
-				controller: function($scope, $state) {
-					$scope.$on('$stateChangeSuccess', function(){
-						if(!$scope.session) $state.go('home');
-					});
-				},
+				controller: function($scope, $state) {},
 				controllerAs: 'vm',
 				templateUrl: '/views/user.html',
 				abstract: true
