@@ -200,7 +200,7 @@ prepare_core() {
 	fi
 
 	# Prepare a working dir
-	if [ "$BOX_JAIL" = "none" ]; then
+	if [ "$BOX_JAIL" = "none" -a "$BOX_SRC" = "src" ]; then
 		export BOX_WORK=.
 		return
 	fi
