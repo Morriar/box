@@ -16,6 +16,10 @@ all:
 	mkdir -p bin/
 	nitc src/app.nit -o bin/app
 
+debug:
+	mkdir -p bin/
+	nitc src/app_debug.nit -o bin/app
+
 web:
 	./bin/app
 
