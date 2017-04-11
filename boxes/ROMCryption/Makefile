@@ -12,11 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-compile:
+all:
+	pwd
 	mkdir -p bin/
 	cp src/trap src/pep8os.pepo bin/
 	cd bin/ && asem8 ../src/romcryption.pep
 	mv src/romcryption.pepo bin/
+
+files:
+	@echo "src/romcryption.pep"
+
+list_tests:
+	@ls -1 tests/*.in
 
 runone:
 	echo -n "" > bin/canned_command
@@ -36,6 +43,9 @@ runone:
 
 check:
 	../../boxme tests
+
+check-submission:
+	@../boxme -s $(SUB) -j copy tests
 
 clean:
 	rm -rf bin/ out/

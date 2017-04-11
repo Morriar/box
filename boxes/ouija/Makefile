@@ -12,15 +12,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-compile:
+all:
 	mkdir -p bin/
 	gcc -O3 -std=c99 src/ouija.c -o bin/ouija
+
+files:
+	@find src -type f -print
+
+list_tests:
+	@ls -1 tests/*.in
 
 runone:
 	bin/ouija "$(IN)" | strings -e S
 
 check:
 	../../boxme tests
+
+check-submission:
+	@../boxme -s $(SUB) -j copy tests
 
 clean:
 	rm -rf bin/ out/
