@@ -1,6 +1,6 @@
 # BOXME
 
-This is the scratchpad for the boxme program used to
+The `boxme` program provides an infrastructure to run and checks programs and user submissions in a controlled environment.
 
 ## BOX and BOXME
 
@@ -14,7 +14,7 @@ A BOX is a directory with expected files.
 The root of the box should contains the following files and directory:
 
 * `Makefile` A simple makefile to build the submission.
-* `tests` The inputs and outputs of each tests
+* `tests` and `tests-private` The inputs and outputs of each tests
 * `src` The source (or the submission template)
 * `boxme.local.sh` The local configuration and overriding of the boxme. (optional)
 
@@ -22,7 +22,7 @@ The root of the box should contains the following files and directory:
 
 The default rule should build the source from the src directory.
 
-The `runone` rule should execute the binany and is used to run a single test case.
+The `runone` rule should execute the binary and is used to run a single test case.
 The $(IN) parameter will be the path of the input file.
 The result should be written to stdout, and error messages to stderr.
 If the return value is non-zero, the test is considered failed.
@@ -51,9 +51,13 @@ Where `tests/*.in` is the inputs of the tests and `tests/*.res` the expected out
 The result of `make runone` is diffed with it.
 If there is difference, the test is considered failed.
 
+Private tests must reside in `tests-private`.
+
 ### Source
 
 `src/` is the base source code.
+
+It is the one tested by default and the template used for submissions.
 
 ## The boxme program
 
@@ -74,3 +78,11 @@ The results are stored in the out directory.
   * `out/tests/*.fail` exists if the test failed (and contains the message)
   * `out/tests/*.pass` exists if the test passed
   * `out/tests/*.diff` contains the diff with the saved .res file
+
+## Submissions
+
+Each submission resides in a subdirectory of the `submissions` directory.
+
+* `submissions/*/src` the submission content (as is)
+* `submissions/*/out/work` is the full workdir with copied file ans the submitted src
+* `submissions/*/out/tests` is the tests results
