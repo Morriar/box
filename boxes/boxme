@@ -202,7 +202,8 @@ prepare_core() {
 	mkdir -p $BOX_WORK/tests
 
 	cp -ra $BOX_OUT/xtests/*.in $BOX_WORK/tests
-	cp -ra $BOX_SRC $BOX_WORK/src
+	cp -ra src $BOX_WORK/src
+	cp -ra $BOX_SRC/* $BOX_WORK/src
 	cp -ra Makefile $BOX_WORK/
 }
 
