@@ -313,7 +313,9 @@ class Submission
 		self.id = id
 
 		var parts = id.split("_")
-		self.timestamp = parts.shift.to_i
+		if parts.first.is_int then
+			self.timestamp = parts.shift.to_i
+		end
 		var user = parts.join("_")
 
 		var files = new Array[SourceFile]
