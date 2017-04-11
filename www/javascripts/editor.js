@@ -46,7 +46,11 @@
 			}
 
 			vm.init = function(div) {
-				vm.editor = CodeMirror(div, {lineNumbers: true, matchBrackets: true});
+				vm.editor = CodeMirror(div, {
+					lineNumbers: true,
+					matchBrackets: true,
+					viewportMargin: Infinity
+				});
 				vm.editor.on('change', function(CodeMirror) {
 					vm.files.forEach(function(file) {
 						if(file.path == vm.current) {
