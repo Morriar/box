@@ -256,7 +256,11 @@ build() {
 check() {
 	for i in $BOX_OUT/xtests/*.in; do
 		local name=$(basename "$i" .in)
-		runtestcase "$name" "tests/$name.in"
+		if [ "$BOX_WORK" = "." ]; then
+			runtestcase "$name" "$i"
+		else
+			runtestcase "$name" "tests/$name.in"
+		fi
 	done
 }
 
