@@ -297,6 +297,33 @@ runtestcase() {
 	fi
 }
 
+# List all submissions
+submissions() {
+	if ! test -d submissions/; then
+		echo "No submissions"
+		return 0
+	fi
+	for sub in submissions/*; do
+		local line=`status_line "$sub"`
+		echo "$sub: $line"
+	done
+	return 0
+}
+
+# Show a line collecting results for a directory.
+status_line() {
+	local sub=$1
+	if ! test -d "$sub/out"; then
+		echo "$sub: not run"
+		return
+	fi
+	local tsts=`ls "$sub/out/xtests/"*.in | wc -l`
+	local runs=`ls "$sub/out/tests/"*.cmd | wc -l`
+	local pass=`ls "$sub/out/tests/"*.pass | wc -l`
+	local fail=`ls "$sub/out/tests/"*.fail | wc -l`
+	echo "$tsts tests, $runs run, $pass passed, $fail failed"
+}
+
 # The main part of the script
 main() {
 	local cmd=$1
@@ -323,6 +350,7 @@ main() {
 			  list      list all testcases
 			  status    the status of each testcases
 			  tests     execute all testcases
+			  sub list  list all the submissions
 			  sub <commmand> execute the command on all the submissions
 			Advanced commands
 			  runone    simple wrapper to make runone
@@ -349,6 +377,10 @@ main() {
 			;;
 		sub*)
 			shift
+			if [ "$1" = "list" -o -z "$1" ]; then
+				submissions
+				exit
+			fi
 			for sub in submissions/*/; do
 				echo "# $sub"
 				export BOX_SRC=$sub/src
@@ -408,6 +440,5 @@ while getopts ":ps:o:j:v" opt; do
 	esac
 done
 shift $(($OPTIND - 1))
-
 
 main "$@"
