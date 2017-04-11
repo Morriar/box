@@ -12,5 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+all:
+	mkdir -p bin/
+	nitc src/app.nit -o bin/app
+
+web:
+	./bin/app
+
 check:
 	cd tests/ && make check
