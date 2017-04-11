@@ -1,0 +1,32 @@
+<ul class='nav navbar-nav navbar-right'>
+	<li ng-if='vm && !session'>
+		<a ng-click='vm.login()' href='#'>
+			<span class='glyphicon glyphicon-user' /> Login with UQÀM
+		</a>
+	</li>
+	<li class='dropdown' ng-if='session'>
+		<a class='btn btn-link dropdown-toggle' type='button' data-toggle='dropdown'>
+			{{session.name ? session.name : session._id}}
+			<span ng-if='session.admin'>(admin)</span>
+			<img class='avatar avatar-icon' ng-src='{{session.avatar_url}}' />
+		</a>
+		<ul class='dropdown-menu dropdown-menu-right'>
+			<li>
+				<a ui-sref='user.boxes({login: session._id})'>
+					<span class='glyphicon glyphicon-gift' /> My boxes
+				</a>
+			</li>
+			<li>
+				<a ui-sref='user.submissions({login: session._id})'>
+					<span class='glyphicon glyphicon-cloud-upload' /> My submissions
+				</a>
+			</li>
+			<li role='separator' class='divider'></li>
+			<li>
+				<a ng-click='vm.logout()' href='#'>
+					<span class='glyphicon glyphicon-log-out' /> Logout
+				</a>
+			</li>
+		</ul>
+	</li>
+</ul>

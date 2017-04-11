@@ -1,0 +1,133 @@
+/*
+ * Copyright 2017 Alexandre Terrasa <alexandre@moz-code.org>.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/* Custom Text colors */
+.text-success { color: #5cb85c; }
+.text-info { color: #0955A0; }
+
+/* Body */
+
+body {
+	margin-top: 70px;
+}
+
+/* Nav bar */
+
+.navbar-primary {
+	background-color: #0955A0;
+	border-color: #0955A0;
+	box-shadow: 0 1px 4px 0 rgba(0,0,0,0.4);
+}
+
+.navbar-primary .navbar-brand, .navbar-primary .navbar-nav>li>a, .navbar-primary .breadcrumb a {
+	color: white;
+}
+
+
+.navbar .breadcrumb {
+	padding: 15px 0;
+	margin: 0 0 0 -5px;
+	background: transparent;
+}
+
+.navbar .breadcrumb>li:before {
+    padding: 0 15px;
+    color: #337ab7;
+    content: "/\00a0";
+}
+
+.progress { margin-bottom: 0 }
+
+/* Btn */
+
+.btn-link.btn-muted { color: #777 }
+.btn-link.btn-primary { color: #337ab7 }
+.btn-link.btn-success { color: #3c763d }
+.btn-link.btn-info { color: #31708f }
+.btn-link.btn-warning { color: #8a6d3b }
+.btn-link.btn-danger { color: #a94442 }
+
+/*
+ * Users
+ */
+
+.avatar {
+	border-radius: 2px;
+}
+
+.avatar-icon {
+	width: 20px;
+	height: 20px;
+	vertical-align: bottom;
+}
+
+.navbar li .avatar-icon {
+	margin-left: 12px;
+}
+
+/* diff2Html */
+
+.d2h-file-header {
+	display: none;
+}
+
+/* blinking effect (yes, we are back in 1994) */
+
+.blink {
+  animation: blink-animation 1.5s linear infinite alternate;
+}
+@keyframes blink-animation {
+  to {
+    opacity: 0;
+  }
+}
+
+/* Rotate effect */
+
+.rotate {
+	-webkit-animation:spin 4s linear infinite;
+	-moz-animation:spin 4s linear infinite;
+	animation:spin 4s linear infinite;
+}
+@-moz-keyframes spin { 100% { -moz-transform: rotate(360deg); } }
+@-webkit-keyframes spin { 100% { -webkit-transform: rotate(360deg); } }
+@keyframes spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }
+
+/* CodeMirror */
+
+.CodeMirror {
+	height: auto;
+}
+
+/* Alerts */
+
+.alert {
+	z-index: 1000;
+	position: absolute;
+	right: 20px;
+}
+
+/* date time picker */
+
+.datetime-picker-dropdown > li.date-picker-menu div > table .btn-default {
+    border: 0;
+}
+
+/* Redef boostrap */
+
+.col-lg-1.nogutter, .col-lg-10.nogutter, .col-lg-11.nogutter, .col-lg-12.nogutter, .col-lg-2.nogutter, .col-lg-3.nogutter, .col-lg-4.nogutter, .col-lg-5.nogutter, .col-lg-6.nogutter, .col-lg-7.nogutter, .col-lg-8.nogutter, .col-lg-9.nogutter, .col-md-1.nogutter, .col-md-10.nogutter, .col-md-11.nogutter, .col-md-12.nogutter, .col-md-2.nogutter, .col-md-3.nogutter, .col-md-4.nogutter, .col-md-5.nogutter, .col-md-6.nogutter, .col-md-7.nogutter, .col-md-8.nogutter, .col-md-9.nogutter, .col-sm-1.nogutter, .col-sm-10.nogutter, .col-sm-11.nogutter, .col-sm-12.nogutter, .col-sm-2.nogutter, .col-sm-3.nogutter, .col-sm-4.nogutter, .col-sm-5.nogutter, .col-sm-6.nogutter, .col-sm-7.nogutter, .col-sm-8.nogutter, .col-sm-9.nogutter, .col-xs-1.nogutter, .col-xs-10.nogutter, .col-xs-11.nogutter, .col-xs-12.nogutter, .col-xs-2.nogutter, .col-xs-3.nogutter, .col-xs-4.nogutter, .col-xs-5.nogutter, .col-xs-6.nogutter, .col-xs-7.nogutter, .col-xs-8.nogutter, .col-xs-9.nogutter {
+	padding: 0;
+}

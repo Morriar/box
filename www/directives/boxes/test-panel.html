@@ -1,0 +1,36 @@
+<div>
+	<div class='card'>
+		<div class='card-left text-center bg-dark bg-danger' ng-if='!vm.test.is_passed'>
+			<h4><span class='glyphicon glyphicon-thumbs-down' /></h4>
+		</div>
+		<div class='card-left text-center bg-dark bg-success' ng-if='vm.test.is_passed'>
+			<h4><span class='glyphicon glyphicon-thumbs-up' /></h4>
+		</div>
+		<div class='card-body'>
+			<h3>
+				<a data-toggle='collapse' data-target='#test_{{vm.test.test_name}}' href='#' ng-class='{"text-danger": !vm.test.is_passed, "text-success": vm.test.is_passed}'>
+					{{vm.test.test_name}}
+				</a>
+			</h3>
+			<div class='collapse' id='test_{{vm.test.test_name}}' ng-class='{in: !vm.test.is_passed}'>
+				<p ng-if='!vm.test.is_passed' class='text-danger'>
+					<b>You failed this test!</b>
+				</p>
+				<p ng-if='vm.test.is_passed' class='text-success'>
+					<b>Congratulations, you passed this test!</b>
+				</p>
+				<div ng-if='vm.test.err'>
+					<b>Error</b>
+					<pre><code>{{vm.test.err}}</code></pre>
+				</div>
+				<div ng-if='vm.test.out && !vm.test.diff'>
+					<b>Output</b>
+					<pre><code>{{vm.test.out}}</code></pre>
+				</div>
+				<div ng-if='vm.test.diff'>
+					<test-diff diff-id='test_diff_{{vm.test.test_name}}' diff-string='{{vm.test.diff}}'/>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,161 @@
+<div>
+	<div ng-if='vm.box.readme'>
+		<div ng-bind-html='vm.box.readme' />
+		<hr>
+		<br>
+	</div>
+
+	<div ng-if='vm.submission.files'>
+		<h4>1 - Write the code</h4>
+		<div class='card'>
+			<code-editor files='vm.submission.files' />
+		</div>
+		<br>
+	</div>
+
+	<div ng-if='session.id' id='submit'>
+		<h4>2 - Try your work</h4>
+		<div class='card'>
+			<div class='card-left bg-dark bg-primary text-center'>
+				<span class='glyphicon glyphicon-check' />
+			</div>
+			<div class='card-body'>
+				<h4>Check your work</h4>
+				<p>Your work will be tested against <b>{{vm.box.tests.length}}</b> public tests.</p>
+				<br>
+				<p class='text-center'>
+					<button class='btn btn-success btn-lg' ng-click='vm.checkSubmission()'>
+						<span class='glyphicon glyphicon-check' /> Check my work
+					</button>
+				</p>
+			</div>
+		</div>
+		<br>
+	</div>
+
+	<div class='card' ng-if='vm.results'>
+		<div class='card-body bg-dark text-center' ng-class='{
+				 "bg-danger": !vm.results.is_passed,
+				 "bg-success": vm.results.is_passed
+			}'>
+			<h1 ng-if='!vm.results.is_passed'>
+				<b>ERROR</b>
+				<br/><br/>
+				<span class='glyphicon glyphicon-remove' />
+				<br/><br/>
+			</h1>
+			<h1 ng-if='vm.results.is_passed'>
+				<b>ALL TESTS PASSED</b>
+				<br/><br/>
+				<span class='glyphicon glyphicon-ok' />
+				<br/><br/>
+			</h1>
+			<p class='lead'>
+				{{vm.results.tests_passed}} / {{vm.box.tests.length + 1}} tests passed
+			</p>
+		</div>
+	</div>
+
+	<div ng-if='vm.results'>
+		<test-panel ng-repeat='result in vm.results.tests_results' test='result' />
+		<br>
+	</div>
+
+	<div ng-if='session.id && vm.box.is_active'>
+		<h4>3 - Send your work to the professor</h4>
+		<div class='card'>
+			<form ng-submit='vm.sendSubmission()'>
+				<div class='card-left bg-dark bg-primary text-center'>
+					<span class='glyphicon glyphicon-cloud-upload' />
+				</div>
+				<div class='card-body'>
+					<h4>Submit your work</h4>
+					<p>Your work will be deposed as <b>{{session.id}}</b>.</p>
+					<div class='form-inline'>
+						<div class='form-group' ng-class='{"has-error": vm.submitErrors.teammate}'>
+							<label for='teammate'>Add a teammate:</label>
+							<input type='text' class='form-control' id='teammate' placeholder='CODE12345678' ng-model='vm.submission.teammate'>
+							<span class='help-block' ng-if='vm.submitErrors.teammate'>
+								{{vm.submitErrors.teammate}}
+							</span>
+						</div>
+					</div>
+					<br>
+					<div ng-if='!vm.results' class='text-danger'>
+						<p>You should not submit your work until you have tested it.</p>
+					</div>
+					<div ng-if='vm.results && !vm.results.passed' class='text-danger'>
+						<p>You should not submit your work until it passes all the public tests.</p>
+					</div>
+					<div ng-if='vm.submission.is_approuved' class='text-warning'>
+						<p>Only your last submission will be evaluated by the professor.</p>
+					</div>
+				</div>
+				<div class='card-footer text-right'>
+					<input type='submit' value='Submit work' class='btn btn-primary' />
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<!-- modals -->
+
+	<div class='modal fade' id='pendingModal' tabindex='-1'>
+		<div class='modal-dialog'>
+			<div class='modal-content bg-dark bg-warning'>
+				<div class='modal-body text-center'>
+					<h1>Pending...</h1>
+					<br>
+					<br>
+					<h1><span class='glyphicon glyphicon-refresh rotate' /></h1>
+					<br>
+					<br>
+					<p class='lead'>Testing your submission...</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class='modal fade' id='submitModal' tabindex='-1'>
+		<div class='modal-dialog'>
+			<div class='modal-content'>
+				<div class='modal-header'>
+					<button type='button' class='close' data-dismiss='modal'>
+						<span>&times;</span>
+					</button>
+					<h4 class='modal-title'>Submission success</h4>
+				</div>
+				<div class='modal-body'>
+					<div class='card'>
+						<div class='card-body bg-dark bg-success text-center'>
+							<span/>
+							<h1>
+								<b>SUBMISSION OK</b>
+								<br/><br/>
+								<span class='glyphicon glyphicon-ok' />
+								<br/><br/>
+							</h1>
+							<p class='lead'>You work has been sent to the professor for evaluation.</p>
+						</div>
+					</div>
+
+					<dl class='dl-horizontal'>
+						<dt>id</dt>
+						<dd>{{vm.submission.id}}</dd>
+						<dt>user</dt>
+						<dd>{{vm.submission.user}}</dd>
+						<dt>teammate</dt>
+						<dd>{{vm.submission.teammate}}</dd>
+						<dt>timestamp</dt>
+						<dd>{{vm.submission.timestamp | date:'mediumDate'}}
+							{{vm.submission.timestamp | date:'shortTime'}}</dd>
+					</dl>
+				</div>
+				<div class='modal-footer'>
+					<button type='button' class='btn btn-default' data-dismiss='modal'>
+						Close
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,5 @@
+bin/
+out/
+nitunit.xml
+*.swp
+submissions/

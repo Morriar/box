@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang='en' ng-app='ng-app'>
+	<head>
+		<base href='/'>
+		<meta charset='utf-8'>
+		<meta http-equiv='X-UA-Compatible' content='IE=edge'>
+		<meta name='viewport' content='width=device-width, initial-scale=1'>
+		<title>Box</title>
+
+		<link href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css'
+			integrity='sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7'
+			crossorigin='anonymous' rel='stylesheet'>
+
+		<link href='https://cdnjs.cloudflare.com/ajax/libs/angular-loading-bar/0.9.0/loading-bar.min.css' rel='stylesheet'>
+
+		<link href='https://cdnjs.cloudflare.com/ajax/libs/diff2html/2.0.3/diff2html.min.css' rel='stylesheet'>
+
+		<link href='https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.18.2/codemirror.min.css' rel='stylesheet'>
+		<link href='/vendors/codemirror/modes/pep8.css' rel='stylesheet'>
+		<link href='/vendors/codemirror/modes/ocl.css' rel='stylesheet'>
+
+		<link href='/stylesheets/cards.css' rel='stylesheet'>
+		<link href='/stylesheets/filetree.css' rel='stylesheet'>
+		<link href='/stylesheets/app.css' rel='stylesheet'>
+	</head>
+	<body ng-cloak>
+		<nav class='navbar navbar-inverse navbar-primary navbar-fixed-top'>
+			<div class='container-fluid'>
+				<div class='col-xs-8'>
+					<div class='navbar-header dropdown'>
+						<a class='navbar-brand' ui-sref='home'>
+							<span class='glyphicon glyphicon-gift' />
+						</a>
+						<a class='navbar-brand' ui-sref='home'>
+							Box
+						</a>
+					</div>
+				</div>
+				<div class='col-xs-4'>
+					<user-menu user='session'></user-menu>
+				</div>
+			</div>
+		</nav>
+
+		<div class='container-fluid'>
+			<ui-view></ui-view>
+		</div>
+
+		<div class='container-fluid text-center text-muted'>
+			<br>
+			<p>Box powered by <a href='http://nitlanguage.org'>nit</a>!</p>
+			<br>
+		</div>
+
+		<script src='https://code.jquery.com/jquery-1.12.4.min.js'
+			integrity='sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ='
+			crossorigin='anonymous''></script>
+
+		<script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js'
+			integrity='sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS'
+			crossorigin='anonymous'></script>
+
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.5/angular.min.js'></script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.3.1/angular-ui-router.min.js'></script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.5/angular-sanitize.js'></script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/angular-loading-bar/0.9.0/loading-bar.min.js'></script>
+	    <script src='https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/1.2.0/ui-bootstrap-tpls.min.js'></script>
+
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/diff2html/2.0.3/diff2html.min.js'></script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/diff2html/2.0.3/diff2html-ui.min.js'></script>
+
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.18.2/codemirror.min.js'></script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.18.2/addon/mode/simple.min.js'></script>
+		<script src='/vendors/codemirror/addons/matchbrackets.js'></script>
+		<script src='/vendors/codemirror/modes/clike.js'></script>
+		<script src='/vendors/codemirror/modes/pep8.js'></script>
+		<script src='/vendors/codemirror/modes/ocl.js'></script>
+		<script src='/vendors/codemirror/modes/markdown.js'></script>
+
+		<script src='/javascripts/ng-app.js'></script>
+		<script src='/javascripts/users.js'></script>
+		<script src='/javascripts/boxes.js'></script>
+		<script src='/javascripts/editor.js'></script>
+	</body>
+</html>
