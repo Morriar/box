@@ -109,7 +109,7 @@ body {
 /* CodeMirror */
 
 .CodeMirror {
-	height: 400px;
+	height: auto;
 }
 
 /* Alerts */
