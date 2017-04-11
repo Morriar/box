@@ -299,6 +299,59 @@ runtestcase() {
 
 # The main part of the script
 main() {
+	local cmd=$1
+
+	case "$cmd" in
+		help|"")
+			cat<<-END
+			boxme: check submission for programming exercices and competitions.
+
+			Usage: boxme [options] <command> [arguments]
+
+			Options:
+			  -p        only use the public information (no effect if no private information is available)
+			  -s <dir>  use dir as the source dir ('src/' by default)
+			  -o <dir>  use dir as the output dir ('out/ be default)
+			  -j <mode> set a jail mode:
+			     none      work in the current directory
+			     copy      create a work directory and copy files
+			     firejail  like copy but use firejail
+			  -v        be more verbose
+
+			Commands:
+			  help      display this help
+			  list      list all testcases
+			  status    the status of each testcases
+			  tests     execute all testcases
+			Advanced commands
+			  runone    simple wrapper to make runone
+			  saferun   run a command in a jail. see saferun()
+			END
+			exit 0
+			;;
+		list|status)
+			# TODO filter specific tests?
+			:
+			;;
+		tests)
+			# TODO filter specific tests?
+			test -e "$BOX_OUT" && rm -r "$BOX_OUT"
+			;;
+		saferun)
+			shift
+			saferun "$@"
+			exit "$?"
+			;;
+		runone)
+			saferun "$BOX_WORK" make -s runone IN="$2"
+			exit "$?"
+			;;
+		*)
+			echo 2>&1 "Unknown command $cmd. Use the command 'help'."
+			exit 1
+			;;
+	esac
+
 	prepare &&
 	build &&
 	check
@@ -345,58 +398,5 @@ while getopts ":ps:o:j:v" opt; do
 done
 shift $(($OPTIND - 1))
 
-# The entry-point of the script
-cmd=$1
-case "$cmd" in
-	help|"")
-		cat<<-END
-		boxme: check submission for programming exercices and competitions.
 
-		Usage: boxme [options] <command> [arguments]
-
-		Options:
-		  -p        only use the public information (no effect if no private information is available)
-		  -s <dir>  use dir as the source dir ('src/' by default)
-		  -o <dir>  use dir as the output dir ('out/ be default)
-		  -j <mode> set a jail mode:
-		              none      work in the current directory
-		              copy      create a work directory and copy files
-		              firejail  like copy but use firejail
-		  -v        be more verbose
-
-		Commands:
-		  help      display this help
-		  list      list all testcases
-		  status    the status of each testcases
-		  tests     execute all testcases
-		Advanced commands
-		  runone    simple wrapper to make runone
-		  saferun   run a command in a jail. see saferun()
-		END
-		exit 0
-		;;
-	list|status)
-		# TODO filter specific tests?
-		:
-		;;
-	tests)
-		# TODO filter specific tests?
-		test -e "$BOX_OUT" && rm -r "$BOX_OUT"
-		;;
-	saferun)
-		shift
-		saferun "$@"
-		exit "$?"
-		;;
-	runone)
-		saferun "$BOX_WORK" make -s runone IN="$2"
-		exit "$?"
-		;;
-
-	*)
-		echo 2>&1 "Unknown command $cmd. Use the command 'help'."
-		exit 1
-		;;
-esac
-
-main
+main "$@"
