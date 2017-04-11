@@ -322,9 +322,9 @@ status_line() {
 		echo "not run"
 		return
 	fi
-	local runs=`ls "$sub/out/tests/"*.cmd | wc -l`
-	local pass=`ls "$sub/out/tests/"*.pass | wc -l`
-	local fail=`ls "$sub/out/tests/"*.fail | wc -l`
+	local runs=`ls "$sub/out/tests/"*.cmd  2>/dev/null | wc -l`
+	local pass=`ls "$sub/out/tests/"*.pass 2>/dev/null | wc -l`
+	local fail=`ls "$sub/out/tests/"*.fail 2>/dev/null | wc -l`
 	echo "$runs run, $pass passed, $fail failed"
 }
 
