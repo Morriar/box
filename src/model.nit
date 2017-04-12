@@ -210,6 +210,12 @@ class Box
 		return make_cmd(command...)
 	end
 
+	# Execute a `boxme` command in the box path
+	fun boxme(command: String...): String do
+		command.prepend(["-C", path])
+		return boxme_cmd(command...)
+	end
+
 	# Get all the submissions for `self`
 	fun submissions: Array[Submission] do
 		var res = new Array[Submission]
@@ -494,6 +500,15 @@ end
 # Execute a make command and return the result
 fun make_cmd(command: String...): String do
 	var p = new ProcessReader("make", command...)
+	var res = p.read_all
+	p.close
+	p.wait
+	return res
+end
+
+# Execute a boxme command and return the result
+fun boxme_cmd(command: String...): String do
+	var p = new ProcessReader("boxme", command...)
 	var res = p.read_all
 	p.close
 	p.wait
