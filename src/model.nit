@@ -252,9 +252,14 @@ class Box
 		return submissions.last
 	end
 
-	# Check a submission
+	# Check a submission (run tests and return the results)
 	fun check_submission(submission: Submission): SubmissionResult do
 		boxme("sub", submission.id, "tests")
+		return status_submission(submission)
+	end
+
+	# Query the status of the submission (without running it)
+	fun status_submission(submission: Submission): SubmissionResult do
 		var out = path / "out/tests"
 		var tests = new HashMap[String, TestResult]
 		for file in out.files do
