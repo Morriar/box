@@ -27,7 +27,7 @@ end
 
 # Get the API authentificated user
 class APIUserAuth
-	super AuthHandler
+	super APIAuthHandler
 
 	redef fun get(req, res) do
 		var user = get_auth_user(req, res)

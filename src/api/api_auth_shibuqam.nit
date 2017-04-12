@@ -34,7 +34,7 @@ end
 
 # Shibboleth login handler
 class ShibLogin
-	super AuthLogin
+	super AuthHandler
 
 	redef fun get(req, res) do
 		store_next_page(req)
@@ -51,7 +51,7 @@ end
 
 # Shibboleth callback handler after authentification
 class ShibCallback
-	super AuthLogin
+	super AuthHandler
 
 	redef fun get(req, res) do
 		# Check if everything matches and get the code
@@ -92,7 +92,7 @@ class ShibCallback
 		user.name = shuser.display_name
 		user.avatar_url = shuser.avatar
 		session.user = user
-		redirect_after_login(req, res)
+		redirect_after_auth(req, res)
 	end
 
 	# Send the token, retrieve information

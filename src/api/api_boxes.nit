@@ -111,7 +111,7 @@ end
 #
 # GET: return the last submission
 class APIBoxSubmit
-	super AuthHandler
+	super APIAuthHandler
 	super APIBoxHandler
 
 	redef fun get(req, res) do
@@ -161,7 +161,7 @@ end
 #
 # GET: return the last submission
 class APIBoxUserSubmission
-	super AuthHandler
+	super APIAuthHandler
 	super APIBoxHandler
 
 	# Get the submission from `:sid`
@@ -218,7 +218,7 @@ end
 #
 # GET: get user submissions for a box
 class APIBoxUserSubmissions
-	super AuthHandler
+	super APIAuthHandler
 	super APIBoxHandler
 
 	redef fun get(req, res) do
@@ -234,7 +234,7 @@ end
 #
 # GET: get user boxes
 class APIUserBoxes
-	super AuthHandler
+	super APIAuthHandler
 	super APIBoxHandler
 
 	redef fun get(req, res) do
@@ -248,7 +248,7 @@ end
 #
 # GET: get user submissions
 class APIUserSubmissions
-	super AuthHandler
+	super APIAuthHandler
 	super APIBoxHandler
 
 	redef fun get(req, res) do

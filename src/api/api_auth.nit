@@ -27,7 +27,7 @@ class AuthRouter
 
 	init do
 		super
-		use("/logout", new Logout)
+		use("/logout", new Logout(config))
 	end
 end
 
@@ -56,22 +56,8 @@ class SessionRefresh
 	end
 end
 
-# Logout handler
-#
-# Basically write `null` in `req.session`.
-# Redefine it if you need to do more.
-class Logout
-	super Handler
-	redef fun get(req, res) do
-		var session = req.session
-		if session == null then return
-		session.user = null
-		res.redirect "/"
-	end
-end
-
-# Common services related to authentication/login.
-abstract class AuthLogin
+# Authentification related handler
+abstract class AuthHandler
 	super Handler
 
 	# App config
@@ -91,14 +77,31 @@ abstract class AuthLogin
 
 	# Redirect to the `next` page.
 	#
-	# Helper method to use at the end of the login attempt.
-	fun redirect_after_login(req: HttpRequest, res: HttpResponse) do
+	# Helper method to use at the end of the logini/logout attempt.
+	fun redirect_after_auth(req: HttpRequest, res: HttpResponse) do
 		var session = req.session
 		if session == null then return
 
-		var next = session.auth_next or else "/player"
+		var next = session.auth_next or else "/"
 		session.auth_next = null
 		res.redirect next
+	end
+end
+
+# Logout handler
+#
+# Basically write `null` in `req.session`.
+# Redefine it if you need to do more.
+class Logout
+	super AuthHandler
+
+	redef fun get(req, res) do
+		var session = req.session
+		if session == null then return
+		session.user = null
+
+		store_next_page(req)
+		redirect_after_auth(req, res)
 	end
 end
 
@@ -107,7 +110,7 @@ end
 # Subclass this handler if you need to access the authentificated user.
 #
 # See `AuthHandler::get_auth_user`
-abstract class AuthHandler
+abstract class APIAuthHandler
 	super APIHandler
 
 	# Get the authentification user if any.
