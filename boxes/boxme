@@ -360,6 +360,7 @@ main() {
 			Advanced commands
 			  runone <in>      simple wrapper to make runone with an input file
 			  saferun <cmd>    run a command in a jail. see saferun()
+			  function <cmd>   run a boxme function (very advanced!)
 			END
 			exit 0
 			;;
@@ -378,6 +379,11 @@ main() {
 			;;
 		runone)
 			saferun "$BOX_WORK" make -s runone IN="$2"
+			return
+			;;
+		function)
+			shift
+			"$@"
 			return
 			;;
 		sub)
