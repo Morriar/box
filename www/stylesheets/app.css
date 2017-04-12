@@ -24,6 +24,10 @@ body {
 	margin-top: 70px;
 }
 
+a[ng-click] {
+	cursor: pointer;
+}
+
 /* Nav bar */
 
 .navbar-primary {

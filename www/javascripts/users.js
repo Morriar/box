@@ -23,6 +23,12 @@
 		.factory('Users', [ '$http', function($http) {
 			var apiUrl = '/api';
 			return {
+				login: function(redirectionUrl) {
+					window.location.replace('/auth/shib/login?next=' + redirectionUrl);
+				},
+				logout: function(redirectionUrl) {
+					window.location.replace('/auth/logout?next=' + redirectionUrl);
+				},
 				getAuth: function(cb, cbErr) {
 					$http.get(apiUrl + '/user')
 						.success(cb)
@@ -45,12 +51,11 @@
 
 		.controller('AuthCtrl', function(Errors, Users, $rootScope, $location) {
 			this.login = function() {
-				window.location.replace('/auth/shib/login?next=' + $location.absUrl());
+				Users.login($location.absUrl());
 			}
 
 			this.logout = function() {
-				$rootScope.session = null;
-				window.location.replace('/auth/logout');
+				Users.logout($location.absUrl());
 			}
 
 			Users.getAuth(function(data) {

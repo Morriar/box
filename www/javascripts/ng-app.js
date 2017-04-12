@@ -25,18 +25,6 @@
 		$anchorScroll.yOffset = 80;
 	}])
 
-	.run(function(Users, $rootScope, $state) {
-		$rootScope.$on('$stateChangeSuccess', function() {
-			if(!$rootScope.session) {
-				Users.getAuth(function(data) {
-					$rootScope.session = data;
-				}, function() {
-					 $state.go('home');
-				});
-			}
-		})
-	})
-
 	.config(function ($stateProvider, $locationProvider) {
 		$locationProvider.html5Mode(true);
 		$stateProvider
@@ -111,6 +99,21 @@
 				console.log(err);
 			}
 		}
+	})
+
+	.directive('panel403', function(Users, $location) {
+		return {
+			scope: {},
+			controller: function() {
+				this.login = function() {
+					Users.login($location.absUrl());
+				}
+			},
+			controllerAs: 'vm',
+			templateUrl: '/directives/403-panel.html',
+			restrict: 'E',
+			replace: true
+		};
 	})
 
 	.directive('panel404', function() {

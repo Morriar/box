@@ -42,7 +42,10 @@
 			</div>
 		</nav>
 
-		<div class='container-fluid'>
+		<div class='container' ng-if='!session'>
+			<panel-403 />
+		</div>
+		<div class='container-fluid' ng-if='session'>
 			<ui-view></ui-view>
 		</div>
 
