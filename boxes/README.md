@@ -15,10 +15,25 @@ A BOX is a directory with expected files.
 
 The root of the box should contains the following files and directory:
 
+* `box.ini` The box configuration file
+* `README.md` The box README file in Markdown format (optional)
 * `Makefile` A simple makefile to build the submission.
 * `tests` and `tests-private` The inputs and outputs of each tests
 * `src` The source (or the submission template)
 * `boxme.local.sh` The local configuration and overriding of the boxme. (optional)
+
+### Box configuration
+
+The `box.ini` file contains all the meta-data of the box.
+Only the existence of the file is required in order to determine that a directory
+is in fact a box.
+
+All the configuration options are optional:
+* `id`: box unique identifier (default is the box directory basename)
+* `owner`: user that own the box (default is `null`)
+* `active`: set `false` to refuse new submissions (default is `true`)
+* `closes_at`: timestamp until when the box accepts new submissions
+* `title`: pretty title for the HTML frontend (default is the box `id`)
 
 ### Makefile
 
