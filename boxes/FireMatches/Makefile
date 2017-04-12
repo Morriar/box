@@ -42,10 +42,10 @@ runone:
 	java -cp bin/ firematches.Main `cat "$(IN)"`
 
 check:
-	-../boxme tests
+	-boxme tests
 
 check-submission:
-	@../boxme -s $(SUB) -j copy tests
+	@boxme -s $(SUB) -j copy tests
 
 clean:
 	rm -rf bin/ out/

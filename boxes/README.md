@@ -2,6 +2,8 @@
 
 The `boxme` program provides an infrastructure to run and checks programs and user submissions in a controlled environment.
 
+In order to access the `boxme` program from anywhere, you must add the `boxes/` directory to your `PATH`.
+
 ## BOX and BOXME
 
 A BOX is a directory containing tests, configuration and other things used to validate a submission for a programming exercise or competition.

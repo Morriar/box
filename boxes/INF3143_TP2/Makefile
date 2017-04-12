@@ -27,10 +27,10 @@ runone:
 		| head -n 1 | cut -d: -f1
 
 check:
-	-../boxme tests
+	-boxme tests
 
 check-submission:
-	@../boxme -s $(SUB) -j copy tests
+	@boxme -s $(SUB) -j copy tests
 
 clean:
 	rm -rf bin/ out/
