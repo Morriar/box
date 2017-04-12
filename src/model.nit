@@ -262,11 +262,8 @@ class Box
 	fun status_submission(submission: Submission): SubmissionResult do
 		var out = path / "out/tests"
 		var tests = new HashMap[String, TestResult]
-		for file in out.files do
-			var test_name = file.strip_extension
-			if not tests.has_key(test_name) then
-				tests[test_name] = new TestResult(out, test_name)
-			end
+		for testfile in self.tests do
+			tests[testfile.name] = new TestResult(out, testfile.name)
 		end
 		return new SubmissionResult(tests.values.to_a)
 	end
