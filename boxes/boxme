@@ -15,6 +15,11 @@
 # * BOX_RUN_OUT the output basename for the current command metadata. (set by `run`)
 #   It is set by default to '$BOX_OUT/tests/$BOX_RUN_NAME'
 
+###############################################################################
+# Execution related functions.
+#
+# Execute some commands in a protected context and log the various results
+
 # This run a single command in a jailed work directory and log its results.
 #
 # $1 is the unique name of the command (used to read an produce metadata)
@@ -168,6 +173,12 @@ status() {
 	return 0
 }
 
+###############################################################################
+# Job related commands
+#
+# The following functions take care of the whole processing of a source or submission.
+# They prepare the tests and the working directory, building, executing testcases, etc.
+
 # Function called when the engine wants to setup the work directory.
 #
 # pwd is the root directory of the box.
@@ -302,6 +313,13 @@ runtestcase() {
 	fi
 }
 
+###############################################################################
+# Submission related functions
+#
+# A submission is represented as a directory "submissions/$name"
+#
+# Each submission group its own "src/" directory and its own "out/" for results and working directory.
+
 # List all submissions
 submissions() {
 	if ! test -d submissions/; then
@@ -353,7 +371,16 @@ list_users() {
 	ls -d submissions/* | sed -n 's|^submissions/[0-9]*_||p' | sort -u
 }
 
-# The main part of the script
+###############################################################################
+# Main program
+
+# The main function of the script
+#
+# This same function is used to manage the default "src/" directory, submissions and users.
+#
+# * base command just run on a single source
+# * submission commands recursively delegate to base commands
+# * user commands recursively delegate to submission commands
 main() {
 	local cmd=$1
 
