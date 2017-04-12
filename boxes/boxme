@@ -374,11 +374,11 @@ main() {
 		saferun)
 			shift
 			saferun "$@"
-			exit "$?"
+			return
 			;;
 		runone)
 			saferun "$BOX_WORK" make -s runone IN="$2"
-			exit "$?"
+			return
 			;;
 		sub)
 			shift
@@ -387,7 +387,7 @@ main() {
 				exit
 			fi
 			for sub in "$1" "submissions/$1"; do
-				if [ -d "$sub/src" ]; then
+				if [ -d "$sub" ]; then
 					shift
 					if [ -z "$1" ]; then
 						status_line "$sub"
@@ -396,7 +396,7 @@ main() {
 						export BOX_OUT=$sub/out
 						main "$@"
 					fi
-					exit
+					return
 				fi
 			done
 			for sub in submissions/*/; do
@@ -405,7 +405,7 @@ main() {
 				export BOX_OUT=$sub/out
 				main "$@"
 			done
-			exit
+			return
 			;;
 		*)
 			echo 2>&1 "Unknown command $cmd. Use the command 'help'."
