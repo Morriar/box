@@ -350,16 +350,16 @@ main() {
 			  -v        be more verbose
 
 			Commands:
-			  help      display this help
-			  list      list all testcases
-			  status    the status of each testcases
-			  tests     execute all testcases
-			  sub list  list all the submissions
-			  sub <commmand> execute the command on all the submissions
-			  sub <name> <commmand> execute the command on the named submission
+			  help             display this help
+			  list             list all testcases
+			  status           the status of each testcases
+			  tests            execute all testcases
+			  sub list         list all the submissions
+			  sub <cmd>        execute the command on all the submissions
+			  sub <name> <cmd> execute the command on the named submission
 			Advanced commands
-			  runone    simple wrapper to make runone
-			  saferun   run a command in a jail. see saferun()
+			  runone <in>      simple wrapper to make runone with an input file
+			  saferun <cmd>    run a command in a jail. see saferun()
 			END
 			exit 0
 			;;
