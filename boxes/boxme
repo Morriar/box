@@ -404,6 +404,7 @@ main() {
 			Commands:
 			  help             display this help
 			  list             list all testcases
+			  list-src         list files in the current source directory
 			  status           the status of each testcases
 			  tests            execute all testcases
 			  sub list         list all the submissions
@@ -419,6 +420,10 @@ main() {
 		list|status)
 			# TODO filter specific tests?
 			:
+			;;
+		list-src)
+			find "$BOX_SRC" -type f -print
+			return
 			;;
 		tests)
 			# TODO filter specific tests?
