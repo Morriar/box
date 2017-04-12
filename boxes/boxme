@@ -392,6 +392,7 @@ main() {
 			Usage: boxme [options] <command> [arguments]
 
 			Options:
+			  -C <dir>  change the directory to the given box
 			  -p        only use the public information (no effect if no private information is available)
 			  -s <dir>  use dir as the source dir ('src/' by default)
 			  -o <dir>  use dir as the output dir ('out/ be default)
@@ -510,8 +511,11 @@ if [ -f boxme.local.sh ]; then
 	. boxme.local.sh
 fi
 
-while getopts ":ps:o:j:v" opt; do
+while getopts ":C:ps:o:j:v" opt; do
 	case "$opt" in
+		C)
+			cd "$OPTARG" || exit
+			;;
 		p)
 			export BOX_PUBLIC=yes
 			;;
