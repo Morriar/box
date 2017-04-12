@@ -19,18 +19,12 @@ all:
 files:
 	@find src/farstar -type f -print
 
-list_tests:
-	@ls -1 tests/*.in
-
 runone:
-	-java -javaagent:src/cofoja.asm-1.3-20160207.jar -cp bin/ tests_contracts.`cat $(IN)` 2>&1 \
+	java -javaagent:src/cofoja.asm-1.3-20160207.jar -cp bin/ tests_contracts.`cat $(IN)` 2>&1 \
 		| head -n 1 | cut -d: -f1
 
 check:
-	-boxme tests
-
-check-submission:
-	@boxme -s $(SUB) -j copy tests
+	boxme tests
 
 clean:
 	rm -rf bin/ out/

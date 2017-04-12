@@ -35,17 +35,11 @@ all:
 files:
 	@find src/firematches -type f -print
 
-list_tests:
-	@ls -1 tests/*.in
-
 runone:
 	java -cp bin/ firematches.Main `cat "$(IN)"`
 
 check:
-	-boxme tests
-
-check-submission:
-	@boxme -s $(SUB) -j copy tests
+	boxme tests
 
 clean:
 	rm -rf bin/ out/
