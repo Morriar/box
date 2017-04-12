@@ -328,6 +328,31 @@ status_line() {
 	echo "$runs run, $pass passed, $fail failed"
 }
 
+###############################################################################
+# User related functions
+#
+# Each user submissions is the directory "submissions/$timestamp_$user/".
+# If the submission is approuved, then the file "submissions/$timestamp_$users/APPROUVED" exists.
+#
+# Submissions that does not respect this convention are ignored by the following functions.
+
+# List the last approuved submission for the given user
+#
+# $1 is the name of the user
+user_approuved() {
+	for f in submissions/*_"$1"/APPROUVED; do
+		test -e "$f" || continue
+		local sub=`dirname "$f"`
+		local timestamp=`basename "$sub" "_$1"`
+		echo "$timestamp $sub"
+	done | sort -n | tail -1 | cut -f 2- -d " "
+}
+
+# List the users that submitted something
+list_users() {
+	ls -d submissions/* | sed -n 's|^submissions/[0-9]*_||p' | sort -u
+}
+
 # The main part of the script
 main() {
 	local cmd=$1
@@ -410,6 +435,23 @@ main() {
 				export BOX_SRC=$sub/src
 				export BOX_OUT=$sub/out
 				main "$@"
+			done
+			return
+			;;
+		user)
+			shift
+			if [ "$1" == "list" -o -z "$1" ]; then
+				list_users
+				return
+			fi
+			for user in `list_users`; do
+				sub=`user_approuved "$user"`
+				if [ -z "$sub" ]; then
+					echo "# $user: no approuval"
+				else
+					echo "# $user: $sub"
+					main sub "$sub" "$@"
+				fi
 			done
 			return
 			;;
