@@ -190,9 +190,9 @@ class Box
 	# List the box tests (only the name)
 	var tests: Array[TestFile] is lazy do
 		var tests = new Array[TestFile]
-		for line in box_make("list_tests").split("\n") do
+		for line in boxme("list").split("\n") do
 			if line.is_empty then continue
-			tests.add new TestFile(line.trim)
+			tests.add new TestFile(line.split_once_on(":").first.trim)
 		end
 		return tests
 	end
@@ -254,7 +254,7 @@ class Box
 
 	# Check a submission
 	fun check_submission(submission: Submission): SubmissionResult do
-		box_make("SUB=submissions/{submission.id}/src", "check-submission")
+		boxme("sub", submission.id, "tests")
 		var out = path / "out/tests"
 		var tests = new HashMap[String, TestResult]
 		for file in out.files do
