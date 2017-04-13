@@ -39,31 +39,31 @@
 		<br>
 	</div>
 
-	<div class='card' ng-if='vm.results'>
+	<div class='card' ng-if='vm.submission.status.is_runned'>
 		<div class='card-body bg-dark text-center' ng-class='{
-				 "bg-danger": !vm.results.is_passed,
-				 "bg-success": vm.results.is_passed
+				 "bg-danger": !vm.submission.status.is_passed,
+				 "bg-success": vm.submission.status.is_passed
 			}'>
-			<h1 ng-if='!vm.results.is_passed'>
+			<h1 ng-if='!vm.submission.status.is_passed'>
 				<b>ERROR</b>
 				<br/><br/>
 				<span class='glyphicon glyphicon-remove' />
 				<br/><br/>
 			</h1>
-			<h1 ng-if='vm.results.is_passed'>
+			<h1 ng-if='vm.submission.status.is_passed'>
 				<b>ALL TESTS PASSED</b>
 				<br/><br/>
 				<span class='glyphicon glyphicon-ok' />
 				<br/><br/>
 			</h1>
 			<p class='lead'>
-				{{vm.results.tests_passed}} / {{vm.box.public_tests}} tests passed
+				{{vm.submission.status.tests_passed}} / {{vm.box.public_tests}} tests passed
 			</p>
 		</div>
 	</div>
 
-	<div ng-if='vm.results'>
-		<test-panel ng-repeat='result in vm.results.tests_results' test='result' />
+	<div ng-if='vm.submission.status.is_runned'>
+		<test-panel ng-repeat='result in vm.submission.status.tests_results' test='result' />
 		<br>
 	</div>
 
@@ -87,10 +87,10 @@
 						</div>
 					</div>
 					<br>
-					<div ng-if='!vm.results' class='text-danger'>
+					<div ng-if='!vm.submission.status.is_runned' class='text-danger'>
 						<p>You should not submit your work until you have tested it.</p>
 					</div>
-					<div ng-if='vm.results && !vm.results.passed' class='text-danger'>
+					<div ng-if='!vm.submission.status.is_passed' class='text-danger'>
 						<p>You should not submit your work until it passes all the public tests.</p>
 					</div>
 					<div ng-if='vm.submission.is_approuved' class='text-warning'>

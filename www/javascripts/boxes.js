@@ -100,7 +100,8 @@
 							return d.promise;
 						}
 					},
-					controller: function(submissions) {
+					controller: function(box, submissions) {
+						this.box = box;
 						this.submissions = submissions;
 					},
 					controllerAs: 'vm',
@@ -180,7 +181,7 @@
 			vm.checkSubmission = function() {
 				$('#pendingModal').modal({backdrop: 'static'});
 				Boxes.checkSubmission(vm.box.id, vm.submission, function(data) {
-					vm.results = data;
+					vm.submission.status = data;
 					setTimeout(function() {
 						$('#pendingModal').modal('hide');
 						$anchorScroll('submit');
