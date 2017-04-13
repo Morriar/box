@@ -273,7 +273,7 @@ explode_tests() {
 # You might redefine this function but it is often better to implement the build in the Makefile.
 build() {
 	if test -f $BOX_WORK/Makefile; then
-		run "make" "make"
+		run "make" "make" "--no-print-directory"
 	fi
 }
 
@@ -316,7 +316,7 @@ check() {
 #     run "$1" src/hello.sh $(cat "$2")
 runtestcase() {
 	if [ -e "Makefile" ]; then
-		run "$1" make -s runone IN="$2"
+		run "$1" make --no-print-directory -s runone IN="$2"
 	else
 		echo "FatalError: runone not implemented" >&2
 		return 1
