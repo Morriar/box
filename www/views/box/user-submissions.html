@@ -4,19 +4,36 @@
 		<small>{{vm.submissions.length}} submissions</small>
 	</h3>
 
-	<ul ng-if='vm.submissions && vm.submissions.length > 0'>
+	<ul class='list-unstyled' ng-if='vm.submissions && vm.submissions.length > 0'>
 		<li ng-repeat='sub in vm.submissions'>
-			Box
-			<a ui-sref='root.box.submission({bId: sub.box_id, sId: sub.id})'>{{sub.box_id}}</a>
-			@
-			{{sub.timestamp | date:'longDate'}} {{sub.timestamp | date:'mediumTime'}}
-			<span ng-if='sub.is_approuved'>(approuved)</span>
+			<span ng-if='!sub.status.is_runned'>
+				<span class='text-muted glyphicon glyphicon-minus' title='NOT RUNNED' />
+			</span>
+			<span ng-if='sub.status.is_runned && sub.status.is_passed'>
+				<span class='text-success glyphicon glyphicon-ok' title='SUCCESS' />
+			</span>
+			<span ng-if='sub.status.is_runned && !sub.status.is_passed'>
+				<span class='text-danger glyphicon glyphicon-remove' title='FAILURE' />
+			</span>
+
+			<a ui-sref='root.box.submission({bId: sub.box_id, sId: sub.id})'>
+				Submission @
+				{{sub.timestamp | date:'longDate'}} {{sub.timestamp | date:'mediumTime'}}
+			</a>
+			<span ng-if='sub.status.is_runned && !sub.status.is_passed'>
+				|
+				<b class='text-danger'>
+					{{sub.status.tests_passed}} / {{sub.status.tests_results.length}} tests passed
+				</b>
+			</span>
+			<span ng-if='sub.is_approuved'>
+				| <b class='text-success'>APPROUVED</b>
+			</span>
 		</li>
 	</ul>
 
 	<div ng-if='!vm.submissions || vm.submissions.length == 0'>
 		<p>Nothing to show here.</p>
-
-		<p>Maybe you should <a ui-sref='root.home'>submit some work</a>?</p>
+		<p>Maybe you should <a ui-sref='root.box.submit({bId: vm.box.id})'>submit some work</a>?</p>
 	</div>
 </div>
