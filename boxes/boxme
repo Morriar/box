@@ -286,6 +286,11 @@ check() {
 	for testdir in $BOX_TEST_DIRS; do
 		for i in $testdir/*.in; do
 			local name=$(basename "$i" .in)
+			if [ "$cmd" = "list-tests" ]; then
+				# Shortcut the list-test
+				echo "$name $i"
+				continue
+			fi
 			runtestcase "$name" "$i"
 		done
 	done
@@ -421,7 +426,7 @@ main() {
 			  function <cmd>   run a boxme function (very advanced!)
 			Plumbing commands (intended to be used by scripts and tools)
 			  list-src         list files in the current source directory
-			  list-tests       list only the names of the testcases
+			  list-tests       list the name and the optional input file of each testcases
 			END
 			exit 0
 			;;
