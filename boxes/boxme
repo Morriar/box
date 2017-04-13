@@ -37,6 +37,11 @@ run() {
 	shift
 
 	# Special dry-up behavior if 'list' or 'status' commands are given.
+	if [ "$cmd" = "list-tests" ]; then
+		echo "$name"
+		return 0
+	fi
+
 	if [ "$cmd" = "list" ]; then
 		echo "$name: $*"
 		return 0
@@ -405,7 +410,6 @@ main() {
 			Commands:
 			  help             display this help
 			  list             list all testcases
-			  list-src         list files in the current source directory
 			  status           the status of each testcases
 			  tests            execute all testcases
 			  sub list         list all the submissions
@@ -415,10 +419,13 @@ main() {
 			  runone <in>      simple wrapper to make runone with an input file
 			  saferun <cmd>    run a command in a jail. see saferun()
 			  function <cmd>   run a boxme function (very advanced!)
+			Plumbing commands (intended to be used by scripts and tools)
+			  list-src         list files in the current source directory
+			  list-tests       list only the names of the testcases
 			END
 			exit 0
 			;;
-		list|status)
+		list|status|list-tests)
 			# TODO filter specific tests?
 			:
 			;;
