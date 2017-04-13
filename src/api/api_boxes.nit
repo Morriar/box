@@ -31,9 +31,6 @@ redef class APIRouter
 		use("/boxes/:bid/submit", new APIBoxSubmit(config, model))
 		use("/boxes/:bid/submissions", new APIBoxUserSubmissions(config, model))
 		use("/boxes/:bid/submissions/:sid", new APIBoxUserSubmission(config, model))
-
-		use("/user/boxes", new APIUserBoxes(config, model))
-		use("/user/submissions", new APIUserSubmissions(config, model))
 	end
 end
 
@@ -244,34 +241,6 @@ class APIBoxUserSubmissions
 		var box = get_box(req, res)
 		if box == null then return
 		res.json new JsonArray.from(box.user_submissions(user))
-	end
-end
-
-# Logged user boxes handler
-#
-# GET: get user boxes
-class APIUserBoxes
-	super APIAuthHandler
-	super APIBoxHandler
-
-	redef fun get(req, res) do
-		var user = get_auth_user(req, res)
-		if user == null then return
-		res.json new JsonArray.from(user.boxes(model))
-	end
-end
-
-# Logged user submissions
-#
-# GET: get user submissions
-class APIUserSubmissions
-	super APIAuthHandler
-	super APIBoxHandler
-
-	redef fun get(req, res) do
-		var user = get_auth_user(req, res)
-		if user == null then return
-		res.json new JsonArray.from(user.submissions(model))
 	end
 end
 

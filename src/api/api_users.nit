@@ -17,11 +17,14 @@ module api_users
 
 import model
 import api::api_auth
+import api::api_boxes
 
 redef class APIRouter
 	redef init do
 		super
 		use("/user", new APIUserAuth(config, model))
+		use("/user/boxes", new APIUserBoxes(config, model))
+		use("/user/submissions", new APIUserSubmissions(config, model))
 	end
 end
 
@@ -34,5 +37,33 @@ class APIUserAuth
 		if user == null then return
 		user.admin = user.is_admin(config)
 		res.json user
+	end
+end
+
+# Logged user boxes handler
+#
+# GET: get user boxes
+class APIUserBoxes
+	super APIAuthHandler
+	super APIBoxHandler
+
+	redef fun get(req, res) do
+		var user = get_auth_user(req, res)
+		if user == null then return
+		res.json new JsonArray.from(user.boxes(model))
+	end
+end
+
+# Logged user submissions
+#
+# GET: get user submissions
+class APIUserSubmissions
+	super APIAuthHandler
+	super APIBoxHandler
+
+	redef fun get(req, res) do
+		var user = get_auth_user(req, res)
+		if user == null then return
+		res.json new JsonArray.from(user.submissions(model))
 	end
 end
