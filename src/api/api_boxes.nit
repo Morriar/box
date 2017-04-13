@@ -144,10 +144,10 @@ class APIBoxSubmit
 		if user == null then return
 		var box = get_box(req, res)
 		if box == null then return
-		var submission_form = deserialize_submission(req, res)
-		if submission_form == null then return
+		var sub_form = deserialize_submission(req, res)
+		if sub_form == null then return
 
-		var submission = new Submission(box, user.id, submission_form.files)
+		var submission = new Submission(box, user.id, sub_form.files, sub_form.teammate)
 		res.json submission.check
 	end
 
@@ -165,7 +165,10 @@ class APIBoxSubmit
 		var sub_form = deserialize_submission(req, res)
 		if sub_form == null then return
 
-		var submission = new Submission(box, user.id, sub_form.files, sub_form.teamate)
+		var submission = box.last_submission(user)
+		submission.teammate = sub_form.teammate
+		submission.files = sub_form.files
+		submission.save_files
 		res.json submission.approuve
 	end
 end
@@ -214,14 +217,14 @@ class APIBoxUserSubmission
 		if user == null then return
 		var submission = get_submission(req, res)
 		if submission == null then return
-		var submission_form = deserialize_submission(req, res)
-		if submission_form == null then return
+		var sub_form = deserialize_submission(req, res)
+		if sub_form == null then return
 
 		if submission == box.last_submission(user) then
-			submission.files = submission_form.files
+			submission.files = sub_form.files
 			submission.save_files
 		else
-			submission = new Submission(box, user.id, submission_form.files)
+			submission = new Submission(box, user.id, sub_form.files, sub_form.teammate)
 		end
 		res.json submission
 	end
@@ -250,6 +253,6 @@ class SubmissionForm
 	# Source code to be run
 	var files: Array[SourceFile]
 
-	# Teamate student code if ant
-	var teamate: nullable String
+	# Teammate student code if ant
+	var teammate: nullable String
 end

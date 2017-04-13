@@ -364,8 +364,8 @@ class Submission
 	# Submitted files
 	var files: Array[SourceFile] is writable
 
-	# Teamate student code if any
-	var teamate: nullable String
+	# Teammate student code if any
+	var teammate: nullable String is writable
 
 	# Submission path
 	var path: String is lazy do return box.path / "submissions" / id
@@ -404,25 +404,18 @@ class Submission
 
 	# Check a submission (run tests and return the results)
 	fun check: SubmissionResult do
-		box.boxme("sub", id, "tests")
+		box.boxme("-p", "sub", id, "tests")
 		return status
 	end
 
 	# Query the status of the submission (without running it)
-	fun status: SubmissionResult do
-		var out = box.path / "out/tests"
-		var tests = new HashMap[String, TestResult]
-		for testfile in box.tests do
-			tests[testfile.name] = new TestResult(out, testfile.name)
-		end
-		return new SubmissionResult(tests.values.to_a)
-	end
+	fun status: SubmissionResult do return new SubmissionResult(self)
 
 	# Approuve this submission
 	fun approuve: SubmissionResult do
 		var signoff = user
-		var teamate = self.teamate
-		if teamate != null then signoff = "{signoff} teamate: {teamate}"
+		var teammate = self.teammate
+		if teammate != null then signoff = "{signoff} teammate: {teammate}"
 		signoff.write_to_file(path / "APPROUVED")
 		return status
 	end
@@ -444,10 +437,11 @@ class Submission
 		v.serialize_attribute("box_id", box.id)
 		v.serialize_attribute("user", user)
 		v.serialize_attribute("files", files)
-		v.serialize_attribute("teamate", teamate)
+		v.serialize_attribute("teammate", teammate)
 		v.serialize_attribute("timestamp", timestamp)
 		v.serialize_attribute("id", id)
 		v.serialize_attribute("is_approuved", is_approuved)
+		v.serialize_attribute("status", status)
 	end
 end
 
@@ -493,8 +487,20 @@ class SubmissionResult
 	super Jsonable
 	serialize
 
+	# Submission these results belong to
+	var submission: Submission is noserialize
+
+	# Path to the submission results
+	var path: String is lazy, noserialize do return submission.path / "out/tests"
+
 	# List of executed tests
-	var tests_results: Array[TestResult]
+	var tests_results: Array[TestResult] is lazy do
+		var tests = new HashMap[String, TestResult]
+		for testfile in submission.box.public_tests do
+			tests[testfile.name] = new TestResult(path, testfile.name)
+		end
+		return tests.values.to_a
+	end
 
 	# Count of passed tests
 	var tests_passed: Int is lazy do
@@ -513,6 +519,9 @@ class SubmissionResult
 		end
 		return res
 	end
+
+	# Is the submission runned?
+	var is_runned: Bool is lazy do return path.file_exists
 
 	# Has this submission passed all the tests?
 	var is_passed: Bool is lazy do return tests_failed == 0
