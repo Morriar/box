@@ -18,6 +18,35 @@
 	angular
 		.module('users', [])
 
+		/* Router */
+
+		.config(function ($stateProvider, $locationProvider) {
+			$locationProvider.html5Mode(true);
+			$stateProvider
+				.state({
+					name: 'user',
+					url: '/user',
+					controller: function($scope, $state) {},
+					controllerAs: 'vm',
+					templateUrl: '/views/user.html',
+					abstract: true
+				})
+				.state({
+					name: 'user.boxes',
+					url: '/boxes',
+					controller: 'UserBoxesCtrl',
+					controllerAs: 'vm',
+					templateUrl: '/views/user/boxes.html',
+				})
+				.state({
+					name: 'user.submissions',
+					url: '/submissions',
+					controller: 'UserSubmissionsCtrl',
+					controllerAs: 'vm',
+					templateUrl: '/views/user/submissions.html',
+				})
+		})
+
 		/* Model */
 
 		.factory('Users', [ '$http', function($http) {
