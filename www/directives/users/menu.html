@@ -1,7 +1,7 @@
 <ul class='nav navbar-nav navbar-right'>
 	<li ng-if='!vm.session'>
 		<a ng-click='vm.login()'>
-			<span class='glyphicon glyphicon-user' /> Login with UQÀM
+			{{ 'LOGIN' | translate }}
 		</a>
 	</li>
 	<li class='dropdown' ng-if='vm.session'>
@@ -13,18 +13,21 @@
 		<ul class='dropdown-menu dropdown-menu-right'>
 			<li>
 				<a ui-sref='root.user.boxes()'>
-					<span class='glyphicon glyphicon-gift' /> My boxes
+					<span class='glyphicon glyphicon-gift' />&nbsp;&nbsp;
+					{{ 'MY_BOXES' | translate }}
 				</a>
 			</li>
 			<li>
 				<a ui-sref='root.user.submissions()'>
-					<span class='glyphicon glyphicon-cloud-upload' /> My submissions
+					<span class='glyphicon glyphicon-cloud-upload' />&nbsp;&nbsp;
+					{{ 'MY_SUBMISSIONS' | translate }}
 				</a>
 			</li>
 			<li role='separator' class='divider'></li>
 			<li>
 				<a ng-click='vm.logout()'>
-					<span class='glyphicon glyphicon-log-out' /> Logout
+					<span class='glyphicon glyphicon-log-out' />&nbsp;&nbsp;
+					{{ 'LOGOUT' | translate }}
 				</a>
 			</li>
 		</ul>

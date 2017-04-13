@@ -11,11 +11,12 @@
 			</h3>
 			<div class='collapse in' id='test_{{vm.test.name}}'>
 				<div ng-if='vm.test.in_path'>
-					<b>Input</b>
+					<b>{{ 'INPUT' | translate }}</b>
 					<pre><code>{{vm.test.in_file}}</code></pre>
 				</div>
+				<br>
 				<div ng-if='vm.test.res_path'>
-					<b>Expected output</b>
+					<b>{{ 'EXPECTED_OUTPUT' | translate }}</b>
 					<pre><code>{{vm.test.res_file}}</code></pre>
 				</div>
 			</div>

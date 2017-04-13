@@ -1,10 +1,12 @@
 <div>
-	<h3>My boxes</h3>
+	<h3>{{ 'MY_BOXES' | translate }}
+		<small>{{vm.boxes.length}} {{ 'BOXES' | translate }}</small>
+	</h3>
 	<br>
 	<div ng-if='vm.boxes && vm.boxes.length > 0'>
 		<box-panel ng-repeat='box in vm.boxes' box-id='box._id' box='box' />
 	</div>
 	<div ng-if='!vm.boxes || vm.boxes.length == 0'>
-		<p>Nothing to show here.</p>
+		<p>{{ 'NOTHING_TO_SHOW' | translate }}</p>
 	</div>
 </div>

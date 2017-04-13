@@ -14,17 +14,17 @@
 			</h3>
 			<div class='collapse' id='test_{{vm.test.test_name}}' ng-class='{in: !vm.test.is_passed}'>
 				<p ng-if='!vm.test.is_passed' class='text-danger'>
-					<b>You failed this test!</b>
+					<b>{{ 'YOU_FAILED' | translate }}</b>
 				</p>
 				<p ng-if='vm.test.is_passed' class='text-success'>
-					<b>Congratulations, you passed this test!</b>
+					<b>{{ 'YOU_PASSED' | translate }}</b>
 				</p>
 				<div ng-if='vm.test.err'>
-					<b>Error</b>
+					<b class='text-capitalize'>{{ 'ERROR' | translate }}</b>
 					<pre><code>{{vm.test.err}}</code></pre>
 				</div>
 				<div ng-if='vm.test.out && !vm.test.diff'>
-					<b>Output</b>
+					<b>{{ 'YOUR_OUTPUT' | translate }}</b>
 					<pre><code>{{vm.test.out}}</code></pre>
 				</div>
 				<div ng-if='vm.test.diff'>

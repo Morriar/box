@@ -12,44 +12,43 @@
 		<div class='col-xs-6 nogutter text-right'>
 			<span class='text-muted'>
 				<span class='glyphicon glyphicon-eye-open' />&nbsp;&nbsp;
-				{{vm.box.public_tests}} public tests
+				{{vm.box.public_tests}} {{ 'PUBLIC_TESTS' | translate }}
 			</span>
 			<span class='text-muted'>
 				<br>
 				<span class='glyphicon glyphicon-eye-close' />&nbsp;&nbsp;
-				{{vm.box.private_tests}} private tests
+				{{vm.box.private_tests}} {{ 'PRIVATE_TESTS' | translate }}
 			</span>
 			<span ng-if='vm.box.is_active && vm.box.closes_at'>
 				<br>
 				<span class='text-danger'>
-					closes on {{vm.box.closes_at | date:'mediumDate'}}
-					at {{vm.box.closes_at | date:'shortTime'}}
+					{{ 'CLOSES_AT' | translate }} {{vm.box.closes_at | date:'short'}}
 				</span>
 			</span>
 			<span ng-if='!vm.box.is_active'>
 				<br>
-				<span class='text-danger'><b>BOX CLOSED</b></span>
+				<b class='text-danger'>{{ 'BOX_CLOSED' | translate }}</b>
 			</span>
 		</div>
 		<div class='col-xs-12 nogutter'>
 			<br>
 			<ul class='nav nav-pills'>
 				<li ui-sref-active='active'>
-					<a ui-sref='root.box.submit({ bid: vm.box.id })'>
+					<a ui-sref='root.box.submit({ bid: vm.box.id })' class='text-capitalize'>
 						<span class='glyphicon glyphicon-cloud-upload' />&nbsp;&nbsp;
-						Check & Submit
+						{{ 'CHECK_AND_SUBMIT' | translate }}
 					</a>
 				</li>
 				<li ui-sref-active='active'>
-					<a ui-sref='root.box.tests({ bid: vm.box.id })'>
+					<a ui-sref='root.box.tests({ bid: vm.box.id })' class='text-capitalize'>
 						<span class='glyphicon glyphicon-eye-open' />&nbsp;&nbsp;
-						Tests
+						{{ 'PUBLIC_TESTS' | translate }}
 					</a>
 				</li>
-				<li ui-sref-active='active' ng-if='vm.session'>
+				<li ui-sref-active='active' ng-if='vm.session' class='text-capitalize'>
 					<a ui-sref='root.box.submissions({ bid: vm.box._id })'>
 						<span class='glyphicon glyphicon-list' />&nbsp;&nbsp;
-						Submissions
+						{{ 'SUBMISSIONS' | translate }}
 					</a>
 				</li>
 			</ul>

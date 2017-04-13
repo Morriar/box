@@ -15,13 +15,19 @@
  */
 
 (function() {
-	angular.module('ng-app', ['ui.router', 'angular-loading-bar', 'ui.bootstrap', 'users', 'boxes'])
+	angular.module('ng-app', ['ui.router', 'angular-loading-bar', 'ui.bootstrap', 'pascalprecht.translate', 'users', 'boxes', 'lang'])
 
 	/* Config */
 
 	.config(['cfpLoadingBarProvider', function(cfpLoadingBarProvider) {
 		cfpLoadingBarProvider.includeSpinner = false;
 	}])
+
+	.config(function ($translateProvider) {
+		$translateProvider.useSanitizeValueStrategy(null);
+		$translateProvider.fallbackLanguage('en');
+		$translateProvider.preferredLanguage('en');
+	})
 
 	.run(['$anchorScroll', function($anchorScroll) {
 		$anchorScroll.yOffset = 80;
@@ -85,6 +91,25 @@
 	})
 
 	/* Directives */
+
+	.directive('selectLang', function() {
+		return {
+			scope: {},
+			controller: function($translate, $window) {
+				var locale = $window.navigator.language.split('-')[0];
+				var vm = this;
+				vm.currentLang = locale;
+				vm.select = function(lang) {
+					$translate.use(lang);
+					vm.currentLang = lang;
+				}
+			},
+			controllerAs: 'vm',
+			templateUrl: '/directives/select-lang.html',
+			restrict: 'E',
+			replace: true
+		};
+	})
 
 	.directive('panel403', function(Users, $location) {
 		return {

@@ -1,39 +1,41 @@
 <div class='container-fluid'>
 	<h3>
-		My submissions
-		<small>{{vm.submissions.length}} submissions</small>
+		{{ 'MY_SUBMISSIONS' | translate }}
+		<small>{{vm.submissions.length}} {{ 'SUBMISSIONS' | translate }}</small>
 	</h3>
 
 	<ul class='list-unstyled' ng-if='vm.submissions && vm.submissions.length > 0'>
 		<li ng-repeat='sub in vm.submissions'>
 			<span ng-if='!sub.status.is_runned'>
-				<span class='text-muted glyphicon glyphicon-minus' title='NOT RUNNED' />
+				<span class='text-muted glyphicon glyphicon-minus'
+					title='{{ "NOTRUNNED" | translate }}' />
 			</span>
 			<span ng-if='sub.status.is_runned && sub.status.is_passed'>
-				<span class='text-success glyphicon glyphicon-ok' title='SUCCESS' />
+				<span class='text-success glyphicon glyphicon-ok'
+					title='{{ "SUCCESS" | translate }}' />
 			</span>
 			<span ng-if='sub.status.is_runned && !sub.status.is_passed'>
-				<span class='text-danger glyphicon glyphicon-remove' title='FAILURE' />
+				<span class='text-danger glyphicon glyphicon-remove'
+					title='{{ "FAILURE" | translate }}' />
 			</span>
 
 			<a ui-sref='root.box.submission({bId: sub.box_id, sId: sub.id})'>
-				Submission @
+				<span class='text-capitalize'>{{ 'SUBMISSION' | translate }} @</span>
 				{{sub.timestamp | date:'longDate'}} {{sub.timestamp | date:'mediumTime'}}
 			</a>
 			<span ng-if='sub.status.is_runned && !sub.status.is_passed'>
 				|
 				<b class='text-danger'>
-					{{sub.status.tests_passed}} / {{sub.status.tests_results.length}} tests passed
+					{{sub.status.tests_passed}} / {{sub.status.tests_results.length}} {{ 'TESTS_PASSED' | translate }}
 				</b>
 			</span>
 			<span ng-if='sub.is_approuved'>
-				| <b class='text-success'>APPROUVED</b>
+				| <b class='text-success text-uppercase'>{{ 'APPROUVED' | translate }}</b>
 			</span>
 		</li>
 	</ul>
 
 	<div ng-if='!vm.submissions || vm.submissions.length == 0'>
-		<p>Nothing to show here.</p>
-		<p>Maybe you should <a ui-sref='root.box.submit({bId: vm.box.id})'>submit some work</a>?</p>
+		<p>{{ 'NOTHING_TO_SHOW' | translate }}</p>
 	</div>
 </div>
