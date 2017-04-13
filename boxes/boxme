@@ -462,7 +462,7 @@ main() {
 				submissions
 				exit
 			fi
-			for sub in "$1" "submissions/$1"; do
+			for sub in "submissions/$1"; do
 				if [ -d "$sub" ]; then
 					shift
 					if [ -z "$1" ]; then
@@ -491,6 +491,7 @@ main() {
 			fi
 			for user in `list_users`; do
 				sub=`user_approuved "$user"`
+				sub=`basename "$sub"`
 				if [ -z "$sub" ]; then
 					echo "# $user: no approuval"
 				else
