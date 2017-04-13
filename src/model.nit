@@ -451,7 +451,7 @@ class TestResult
 	serialize
 
 	# Test result base path
-	var path: String
+	var path: String is noserialize
 
 	# Test name
 	var test_name: String
