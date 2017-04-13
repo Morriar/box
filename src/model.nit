@@ -190,9 +190,9 @@ class Box
 	# List the box tests (only the name)
 	var tests: Array[TestFile] is lazy do
 		var tests = new Array[TestFile]
-		for line in box_make("list_tests").split("\n") do
+		for line in boxme("list").split("\n") do
 			if line.is_empty then continue
-			tests.add new TestFile(line.trim)
+			tests.add new TestFile(line.split_once_on(":").first.trim)
 		end
 		return tests
 	end
@@ -208,6 +208,12 @@ class Box
 	fun box_make(command: String...): String do
 		command.add_all(["-C", path, "--no-print-directory"])
 		return make_cmd(command...)
+	end
+
+	# Execute a `boxme` command in the box path
+	fun boxme(command: String...): String do
+		command.prepend(["-C", path])
+		return boxme_cmd(command...)
 	end
 
 	# Get all the submissions for `self`
@@ -246,16 +252,18 @@ class Box
 		return submissions.last
 	end
 
-	# Check a submission
+	# Check a submission (run tests and return the results)
 	fun check_submission(submission: Submission): SubmissionResult do
-		box_make("SUB=submissions/{submission.id}/src", "check-submission")
+		boxme("sub", submission.id, "tests")
+		return status_submission(submission)
+	end
+
+	# Query the status of the submission (without running it)
+	fun status_submission(submission: Submission): SubmissionResult do
 		var out = path / "out/tests"
 		var tests = new HashMap[String, TestResult]
-		for file in out.files do
-			var test_name = file.strip_extension
-			if not tests.has_key(test_name) then
-				tests[test_name] = new TestResult(out, test_name)
-			end
+		for testfile in self.tests do
+			tests[testfile.name] = new TestResult(out, testfile.name)
 		end
 		return new SubmissionResult(tests.values.to_a)
 	end
@@ -494,6 +502,15 @@ end
 # Execute a make command and return the result
 fun make_cmd(command: String...): String do
 	var p = new ProcessReader("make", command...)
+	var res = p.read_all
+	p.close
+	p.wait
+	return res
+end
+
+# Execute a boxme command and return the result
+fun boxme_cmd(command: String...): String do
+	var p = new ProcessReader("boxme", command...)
 	var res = p.read_all
 	p.close
 	p.wait

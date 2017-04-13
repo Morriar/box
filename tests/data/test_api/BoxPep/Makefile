@@ -22,9 +22,6 @@ all:
 files:
 	@echo "src/romcryption.pep"
 
-list_tests:
-	@ls -1 tests/*.in
-
 runone:
 	echo -n "" > bin/canned_command
 	echo "l" >> bin/canned_command
@@ -42,10 +39,7 @@ runone:
 	cat bin/out
 
 check:
-	-boxme tests
-
-check-submission:
-	@boxme -s $(SUB) -j copy tests
+	boxme tests
 
 clean:
 	rm -rf bin/ out/
