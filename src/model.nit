@@ -445,7 +445,6 @@ class Submission
 		v.serialize_attribute("user", user)
 		v.serialize_attribute("files", files)
 		v.serialize_attribute("teamate", teamate)
-		v.serialize_attribute("path", path)
 		v.serialize_attribute("timestamp", timestamp)
 		v.serialize_attribute("id", id)
 		v.serialize_attribute("is_approuved", is_approuved)
