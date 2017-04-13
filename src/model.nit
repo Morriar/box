@@ -422,11 +422,12 @@ class Submission
 	end
 
 	# Approuve this submission
-	fun approuve do
+	fun approuve: SubmissionResult do
 		var signoff = user
 		var teamate = self.teamate
 		if teamate != null then signoff = "{signoff} teamate: {teamate}"
 		signoff.write_to_file(path / "APPROUVED")
+		return status
 	end
 
 	# Create the submission working directory

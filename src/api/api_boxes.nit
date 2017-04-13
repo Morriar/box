@@ -166,8 +166,7 @@ class APIBoxSubmit
 		if sub_form == null then return
 
 		var submission = new Submission(box, user.id, sub_form.files, sub_form.teamate)
-		submission.approuve
-		res.json submission
+		res.json submission.approuve
 	end
 end
 
