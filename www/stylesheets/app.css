@@ -55,6 +55,11 @@ a[ng-click] {
 
 .progress { margin-bottom: 0 }
 
+.flag {
+	width: 20px;
+	height: 15px;
+}
+
 /* Btn */
 
 .btn-link.btn-muted { color: #777 }

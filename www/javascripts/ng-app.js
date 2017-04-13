@@ -25,7 +25,8 @@
 
 	.config(function ($translateProvider) {
 		$translateProvider.useSanitizeValueStrategy(null);
-		$translateProvider.preferredLanguage('fr');
+		$translateProvider.fallbackLanguage('en');
+		$translateProvider.preferredLanguage('en');
 	})
 
 	.run(['$anchorScroll', function($anchorScroll) {
@@ -90,6 +91,25 @@
 	})
 
 	/* Directives */
+
+	.directive('selectLang', function() {
+		return {
+			scope: {},
+			controller: function($translate, $window) {
+				var locale = $window.navigator.language.split('-')[0];
+				var vm = this;
+				vm.currentLang = locale;
+				vm.select = function(lang) {
+					$translate.use(lang);
+					vm.currentLang = lang;
+				}
+			},
+			controllerAs: 'vm',
+			templateUrl: '/directives/select-lang.html',
+			restrict: 'E',
+			replace: true
+		};
+	})
 
 	.directive('panel403', function(Users, $location) {
 		return {
