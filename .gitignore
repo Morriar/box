@@ -1,5 +1,6 @@
 bin/
 out/
+nit_compile/
 nitunit.xml
 nitunit.out
 *.swp
