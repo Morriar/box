@@ -4,3 +4,4 @@ nitunit.xml
 nitunit.out
 *.swp
 submissions/
+!tests/data/test_api/*/submissions/
