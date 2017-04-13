@@ -38,6 +38,11 @@
 						.success(cb)
 						.error(cbErr);
 				},
+				getBoxTests: function(bid, cb, cbErr) {
+					$http.get(apiUrl + '/boxes/' + bid + '/tests')
+						.success(cb)
+						.error(cbErr);
+				},
 				getSubmissions: function(bid, cb, cbErr) {
 					$http.get(apiUrl + '/boxes/' + bid + '/submissions')
 						.success(cb)
@@ -88,6 +93,14 @@
 
 			Boxes.getBox($stateParams.bId, function(data) {
 				vm.box = data;
+			}, Errors.handleError);
+		})
+
+		.controller('BoxTestsCtrl', function(Errors, Boxes, $stateParams) {
+			var vm = this;
+
+			Boxes.getBoxTests($stateParams.bId, function(data) {
+				vm.tests = data;
 			}, Errors.handleError);
 		})
 
@@ -188,6 +201,20 @@
 				restrict: 'E',
 				replace: true,
 				templateUrl: '/directives/boxes/test-panel.html'
+			};
+		})
+
+		.directive('testCard', function () {
+			return {
+				scope: {},
+				bindToController: {
+					test: '='
+				},
+				controller: function() {},
+				controllerAs: 'vm',
+				restrict: 'E',
+				replace: true,
+				templateUrl: '/directives/boxes/test-card.html'
 			};
 		})
 

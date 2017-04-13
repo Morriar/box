@@ -40,6 +40,12 @@
 						Check & Submit
 					</a>
 				</li>
+				<li ui-sref-active='active'>
+					<a ui-sref='box.tests({ bid: vm.box.id })'>
+						<span class='glyphicon glyphicon-eye-open' />&nbsp;&nbsp;
+						Tests
+					</a>
+				</li>
 				<li ui-sref-active='active' ng-if='session'>
 					<a ui-sref='box.submissions({ bid: vm.box._id })'>
 						<span class='glyphicon glyphicon-list' />&nbsp;&nbsp;

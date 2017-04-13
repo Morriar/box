@@ -51,6 +51,13 @@
 				templateUrl: '/views/box/submit.html'
 			})
 			.state({
+				name: 'box.tests',
+				url: '/tests',
+				controller: 'BoxTestsCtrl',
+				controllerAs: 'vm',
+				templateUrl: '/views/box/tests.html'
+			})
+			.state({
 				name: 'box.submission',
 				url: '/submission/{sId}',
 				controller: 'BoxSubmitCtrl',

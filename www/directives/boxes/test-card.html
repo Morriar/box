@@ -1,0 +1,24 @@
+<div>
+	<div class='card'>
+		<div class='card-left text-center bg-dark bg-warning'>
+			<h4><span class='glyphicon glyphicon-eye-open' /></h4>
+		</div>
+		<div class='card-body'>
+			<h3>
+				<a data-toggle='collapse' data-target='#test_{{vm.test.name}}' href='#' class='warning'>
+					{{vm.test.name}}
+				</a>
+			</h3>
+			<div class='collapse in' id='test_{{vm.test.name}}'>
+				<div ng-if='vm.test.in_path'>
+					<b>Input</b>
+					<pre><code>{{vm.test.in_file}}</code></pre>
+				</div>
+				<div ng-if='vm.test.res_path'>
+					<b>Expected output</b>
+					<pre><code>{{vm.test.res_file}}</code></pre>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
