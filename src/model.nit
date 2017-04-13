@@ -372,7 +372,10 @@ class Submission
 	serialize
 
 	# The box this submission belongs to
-	var box: Box
+	var box: Box is noserialize
+
+	# The box id this submission belongs to (serialized)
+	var box_id: String is lazy do return box.id
 
 	# The user who submitted
 	var user: String
