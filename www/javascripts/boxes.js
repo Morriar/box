@@ -197,7 +197,16 @@
 						return false;
 					}
 				}
+				if(!vm.submission.status.is_runned || !vm.submission.status.is_passed) {
+					$('#warningModal').modal();
+				} else {
+					vm.postSubmission();
+				}
+			};
+
+			vm.postSubmission = function() {
 				Boxes.sendSubmission(vm.box.id, vm.submission, function (data) {
+					$('#warningModal').modal('hide');
 					$('#submitModal').modal();
 				}, Errors.handleError);
 			};
