@@ -111,6 +111,18 @@ class TestAPIBox
 	fun test_api_box do run_test(app)
 end
 
+class TestAPIBoxTests
+	super TestAPI
+
+	redef fun client_test do
+		system "curl -s {host}:{port}/api/boxes/NOTFOUND"
+		system "curl -s {host}:{port}/api/boxes/dev:BoxNit/tests"
+		system "curl -s {host}:{port}/api/boxes/BoxPep/tests"
+	end
+
+	fun test_api_box_tests do run_test(app)
+end
+
 class TestAPIBoxSubmissions
 	super TestAPI
 

@@ -27,6 +27,7 @@ redef class APIRouter
 
 		use("/boxes/", new APIBoxes(config, model))
 		use("/boxes/:bid", new APIBox(config, model))
+		use("/boxes/:bid/tests", new APIBoxTests(config, model))
 		use("/boxes/:bid/submit", new APIBoxSubmit(config, model))
 		use("/boxes/:bid/submissions", new APIBoxUserSubmissions(config, model))
 		use("/boxes/:bid/submissions/:sid", new APIBoxUserSubmission(config, model))
@@ -104,6 +105,23 @@ class APIBox
 		var box = get_box(req, res)
 		if box == null then return
 		res.json box
+	end
+end
+
+# Box tests handler
+#
+# GET: return the box tests
+class APIBoxTests
+	super APIBoxHandler
+
+	redef fun get(req, res) do
+		var box = get_box(req, res)
+		if box == null then return
+
+		var obj = new JsonObject
+		obj["public"] = new JsonArray.from(box.public_tests)
+		# TODO add private test if the user is admin or box owner
+		res.json obj
 	end
 end
 

@@ -195,7 +195,7 @@ class Box
 			var parts = line.split_once_on(" ")
 			var name = parts.first
 			var path = if parts.length == 2 then parts.last.trim else null
-			tests.add new TestCase(name, path)
+			tests.add new TestCase(self, name, path)
 		end
 		return tests
 	end
@@ -308,6 +308,9 @@ class TestCase
 	super Jsonable
 	serialize
 
+	# Box this test belongs to
+	var box: Box is noserialize
+
 	# Test case name
 	var name: String
 
@@ -341,7 +344,7 @@ class TestCase
 	# If `path == null` then return null.
 	private fun load_file(path: nullable String): nullable String do
 		if path == null then return null
-		return path.to_path.read_all
+		return (box.path / path).to_path.read_all
 	end
 
 	redef fun ==(o) do return o isa TestCase and o.name == name
