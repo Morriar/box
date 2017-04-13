@@ -15,7 +15,9 @@
  */
 
 (function() {
-	angular.module('ng-app', ['ui.router', 'ngSanitize', 'angular-loading-bar', 'ui.bootstrap', 'users', 'boxes', 'editor'])
+	angular.module('ng-app', ['ui.router', 'angular-loading-bar', 'ui.bootstrap', 'users', 'boxes'])
+
+	/* Config */
 
 	.config(['cfpLoadingBarProvider', function(cfpLoadingBarProvider) {
 		cfpLoadingBarProvider.includeSpinner = false;
@@ -24,6 +26,8 @@
 	.run(['$anchorScroll', function($anchorScroll) {
 		$anchorScroll.yOffset = 80;
 	}])
+
+	/* Router */
 
 	.config(function ($stateProvider, $locationProvider) {
 		$locationProvider.html5Mode(true);
@@ -36,69 +40,13 @@
 				templateUrl: '/views/index.html'
 			})
 			.state({
-				name: 'box',
-				url: '/box/{bId}',
-				controller: 'BoxCtrl',
-				controllerAs: 'vm',
-				templateUrl: '/views/box.html',
-				abstract: true
-			})
-			.state({
-				name: 'box.submit',
-				url: '',
-				controller: 'BoxSubmitCtrl',
-				controllerAs: 'vm',
-				templateUrl: '/views/box/submit.html'
-			})
-			.state({
-				name: 'box.tests',
-				url: '/tests',
-				controller: 'BoxTestsCtrl',
-				controllerAs: 'vm',
-				templateUrl: '/views/box/tests.html'
-			})
-			.state({
-				name: 'box.submission',
-				url: '/submission/{sId}',
-				controller: 'BoxSubmitCtrl',
-				controllerAs: 'vm',
-				templateUrl: '/views/box/submit.html'
-			})
-			.state({
-				name: 'box.submissions',
-				url: '/submissions',
-				controller: 'BoxUserSubmissionsCtrl',
-				controllerAs: 'vm',
-				templateUrl: '/views/box/user-submissions.html'
-			})
-			.state({
-				name: 'user',
-				url: '/user',
-				controller: function($scope, $state) {},
-				controllerAs: 'vm',
-				templateUrl: '/views/user.html',
-				abstract: true
-			})
-			.state({
-				name: 'user.boxes',
-				url: '/boxes',
-				controller: 'UserBoxesCtrl',
-				controllerAs: 'vm',
-				templateUrl: '/views/user/boxes.html',
-			})
-			.state({
-				name: 'user.submissions',
-				url: '/submissions',
-				controller: 'UserSubmissionsCtrl',
-				controllerAs: 'vm',
-				templateUrl: '/views/user/submissions.html',
-			})
-			.state({
 				name: 'otherwise',
 				url: '*path',
 				template: '<panel404 />'
 			})
 	})
+
+	/* Model */
 
 	.factory('Errors', function($rootScope) {
 		return {
@@ -107,6 +55,20 @@
 			}
 		}
 	})
+
+	/* Controllers */
+
+	.controller('BoxesCtrl', function(Errors, Boxes) {
+		var vm = this;
+
+		this.search = function() {
+			Boxes.search(vm.searchString, function(data) {
+				vm.boxes = data;
+			}, Errors.handleError);
+		}
+	})
+
+	/* Directives */
 
 	.directive('panel403', function(Users, $location) {
 		return {

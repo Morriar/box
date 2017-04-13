@@ -16,7 +16,50 @@
 
 (function() {
 	angular
-		.module('boxes', [])
+		.module('boxes', ['ngSanitize', 'editor'])
+
+		/* Router */
+
+		.config(function ($stateProvider, $locationProvider) {
+			$locationProvider.html5Mode(true);
+			$stateProvider
+				.state({
+					name: 'box',
+					url: '/box/{bId}',
+					controller: 'BoxCtrl',
+					controllerAs: 'vm',
+					templateUrl: '/views/box.html',
+					abstract: true
+				})
+				.state({
+					name: 'box.submit',
+					url: '',
+					controller: 'BoxSubmitCtrl',
+					controllerAs: 'vm',
+					templateUrl: '/views/box/submit.html'
+				})
+				.state({
+					name: 'box.tests',
+					url: '/tests',
+					controller: 'BoxTestsCtrl',
+					controllerAs: 'vm',
+					templateUrl: '/views/box/tests.html'
+				})
+				.state({
+					name: 'box.submission',
+					url: '/submission/{sId}',
+					controller: 'BoxSubmitCtrl',
+					controllerAs: 'vm',
+					templateUrl: '/views/box/submit.html'
+				})
+				.state({
+					name: 'box.submissions',
+					url: '/submissions',
+					controller: 'BoxUserSubmissionsCtrl',
+					controllerAs: 'vm',
+					templateUrl: '/views/box/user-submissions.html'
+				})
+		})
 
 		/* Model */
 
@@ -77,16 +120,6 @@
 		}])
 
 		/* Controllers */
-
-		.controller('BoxesCtrl', function(Errors, Boxes) {
-			var vm = this;
-
-			this.search = function() {
-				Boxes.search(vm.searchString, function(data) {
-					vm.boxes = data;
-				}, Errors.handleError);
-			}
-		})
 
 		.controller('BoxCtrl', function(Errors, Boxes, $stateParams) {
 			var vm = this;
