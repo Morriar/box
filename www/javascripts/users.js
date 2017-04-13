@@ -34,16 +34,34 @@
 				.state({
 					name: 'user.boxes',
 					url: '/boxes',
-					controller: 'UserBoxesCtrl',
-					controllerAs: 'vm',
 					templateUrl: '/views/user/boxes.html',
+					resolve: {
+						boxes: function(Errors, Users, $q) {
+							var deferred = $q.defer();
+							Users.getBoxes(deferred.resolve, Errors.handleError);
+							return deferred.promise;
+						}
+					},
+					controller: function(boxes) {
+						this.boxes = boxes;
+					},
+					controllerAs: 'vm'
 				})
 				.state({
 					name: 'user.submissions',
 					url: '/submissions',
-					controller: 'UserSubmissionsCtrl',
-					controllerAs: 'vm',
 					templateUrl: '/views/user/submissions.html',
+					resolve: {
+						submissions: function(Errors, Users, $q) {
+							var deferred = $q.defer();
+							Users.getSubmissions(deferred.resolve, Errors.handleError);
+							return deferred.promise;
+						}
+					},
+					controller: function(submissions) {
+						this.submissions = submissions;
+					},
+					controllerAs: 'vm'
 				})
 		})
 
@@ -89,21 +107,6 @@
 
 			Users.getAuth(function(data) {
 				$rootScope.session = data;
-			}, Errors.handleError);
-		})
-
-		.controller('UserBoxesCtrl', function(Errors, Users, Boxes, $state) {
-			var vm = this;
-
-			Users.getBoxes(function(data) {
-				vm.boxes = data;
-			}, Errors.handleError);
-		})
-
-		.controller('UserSubmissionsCtrl', function(Errors, Users) {
-			var vm = this;
-			Users.getSubmissions(function(data) {
-				vm.submissions = data;
 			}, Errors.handleError);
 		})
 

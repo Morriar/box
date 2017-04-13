@@ -26,38 +26,84 @@
 				.state({
 					name: 'box',
 					url: '/box/{bId}',
-					controller: 'BoxCtrl',
-					controllerAs: 'vm',
 					templateUrl: '/views/box.html',
-					abstract: true
-				})
-				.state({
-					name: 'box.submit',
-					url: '',
-					controller: 'BoxSubmitCtrl',
+					resolve: {
+						box: function(Errors, Boxes, $q, $stateParams) {
+							var deferred = $q.defer();
+							Boxes.getBox($stateParams.bId, deferred.resolve, Errors.handleError);
+							return deferred.promise;
+						}
+					},
+					controller: function(box) {
+						this.box = box;
+					},
 					controllerAs: 'vm',
-					templateUrl: '/views/box/submit.html'
+					abstract: true
 				})
 				.state({
 					name: 'box.tests',
 					url: '/tests',
-					controller: 'BoxTestsCtrl',
-					controllerAs: 'vm',
-					templateUrl: '/views/box/tests.html'
+					templateUrl: '/views/box/tests.html',
+					resolve: {
+						tests: function(Errors, Boxes, $q, $stateParams) {
+							var deferred = $q.defer();
+							Boxes.getBoxTests($stateParams.bId,
+								deferred.resolve, Errors.handleError);
+							return deferred.promise;
+						}
+					},
+					controller: function(tests) {
+						this.tests = tests;
+					},
+					controllerAs: 'vm'
+				})
+				.state({
+					name: 'box.submit',
+					url: '',
+					templateUrl: '/views/box/submit.html',
+					resolve: {
+						submission: function(Errors, Boxes, $q, $stateParams) {
+							var deferred = $q.defer();
+							Boxes.lastSubmission($stateParams.bId,
+								deferred.resolve, Errors.handleError);
+							return deferred.promise;
+						}
+					},
+					controller: 'BoxSubmitCtrl',
+					controllerAs: 'vm'
 				})
 				.state({
 					name: 'box.submission',
 					url: '/submission/{sId}',
+					templateUrl: '/views/box/submit.html',
+					resolve: {
+						submission: function(Errors, Boxes, $q, $stateParams) {
+							var deferred = $q.defer();
+							Boxes.getSubmission($stateParams.bId, $stateParams.sId,
+								deferred.resolve, Errors.handleError);
+							return deferred.promise;
+						}
+					},
 					controller: 'BoxSubmitCtrl',
-					controllerAs: 'vm',
-					templateUrl: '/views/box/submit.html'
+					controllerAs: 'vm'
 				})
 				.state({
 					name: 'box.submissions',
 					url: '/submissions',
-					controller: 'BoxUserSubmissionsCtrl',
+					templateUrl: '/views/box/user-submissions.html',
+					resolve: {
+						submissions: function(Errors, Boxes, $q, $stateParams) {
+							var deferred = $q.defer();
+							Boxes.getSubmissions($stateParams.bId,
+								deferred.resolve, Errors.handleError);
+							return deferred.promise;
+						}
+					},
+					controller: function(submissions) {
+						this.submissions = submissions;
+					},
 					controllerAs: 'vm',
-					templateUrl: '/views/box/user-submissions.html'
+
 				})
 		})
 
@@ -121,34 +167,18 @@
 
 		/* Controllers */
 
-		.controller('BoxCtrl', function(Errors, Boxes, $stateParams) {
-			var vm = this;
-
-			Boxes.getBox($stateParams.bId, function(data) {
-				vm.box = data;
-			}, Errors.handleError);
-		})
-
-		.controller('BoxTestsCtrl', function(Errors, Boxes, $stateParams) {
-			var vm = this;
-
-			Boxes.getBoxTests($stateParams.bId, function(data) {
-				vm.tests = data;
-			}, Errors.handleError);
-		})
-
-		.controller('BoxSubmitCtrl', function(Errors, Boxes, $scope, $stateParams, $anchorScroll) {
+		.controller('BoxSubmitCtrl', function(Errors, Boxes, $scope, $anchorScroll, box, submission) {
 			var vm = this;
 
 			$scope.$on('code-change', function(event, file) {
 				Boxes.saveSubmission(
-					$stateParams.bId, vm.submission.id, vm.submission, function(data) {
+					vm.box.id, vm.submission.id, vm.submission, function(data) {
 				}, Errors.handleError);
 			})
 
 			vm.checkSubmission = function() {
 				$('#pendingModal').modal({backdrop: 'static'});
-				Boxes.checkSubmission($stateParams.bId, vm.submission, function(data) {
+				Boxes.checkSubmission(vm.box.id, vm.submission, function(data) {
 					vm.results = data;
 					setTimeout(function() {
 						$('#pendingModal').modal('hide');
@@ -165,32 +195,13 @@
 						return false;
 					}
 				}
-				Boxes.sendSubmission($stateParams.bId, vm.submission, function (data) {
+				Boxes.sendSubmission(vm.box.id, vm.submission, function (data) {
 					$('#submitModal').modal();
 				}, Errors.handleError);
 			};
 
-			Boxes.getBox($stateParams.bId, function(data) {
-				vm.box = data;
-			}, Errors.handleError);
-
-			if($stateParams.sId) {
-				Boxes.getSubmission($stateParams.bId, $stateParams.sId, function(data) {
-					vm.submission = data;
-				}, Errors.handleError);
-			} else {
-				Boxes.lastSubmission($stateParams.bId, function(data) {
-					vm.submission = data;
-				}, Errors.handleError);
-			}
-		})
-
-		.controller('BoxUserSubmissionsCtrl', function(Errors, Boxes, $stateParams) {
-			var vm = this;
-
-			Boxes.getSubmissions($stateParams.bId, function(data) {
-				vm.submissions = data;
-			}, Errors.handleError);
+			vm.box = box;
+			vm.submission = submission;
 		})
 
 		/* Directives */
