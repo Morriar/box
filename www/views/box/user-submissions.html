@@ -7,7 +7,7 @@
 	<ul ng-if='vm.submissions && vm.submissions.length > 0'>
 		<li ng-repeat='sub in vm.submissions'>
 			Box
-			<a ui-sref='box.submission({bId: sub.box_id, sId: sub.id})'>{{sub.box_id}}</a>
+			<a ui-sref='root.box.submission({bId: sub.box_id, sId: sub.id})'>{{sub.box_id}}</a>
 			@
 			{{sub.timestamp | date:'longDate'}} {{sub.timestamp | date:'mediumTime'}}
 			<span ng-if='sub.is_approuved'>(approuved)</span>
@@ -17,6 +17,6 @@
 	<div ng-if='!vm.submissions || vm.submissions.length == 0'>
 		<p>Nothing to show here.</p>
 
-		<p>Maybe you should <a ui-sref='home'>submit some work</a>?</p>
+		<p>Maybe you should <a ui-sref='root.home'>submit some work</a>?</p>
 	</div>
 </div>

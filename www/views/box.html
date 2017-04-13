@@ -35,19 +35,19 @@
 			<br>
 			<ul class='nav nav-pills'>
 				<li ui-sref-active='active'>
-					<a ui-sref='box.submit({ bid: vm.box.id })'>
+					<a ui-sref='root.box.submit({ bid: vm.box.id })'>
 						<span class='glyphicon glyphicon-cloud-upload' />&nbsp;&nbsp;
 						Check & Submit
 					</a>
 				</li>
 				<li ui-sref-active='active'>
-					<a ui-sref='box.tests({ bid: vm.box.id })'>
+					<a ui-sref='root.box.tests({ bid: vm.box.id })'>
 						<span class='glyphicon glyphicon-eye-open' />&nbsp;&nbsp;
 						Tests
 					</a>
 				</li>
-				<li ui-sref-active='active' ng-if='session'>
-					<a ui-sref='box.submissions({ bid: vm.box._id })'>
+				<li ui-sref-active='active' ng-if='vm.session'>
+					<a ui-sref='root.box.submissions({ bid: vm.box._id })'>
 						<span class='glyphicon glyphicon-list' />&nbsp;&nbsp;
 						Submissions
 					</a>

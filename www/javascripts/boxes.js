@@ -24,32 +24,33 @@
 			$locationProvider.html5Mode(true);
 			$stateProvider
 				.state({
-					name: 'box',
+					name: 'root.box',
 					url: '/box/{bId}',
 					templateUrl: '/views/box.html',
 					resolve: {
-						box: function(Errors, Boxes, $q, $stateParams) {
-							var deferred = $q.defer();
-							Boxes.getBox($stateParams.bId, deferred.resolve, Errors.handleError);
-							return deferred.promise;
+						box: function(Boxes, $q, $stateParams) {
+							var d = $q.defer();
+							Boxes.getBox($stateParams.bId, d.resolve, function() {d.resolve()});
+							return d.promise;
 						}
 					},
-					controller: function(box) {
+					controller: function(session, box) {
+						this.session = session;
 						this.box = box;
 					},
 					controllerAs: 'vm',
 					abstract: true
 				})
 				.state({
-					name: 'box.tests',
+					name: 'root.box.tests',
 					url: '/tests',
 					templateUrl: '/views/box/tests.html',
 					resolve: {
-						tests: function(Errors, Boxes, $q, $stateParams) {
-							var deferred = $q.defer();
+						tests: function(Boxes, $q, $stateParams) {
+							var d = $q.defer();
 							Boxes.getBoxTests($stateParams.bId,
-								deferred.resolve, Errors.handleError);
-							return deferred.promise;
+								d.resolve, function() {d.resolve()});
+							return d.promise;
 						}
 					},
 					controller: function(tests) {
@@ -58,45 +59,45 @@
 					controllerAs: 'vm'
 				})
 				.state({
-					name: 'box.submit',
+					name: 'root.box.submit',
 					url: '',
 					templateUrl: '/views/box/submit.html',
 					resolve: {
-						submission: function(Errors, Boxes, $q, $stateParams) {
-							var deferred = $q.defer();
+						submission: function(Boxes, $q, $stateParams) {
+							var d = $q.defer();
 							Boxes.lastSubmission($stateParams.bId,
-								deferred.resolve, Errors.handleError);
-							return deferred.promise;
+								d.resolve, function() {d.resolve()});
+							return d.promise;
 						}
 					},
 					controller: 'BoxSubmitCtrl',
 					controllerAs: 'vm'
 				})
 				.state({
-					name: 'box.submission',
+					name: 'root.box.submission',
 					url: '/submission/{sId}',
 					templateUrl: '/views/box/submit.html',
 					resolve: {
-						submission: function(Errors, Boxes, $q, $stateParams) {
-							var deferred = $q.defer();
+						submission: function(Boxes, $q, $stateParams) {
+							var d = $q.defer();
 							Boxes.getSubmission($stateParams.bId, $stateParams.sId,
-								deferred.resolve, Errors.handleError);
-							return deferred.promise;
+								d.resolve, function() {d.resolve()});
+							return d.promise;
 						}
 					},
 					controller: 'BoxSubmitCtrl',
 					controllerAs: 'vm'
 				})
 				.state({
-					name: 'box.submissions',
+					name: 'root.box.submissions',
 					url: '/submissions',
 					templateUrl: '/views/box/user-submissions.html',
 					resolve: {
-						submissions: function(Errors, Boxes, $q, $stateParams) {
-							var deferred = $q.defer();
+						submissions: function(Boxes, $q, $stateParams) {
+							var d = $q.defer();
 							Boxes.getSubmissions($stateParams.bId,
-								deferred.resolve, Errors.handleError);
-							return deferred.promise;
+								d.resolve, function() {d.resolve()});
+							return d.promise;
 						}
 					},
 					controller: function(submissions) {
@@ -167,7 +168,7 @@
 
 		/* Controllers */
 
-		.controller('BoxSubmitCtrl', function(Errors, Boxes, $scope, $anchorScroll, box, submission) {
+		.controller('BoxSubmitCtrl', function(Errors, Boxes, $scope, $anchorScroll, session, box, submission) {
 			var vm = this;
 
 			$scope.$on('code-change', function(event, file) {
@@ -200,6 +201,7 @@
 				}, Errors.handleError);
 			};
 
+			vm.session = session;
 			vm.box = box;
 			vm.submission = submission;
 		})

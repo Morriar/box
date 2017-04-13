@@ -1,23 +1,23 @@
 <ul class='nav navbar-nav navbar-right'>
-	<li ng-if='vm && !session'>
+	<li ng-if='!vm.session'>
 		<a ng-click='vm.login()'>
 			<span class='glyphicon glyphicon-user' /> Login with UQÀM
 		</a>
 	</li>
-	<li class='dropdown' ng-if='session'>
+	<li class='dropdown' ng-if='vm.session'>
 		<a class='btn btn-link dropdown-toggle' type='button' data-toggle='dropdown'>
-			{{session.name ? session.name : session.id}}
-			<span ng-if='session.admin'>(admin)</span>
-			<img class='avatar avatar-icon' ng-src='{{session.avatar_url}}' />
+			{{vm.session.name ? vm.session.name : vm.session.id}}
+			<span ng-if='vm.session.admin'>(admin)</span>
+			<img class='avatar avatar-icon' ng-src='{{vm.session.avatar_url}}' />
 		</a>
 		<ul class='dropdown-menu dropdown-menu-right'>
 			<li>
-				<a ui-sref='user.boxes()'>
+				<a ui-sref='root.user.boxes()'>
 					<span class='glyphicon glyphicon-gift' /> My boxes
 				</a>
 			</li>
 			<li>
-				<a ui-sref='user.submissions()'>
+				<a ui-sref='root.user.submissions()'>
 					<span class='glyphicon glyphicon-cloud-upload' /> My submissions
 				</a>
 			</li>

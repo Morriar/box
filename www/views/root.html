@@ -1,0 +1,29 @@
+<div>
+	<nav class='navbar navbar-inverse navbar-primary navbar-fixed-top'>
+		<div class='container-fluid'>
+			<div class='col-xs-8'>
+				<div class='navbar-header dropdown'>
+					<a class='navbar-brand' ui-sref='root.home'>
+						<span class='glyphicon glyphicon-gift' />
+					</a>
+					<a class='navbar-brand' ui-sref='root.home'>
+						Box
+					</a>
+				</div>
+			</div>
+			<div class='col-xs-4'>
+				<user-menu session='vm.session'></user-menu>
+			</div>
+		</div>
+	</nav>
+
+	<div class='container-fluid'>
+		<ui-view></ui-view>
+	</div>
+
+	<div class='container-fluid text-center text-muted'>
+		<br>
+		<p>Box powered by <a href='http://nitlanguage.org'>nit</a>!</p>
+		<br>
+	</div>
+</div>

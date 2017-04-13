@@ -5,7 +5,11 @@
 		<br>
 	</div>
 
-	<div ng-if='vm.submission.files'>
+	<div class='container' ng-if='!vm.session'>
+		<panel-403 />
+	</div>
+
+	<div ng-if='vm.session && vm.submission.files'>
 		<h4>1 - Write the code</h4>
 		<div class='card card-code'>
 			<code-editor files='vm.submission.files' />
@@ -13,7 +17,7 @@
 		<br>
 	</div>
 
-	<div ng-if='session.id' id='submit'>
+	<div id='submit' ng-if='vm.session'>
 		<h4>2 - Try your work</h4>
 		<div class='card'>
 			<div class='card-left bg-dark bg-primary text-center'>
@@ -63,7 +67,7 @@
 		<br>
 	</div>
 
-	<div ng-if='session.id && vm.box.is_active'>
+	<div ng-if='vm.session && vm.box.is_active'>
 		<h4>3 - Send your work to the professor</h4>
 		<div class='card'>
 			<form ng-submit='vm.sendSubmission()'>
@@ -72,7 +76,7 @@
 				</div>
 				<div class='card-body'>
 					<h4>Submit your work</h4>
-					<p>Your work will be deposed as <b>{{session.id}}</b>.</p>
+					<p>Your work will be deposed as <b>{{vm.session.id}}</b>.</p>
 					<div class='form-inline'>
 						<div class='form-group' ng-class='{"has-error": vm.submitErrors.teammate}'>
 							<label for='teammate'>Add a teammate:</label>

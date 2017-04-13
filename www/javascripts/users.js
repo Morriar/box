@@ -24,22 +24,24 @@
 			$locationProvider.html5Mode(true);
 			$stateProvider
 				.state({
-					name: 'user',
+					name: 'root.user',
 					url: '/user',
-					controller: function($scope, $state) {},
+					controller: function(session) {
+						this.session = session;
+					},
 					controllerAs: 'vm',
 					templateUrl: '/views/user.html',
 					abstract: true
 				})
 				.state({
-					name: 'user.boxes',
+					name: 'root.user.boxes',
 					url: '/boxes',
 					templateUrl: '/views/user/boxes.html',
 					resolve: {
-						boxes: function(Errors, Users, $q) {
-							var deferred = $q.defer();
-							Users.getBoxes(deferred.resolve, Errors.handleError);
-							return deferred.promise;
+						boxes: function(Users, $q) {
+							var d = $q.defer();
+							Users.getBoxes(d.resolve, function() {d.resolve()});
+							return d.promise;
 						}
 					},
 					controller: function(boxes) {
@@ -48,14 +50,14 @@
 					controllerAs: 'vm'
 				})
 				.state({
-					name: 'user.submissions',
+					name: 'root.user.submissions',
 					url: '/submissions',
 					templateUrl: '/views/user/submissions.html',
 					resolve: {
-						submissions: function(Errors, Users, $q) {
-							var deferred = $q.defer();
-							Users.getSubmissions(deferred.resolve, Errors.handleError);
-							return deferred.promise;
+						submissions: function(Users, $q) {
+							var d = $q.defer();
+							Users.getSubmissions(d.resolve, function() {d.resolve()});
+							return d.promise;
 						}
 					},
 					controller: function(submissions) {
@@ -67,7 +69,7 @@
 
 		/* Model */
 
-		.factory('Users', [ '$http', function($http) {
+		.factory('Users', function(Errors, $http) {
 			var apiUrl = '/api';
 			return {
 				login: function(redirectionUrl) {
@@ -92,11 +94,11 @@
 						.error(cbErr);
 				}
 			}
-		}])
+		})
 
 		/* Controllers */
 
-		.controller('AuthCtrl', function(Errors, Users, $rootScope, $location) {
+		.controller('AuthCtrl', function(Users, $location) {
 			this.login = function() {
 				Users.login($location.absUrl());
 			}
@@ -104,16 +106,16 @@
 			this.logout = function() {
 				Users.logout($location.absUrl());
 			}
-
-			Users.getAuth(function(data) {
-				$rootScope.session = data;
-			}, Errors.handleError);
 		})
 
 		/* Directives */
 
-		.directive('userMenu', function(Errors, $rootScope) {
+		.directive('userMenu', function() {
 			return {
+				scope: {},
+				bindToController: {
+					session: '=?'
+				},
 				controller: 'AuthCtrl',
 				controllerAs: 'vm',
 				templateUrl: '/directives/users/menu.html',

@@ -33,14 +33,30 @@
 		$locationProvider.html5Mode(true);
 		$stateProvider
 			.state({
-				name: 'home',
+				name: 'root',
+				abstract: true,
+				resolve: {
+					session: function(Errors, Users, $q) {
+						var d = $q.defer();
+						Users.getAuth(d.resolve, function () { d.resolve(null) });
+						return d.promise;
+					}
+				},
+				controller: function(session) {
+					this.session = session;
+				},
+				controllerAs: 'vm',
+				templateUrl: '/views/root.html'
+			})
+			.state({
+				name: 'root.home',
 				url: '/',
 				controller: 'BoxesCtrl',
 				controllerAs: 'vm',
 				templateUrl: '/views/index.html'
 			})
 			.state({
-				name: 'otherwise',
+				name: 'root.otherwise',
 				url: '*path',
 				template: '<panel404 />'
 			})
@@ -48,7 +64,7 @@
 
 	/* Model */
 
-	.factory('Errors', function($rootScope) {
+	.factory('Errors', function() {
 		return {
 			handleError: function(err) {
 				console.log(err);
