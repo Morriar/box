@@ -6,13 +6,18 @@
 		<div class='col-xs-6 nogutter'>
 			<h3>
 				{{vm.box.title}}
-				<small>{{vm.box.id}}</small>
+				<small ng-if='vm.box.title != vm.box.id'>{{vm.box.id}}</small>
 			</h3>
 		</div>
 		<div class='col-xs-6 nogutter text-right'>
 			<span class='text-muted'>
 				<span class='glyphicon glyphicon-eye-open' />&nbsp;&nbsp;
-				{{vm.box.tests.length}} tests
+				{{vm.box.public_tests}} public tests
+			</span>
+			<span class='text-muted'>
+				<br>
+				<span class='glyphicon glyphicon-eye-close' />&nbsp;&nbsp;
+				{{vm.box.private_tests}} private tests
 			</span>
 			<span ng-if='vm.box.is_active && vm.box.closes_at'>
 				<br>

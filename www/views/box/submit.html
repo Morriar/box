@@ -21,7 +21,9 @@
 			</div>
 			<div class='card-body'>
 				<h4>Check your work</h4>
-				<p>Your work will be tested against <b>{{vm.box.tests.length}}</b> public tests.</p>
+				<p>
+					Your work will be tested against <b>{{vm.box.public_tests}}</b> public tests.
+				</p>
 				<br>
 				<p class='text-center'>
 					<button class='btn btn-success btn-lg' ng-click='vm.checkSubmission()'>
@@ -51,7 +53,7 @@
 				<br/><br/>
 			</h1>
 			<p class='lead'>
-				{{vm.results.tests_passed}} / {{vm.box.tests.length}} tests passed
+				{{vm.results.tests_passed}} / {{vm.box.public_tests}} tests passed
 			</p>
 		</div>
 	</div>
