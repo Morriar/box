@@ -15,13 +15,18 @@
  */
 
 (function() {
-	angular.module('ng-app', ['ui.router', 'angular-loading-bar', 'ui.bootstrap', 'users', 'boxes'])
+	angular.module('ng-app', ['ui.router', 'angular-loading-bar', 'ui.bootstrap', 'pascalprecht.translate', 'users', 'boxes', 'lang'])
 
 	/* Config */
 
 	.config(['cfpLoadingBarProvider', function(cfpLoadingBarProvider) {
 		cfpLoadingBarProvider.includeSpinner = false;
 	}])
+
+	.config(function ($translateProvider) {
+		$translateProvider.useSanitizeValueStrategy(null);
+		$translateProvider.preferredLanguage('fr');
+	})
 
 	.run(['$anchorScroll', function($anchorScroll) {
 		$anchorScroll.yOffset = 80;

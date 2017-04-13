@@ -9,17 +9,19 @@
 		<h4><a ui-sref='root.box.submit({ bId: vm.box.id })'>{{vm.box.id}}</a></h4>
 		<p class='text-muted'>
 			<span class='text-muted'>
-				{{vm.box.public_tests}} public tests
+				{{vm.box.public_tests}} {{ 'PUBLIC_TESTS' | translate }}
 				|
-				{{vm.box.private_tests}} private tests
+				{{vm.box.private_tests}} {{ 'PRIVATE_TESTS' | translate }}
 			</span>
 			<span ng-if='vm.box.is_active && vm.box.closes_at'>
 				|
-				<span class='text-danger'>closes at {{vm.box.closes_at | date : "short"}}</span>
+				<span class='text-danger'>
+					{{ 'CLOSES_AT' | translate }} {{vm.box.closes_at | date : "short"}}
+				</span>
 			</span>
 			<span ng-if='!vm.box.is_active'>
 				|
-				<span class='text-danger'>box closed</span>
+				<b class='text-danger'>{{ 'BOX_CLOSED' | translate }}</b>
 			</span>
 		</p>
 	</div>

@@ -1,14 +1,14 @@
 <div class='container'>
-	<h1>Welcome to MozBox!</h1>
+	<h1>{{ 'WELCOME' | translate }}</h1>
 	<br>
 
-	<p>Select a box to submit your work:</p>
+	<p>{{ 'SEARCH_BOX' | translate }}</p>
 	<form ng-submit='vm.search()'>
 		<div class='input-group'>
 			<input id='search' type='text' class='form-control' ng-model='vm.searchString'
-				placeholder='Search a box by its id or professor code'>
+				placeholder='{{ "SEARCH_BY" | translate }}'>
 			<span class='input-group-btn'>
-				<button class='btn btn-primary' type='button' ng-click='vm.search()'>
+				<button class='btn btn-primary' type='submit'>
 					<span class='glyphicon glyphicon-search' />
 				</button>
 			</span>
@@ -16,7 +16,7 @@
 	</form>
 	<br>
 	<div ng-if='vm.boxes && vm.boxes.length == 0'>
-		<p class='text-warning'><i>Nothing found for your query...</i></p>
+		<p class='text-warning'><i>{{ 'SEARCH_NO_RESULTS' | translate }}</i></p>
 	</div>
 	<div ng-if='vm.boxes && vm.boxes.length > 0'>
 		<box-list boxes='vm.boxes' />

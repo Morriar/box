@@ -1,21 +1,19 @@
 <div>
 	<h3>
-		My submissions
-		<small>{{vm.submissions.length}} submissions</small>
+	<h3>{{ 'MY_SUBMISSIONS' | translate }}
+		<small>{{vm.submissions.length}} {{ 'SUBMISSIONS' | translate }}</small>
 	</h3>
 	<ul ng-if='vm.submissions && vm.submissions.length > 0'>
 		<li ng-repeat='sub in vm.submissions'>
-			Box
+			{{ 'BOX' | translate }}
 			<a ui-sref='root.box.submission({bId: sub.box_id, sId: sub.id})'>{{sub.box_id}}</a>
 			@
 			{{sub.timestamp | date:'longDate'}} {{sub.timestamp | date:'mediumTime'}}
-			<span ng-if='sub.is_approuved'>(approuved)</span>
+			<span ng-if='sub.is_approuved'>({{ 'APPROUVED' | translate }})</span>
 		</li>
 	</ul>
 
 	<div ng-if='!vm.submissions || vm.submissions.length == 0'>
-		<p>Nothing to show here.</p>
-
-		<p>Maybe you should <a ui-sref='root.home'>submit some work</a>?</p>
+		<p>{{ 'NOTHING_TO_SHOW' | translate }}</p>
 	</div>
 </div>

@@ -1,8 +1,8 @@
 <div class='container-fluid'>
 	<div ng-if='vm.tests.public || vm.tests.public.length == 0'>
 		<h3>
-			Public tests
-			<small>{{vm.tests.public.length}} test cases</small>
+			<span class='text-capitalize'>{{ 'PUBLIC_TESTS' | translate }}</span>
+			<small>{{vm.tests.public.length}} {{ 'TEST_CASES' | translate }}</small>
 		</h3>
 		<test-card ng-repeat='test in vm.tests.public' test='test' />
 	</div>

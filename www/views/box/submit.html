@@ -10,7 +10,7 @@
 	</div>
 
 	<div ng-if='vm.session && vm.submission.files'>
-		<h4>1 - Write the code</h4>
+		<h4>1 - {{ 'WRITE_THE_CODE' | translate }}</h4>
 		<div class='card card-code'>
 			<code-editor files='vm.submission.files' />
 		</div>
@@ -18,20 +18,20 @@
 	</div>
 
 	<div id='submit' ng-if='vm.session'>
-		<h4>2 - Try your work</h4>
 		<div class='card'>
 			<div class='card-left bg-dark bg-primary text-center'>
 				<span class='glyphicon glyphicon-check' />
 			</div>
 			<div class='card-body'>
-				<h4>Check your work</h4>
+				<h4>2 - {{ 'TRY_YOUR_WORK' | translate }}</h4>
 				<p>
-					Your work will be tested against <b>{{vm.box.public_tests}}</b> public tests.
+					{{ 'TESTED_AGAINST' | translate }}
+					<b>{{vm.box.public_tests}}</b> {{ 'PUBLIC_TESTS' | translate }}
 				</p>
 				<br>
 				<p class='text-center'>
 					<button class='btn btn-success btn-lg' ng-click='vm.checkSubmission()'>
-						<span class='glyphicon glyphicon-check' /> Check my work
+						<span class='glyphicon glyphicon-check' /> {{ 'CHECK_MY_WORK' | translate }}
 					</button>
 				</p>
 			</div>
@@ -45,19 +45,20 @@
 				 "bg-success": vm.submission.status.is_passed
 			}'>
 			<h1 ng-if='!vm.submission.status.is_passed'>
-				<b>ERROR</b>
+				<b>{{ 'ERROR' | translate }}</b>
 				<br/><br/>
 				<span class='glyphicon glyphicon-remove' />
 				<br/><br/>
 			</h1>
 			<h1 ng-if='vm.submission.status.is_passed'>
-				<b>ALL TESTS PASSED</b>
+				<b>{{ 'SUCCESS' | translate }}</b>
 				<br/><br/>
 				<span class='glyphicon glyphicon-ok' />
 				<br/><br/>
 			</h1>
 			<p class='lead'>
-				{{vm.submission.status.tests_passed}} / {{vm.box.public_tests}} tests passed
+				{{vm.submission.status.tests_passed}} / {{vm.box.public_tests}}
+				{{ 'TESTS_PASSED' | translate }}
 			</p>
 		</div>
 	</div>
@@ -68,37 +69,40 @@
 	</div>
 
 	<div ng-if='vm.session && vm.box.is_active'>
-		<h4>3 - Send your work to the professor</h4>
 		<div class='card'>
 			<form ng-submit='vm.sendSubmission()'>
 				<div class='card-left bg-dark bg-primary text-center'>
 					<span class='glyphicon glyphicon-cloud-upload' />
 				</div>
 				<div class='card-body'>
-					<h4>Submit your work</h4>
-					<p>Your work will be deposed as <b>{{vm.session.id}}</b>.</p>
+					<h4>3 - {{ 'SEND_YOUR_WORK' | translate }}</h4>
+					<p>{{ 'DEPOSED_AS' | translate }} <b>{{vm.session.id}}</b>.</p>
 					<div class='form-inline'>
 						<div class='form-group' ng-class='{"has-error": vm.submitErrors.teammate}'>
-							<label for='teammate'>Add a teammate:</label>
+							<label for='teammate'>{{ 'ADD_TEAMMATE' | translate }}</label>
 							<input type='text' class='form-control' id='teammate' placeholder='CODE12345678' ng-model='vm.submission.teammate'>
 							<span class='help-block' ng-if='vm.submitErrors.teammate'>
-								{{vm.submitErrors.teammate}}
+								{{ 'TEAMMATE_ERROR' | translate }}
 							</span>
 						</div>
 					</div>
 					<br>
 					<div ng-if='!vm.submission.status.is_runned' class='text-danger'>
-						<p>You should not submit your work until you have tested it.</p>
+						<p>{{ 'WARN_UNCHECKED' | translate }}</p>
 					</div>
 					<div ng-if='!vm.submission.status.is_passed' class='text-danger'>
-						<p>You should not submit your work until it passes all the public tests.</p>
+						<p>{{ 'WARN_FAILURE' | translate }}</p>
 					</div>
 					<div ng-if='vm.submission.is_approuved' class='text-warning'>
-						<p>Only your last submission will be evaluated by the professor.</p>
+						<p>{{ 'WARN_LAST' | translate }}</p>
 					</div>
-				</div>
-				<div class='card-footer text-right'>
-					<input type='submit' value='Submit work' class='btn btn-primary' />
+					<br>
+					<p class='text-center'>
+						<button class='btn btn-success btn-lg' type='submit'>
+							<span class='glyphicon glyphicon-check' />
+							{{ 'SEND_MY_WORK' | translate }}
+						</button>
+					</p>
 				</div>
 			</form>
 		</div>
@@ -110,13 +114,13 @@
 		<div class='modal-dialog'>
 			<div class='modal-content bg-dark bg-warning'>
 				<div class='modal-body text-center'>
-					<h1>Pending...</h1>
+					<h1>{{ 'PENDING' | translate }}</h1>
 					<br>
 					<br>
 					<h1><span class='glyphicon glyphicon-refresh rotate' /></h1>
 					<br>
 					<br>
-					<p class='lead'>Testing your submission...</p>
+					<p class='lead'>{{ 'TESTING_YOUR_SUBMISSION' | translate }}</p>
 				</div>
 			</div>
 		</div>
@@ -128,30 +132,34 @@
 					<button type='button' class='close' data-dismiss='modal'>
 						<span>&times;</span>
 					</button>
-					<h4 class='modal-title'>Submission success</h4>
 				</div>
 				<div class='modal-body text-center'>
-					<h1 class='text-danger'>Warning!</h1>
+					<h1 class='text-danger' ng-if='!vm.submission.status.is_runned'>
+						{{ 'NOTRUNNED' | translate }}
+					</h1>
+					<h1 class='text-danger' ng-if='vm.submission.status.is_runned && !vm.submission.status.is_passed'>
+						{{ 'WARNING' | translate }}
+					</h1>
 					<br>
 					<br>
 					<h1><span class='text-danger glyphicon glyphicon-alert' /></h1>
 					<br>
 					<br>
 					<p class='lead' ng-if='!vm.submission.status.is_runned'>
-						You never checked this submission,<br>
-						are you sure you want to send it to the professor?
+						{{ 'WARN_UNCHECKED' | translate }}<br>
+						{{ 'ARE_YOU_SURE' | translate }}
 					</p>
 					<p class='lead' ng-if='vm.submission.status.is_runned && !vm.submission.status.is_passed'>
-						Your submission does not pass all the public tests,<br>
-						are you sure you want to send it to the professor?
+						{{ 'WARN_FAILURE' | translate }}<br>
+						{{ 'ARE_YOU_SURE' | translate }}
 					</p>
 				</div>
 				<div class='modal-footer'>
 					<button type='button' class='btn btn-default' data-dismiss='modal'>
-						Cancel
+						{{ 'CANCEL' | translate }}
 					</button>
 					<button type='button' class='btn btn-danger' ng-click='vm.postSubmission()'>
-						Send anyway
+						{{ 'SEND_ANYWAY' | translate }}
 					</button>
 				</div>
 			</div>
@@ -164,37 +172,35 @@
 					<button type='button' class='close' data-dismiss='modal'>
 						<span>&times;</span>
 					</button>
-					<h4 class='modal-title'>Submission success</h4>
 				</div>
 				<div class='modal-body'>
 					<div class='card'>
 						<div class='card-body bg-dark bg-success text-center'>
 							<span/>
 							<h1>
-								<b>SUBMISSION OK</b>
+								<b>{{ 'SUCCESS' | translate }}</b>
 								<br/><br/>
 								<span class='glyphicon glyphicon-ok' />
 								<br/><br/>
 							</h1>
-							<p class='lead'>You work has been sent to the professor for evaluation.</p>
+							<p class='lead'>{{ 'WORK_SENT' | translate }}</p>
 						</div>
 					</div>
 
 					<dl class='dl-horizontal'>
-						<dt>id</dt>
+						<dt>ID</dt>
 						<dd>{{vm.submission.id}}</dd>
-						<dt>user</dt>
+						<dt>{{ 'USER' | translate }}</dt>
 						<dd>{{vm.submission.user}}</dd>
-						<dt>teammate</dt>
+						<dt>{{ 'TEAMMATE' | translate }}</dt>
 						<dd>{{vm.submission.teammate}}</dd>
-						<dt>timestamp</dt>
-						<dd>{{vm.submission.timestamp | date:'mediumDate'}}
-							{{vm.submission.timestamp | date:'shortTime'}}</dd>
+						<dt>{{ 'TIMESTAMP' | translate }}</dt>
+						<dd>{{vm.submission.timestamp | date:'short'}}</dd>
 					</dl>
 				</div>
 				<div class='modal-footer'>
 					<button type='button' class='btn btn-default' data-dismiss='modal'>
-						Close
+						{{ 'CLOSE' | translate }}
 					</button>
 				</div>
 			</div>

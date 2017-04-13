@@ -1,15 +1,17 @@
 <div class='container'>
 	<div class='card'>
 		<div class='card-body text-center'>
+			<br/>
 			<h1>
-				Please login
+				{{ '403' | translate }}
 				<br/><br/>
 				<span class='glyphicon glyphicon-lock' />
 				<br/><br/>
 			</h1>
 			<p class='lead'>
-				You must be <a ng-click='vm.login()'>logged in</a> to check and submit your work.
+				<a ng-click='vm.login()'>{{ '403_HELP' | translate }}</a>
 			</p>
+			<br/>
 		</div>
 	</div>
 </div>
