@@ -131,6 +131,7 @@ class TestBox
 	fun test_list_public_tests do
 		var box = new Box("data/test_model/box4")
 		var tests = box.public_tests
+		print box.public_tests
 		assert tests.length == 3
 		assert tests[0].name == "make"
 		assert tests[0].in_path == null

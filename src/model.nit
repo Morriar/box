@@ -29,6 +29,13 @@ class Model
 	# Boxes by id
 	var boxes = new HashMap[String, Box]
 
+	# Get all the boxes
+	fun get_boxes: Array[Box] do
+		var res = new Array[Box].from(boxes.values)
+		(new BoxComparator).sort(res)
+		return res
+	end
+
 	# Get the box with `id` or `null`
 	fun get_box(id: String): nullable Box do
 		return boxes.get_or_null(id)
@@ -59,6 +66,8 @@ class Model
 	# 2 - try to match box where box.title == search
 	# 3 - try to find professor where user.id == search and return the list of active boxes
 	fun search_boxes(search: String): Array[Box] do
+		var sorter = new BoxComparator
+
 		var boxes = new Array[Box]
 		# Search box by id
 		var box = self.get_box(search)
@@ -69,12 +78,14 @@ class Model
 		for tbox in self.boxes.values do
 			if tbox.id.split(":").last == search then boxes.add tbox
 		end
+		sorter.sort(boxes)
 		if not boxes.is_empty then return boxes
 
 		# Lookup boxes by user id
 		for ubox in self.boxes.values do
 			if ubox.owner == search then boxes.add ubox
 		end
+		sorter.sort(boxes)
 		return boxes
 	end
 end
@@ -99,6 +110,7 @@ class User
 		for id, box in model.boxes do
 			if box.owner == self.id then res.add box
 		end
+		(new BoxComparator).sort(res)
 		return res
 	end
 
@@ -121,6 +133,7 @@ end
 # A Box is a container for submissions and tests.
 class Box
 	super Jsonable
+	super Comparable
 	serialize
 
 	# Box path
@@ -518,7 +531,15 @@ class SourceFile
 	redef fun to_s do return path
 end
 
-# Compare submission by timestamp in reverse order
+# Compare boxes by alphnumeric order
+class BoxComparator
+	super DefaultComparator
+
+	redef type COMPARED: Box
+	redef fun compare(a, b) do return a.id <=> b.id
+end
+
+# Compare submissions by timestamp
 class SubmissionComparator
 	super DefaultComparator
 

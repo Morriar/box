@@ -91,7 +91,7 @@ class APIBoxes
 	super APIBoxHandler
 
 	redef fun get(req, res) do
-		res.json new JsonArray.from(model.boxes.values)
+		res.json new JsonArray.from(model.get_boxes)
 	end
 end
 
