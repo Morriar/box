@@ -190,9 +190,9 @@ class Box
 	# List the box tests (only the name)
 	var tests: Array[TestFile] is lazy do
 		var tests = new Array[TestFile]
-		for line in boxme("list").split("\n") do
+		for line in boxme("list-tests").split("\n") do
 			if line.is_empty then continue
-			tests.add new TestFile(line.split_once_on(":").first.trim)
+			tests.add new TestFile(line.trim)
 		end
 		return tests
 	end
