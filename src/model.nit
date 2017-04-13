@@ -356,10 +356,7 @@ class Submission
 	serialize
 
 	# The box this submission belongs to
-	var box: Box is noserialize
-
-	# The box id this submission belongs to (serialized)
-	var box_id: String is lazy do return box.id
+	var box: Box
 
 	# The user who submitted
 	var user: String
@@ -442,6 +439,17 @@ class Submission
 	redef fun ==(o) do return o isa Submission and o.id == self.id
 
 	redef fun to_s do return id.to_s
+
+	redef fun core_serialize_to(v) do
+		v.serialize_attribute("box_id", box.id)
+		v.serialize_attribute("user", user)
+		v.serialize_attribute("files", files)
+		v.serialize_attribute("teamate", teamate)
+		v.serialize_attribute("path", path)
+		v.serialize_attribute("timestamp", timestamp)
+		v.serialize_attribute("id", id)
+		v.serialize_attribute("is_approuved", is_approuved)
+	end
 end
 
 # A test result
