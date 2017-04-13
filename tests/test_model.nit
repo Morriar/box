@@ -109,13 +109,51 @@ class TestBox
 	fun test_list_tests do
 		var box = new Box("data/test_model/box4")
 		var tests = box.tests
+		assert tests.length == 4
+		assert tests[0].name == "make"
+		assert tests[0].in_path == null
+		assert tests[0].res_path == null
+		assert not tests[0].is_private
+		assert tests[1].name == "test1"
+		assert tests[1].in_path == "tests/test1.in"
+		assert tests[1].res_path == "tests/test1.res"
+		assert not tests[1].is_private
+		assert tests[2].name == "test2"
+		assert tests[2].in_path == "tests/test2.in"
+		assert tests[2].res_path == "tests/test2.res"
+		assert not tests[2].is_private
+		assert tests[3].name == "test3"
+		assert tests[3].in_path == "tests-private/test3.in"
+		assert tests[3].res_path == "tests-private/test3.res"
+		assert tests[3].is_private
+	end
+
+	fun test_list_public_tests do
+		var box = new Box("data/test_model/box4")
+		var tests = box.public_tests
 		assert tests.length == 3
 		assert tests[0].name == "make"
-		assert tests[0].path == "make"
+		assert tests[0].in_path == null
+		assert tests[0].res_path == null
+		assert not tests[0].is_private
 		assert tests[1].name == "test1"
-		assert tests[1].path == "tests/test1.in"
+		assert tests[1].in_path == "tests/test1.in"
+		assert tests[1].res_path == "tests/test1.res"
+		assert not tests[1].is_private
 		assert tests[2].name == "test2"
-		assert tests[2].path == "tests/test2.in"
+		assert tests[2].in_path == "tests/test2.in"
+		assert tests[2].res_path == "tests/test2.res"
+		assert not tests[2].is_private
+	end
+
+	fun test_list_private_tests do
+		var box = new Box("data/test_model/box4")
+		var tests = box.private_tests
+		assert tests.length == 1
+		assert tests[0].name == "test3"
+		assert tests[0].in_path == "tests-private/test3.in"
+		assert tests[0].res_path == "tests-private/test3.res"
+		assert tests[0].is_private
 	end
 
 	fun test_source_files do
