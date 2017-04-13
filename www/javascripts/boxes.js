@@ -24,40 +24,87 @@
 			$locationProvider.html5Mode(true);
 			$stateProvider
 				.state({
-					name: 'box',
+					name: 'root.box',
 					url: '/box/{bId}',
-					controller: 'BoxCtrl',
-					controllerAs: 'vm',
 					templateUrl: '/views/box.html',
+					resolve: {
+						box: function(Boxes, $q, $stateParams) {
+							var d = $q.defer();
+							Boxes.getBox($stateParams.bId, d.resolve, function() {d.resolve()});
+							return d.promise;
+						}
+					},
+					controller: function(session, box) {
+						this.session = session;
+						this.box = box;
+					},
+					controllerAs: 'vm',
 					abstract: true
 				})
 				.state({
-					name: 'box.submit',
-					url: '',
-					controller: 'BoxSubmitCtrl',
-					controllerAs: 'vm',
-					templateUrl: '/views/box/submit.html'
-				})
-				.state({
-					name: 'box.tests',
+					name: 'root.box.tests',
 					url: '/tests',
-					controller: 'BoxTestsCtrl',
-					controllerAs: 'vm',
-					templateUrl: '/views/box/tests.html'
+					templateUrl: '/views/box/tests.html',
+					resolve: {
+						tests: function(Boxes, $q, $stateParams) {
+							var d = $q.defer();
+							Boxes.getBoxTests($stateParams.bId,
+								d.resolve, function() {d.resolve()});
+							return d.promise;
+						}
+					},
+					controller: function(tests) {
+						this.tests = tests;
+					},
+					controllerAs: 'vm'
 				})
 				.state({
-					name: 'box.submission',
-					url: '/submission/{sId}',
+					name: 'root.box.submit',
+					url: '',
+					templateUrl: '/views/box/submit.html',
+					resolve: {
+						submission: function(Boxes, $q, $stateParams) {
+							var d = $q.defer();
+							Boxes.lastSubmission($stateParams.bId,
+								d.resolve, function() {d.resolve()});
+							return d.promise;
+						}
+					},
 					controller: 'BoxSubmitCtrl',
-					controllerAs: 'vm',
-					templateUrl: '/views/box/submit.html'
+					controllerAs: 'vm'
 				})
 				.state({
-					name: 'box.submissions',
+					name: 'root.box.submission',
+					url: '/submission/{sId}',
+					templateUrl: '/views/box/submit.html',
+					resolve: {
+						submission: function(Boxes, $q, $stateParams) {
+							var d = $q.defer();
+							Boxes.getSubmission($stateParams.bId, $stateParams.sId,
+								d.resolve, function() {d.resolve()});
+							return d.promise;
+						}
+					},
+					controller: 'BoxSubmitCtrl',
+					controllerAs: 'vm'
+				})
+				.state({
+					name: 'root.box.submissions',
 					url: '/submissions',
-					controller: 'BoxUserSubmissionsCtrl',
+					templateUrl: '/views/box/user-submissions.html',
+					resolve: {
+						submissions: function(Boxes, $q, $stateParams) {
+							var d = $q.defer();
+							Boxes.getSubmissions($stateParams.bId,
+								d.resolve, function() {d.resolve()});
+							return d.promise;
+						}
+					},
+					controller: function(submissions) {
+						this.submissions = submissions;
+					},
 					controllerAs: 'vm',
-					templateUrl: '/views/box/user-submissions.html'
+
 				})
 		})
 
@@ -121,34 +168,18 @@
 
 		/* Controllers */
 
-		.controller('BoxCtrl', function(Errors, Boxes, $stateParams) {
-			var vm = this;
-
-			Boxes.getBox($stateParams.bId, function(data) {
-				vm.box = data;
-			}, Errors.handleError);
-		})
-
-		.controller('BoxTestsCtrl', function(Errors, Boxes, $stateParams) {
-			var vm = this;
-
-			Boxes.getBoxTests($stateParams.bId, function(data) {
-				vm.tests = data;
-			}, Errors.handleError);
-		})
-
-		.controller('BoxSubmitCtrl', function(Errors, Boxes, $scope, $stateParams, $anchorScroll) {
+		.controller('BoxSubmitCtrl', function(Errors, Boxes, $scope, $anchorScroll, session, box, submission) {
 			var vm = this;
 
 			$scope.$on('code-change', function(event, file) {
 				Boxes.saveSubmission(
-					$stateParams.bId, vm.submission.id, vm.submission, function(data) {
+					vm.box.id, vm.submission.id, vm.submission, function(data) {
 				}, Errors.handleError);
 			})
 
 			vm.checkSubmission = function() {
 				$('#pendingModal').modal({backdrop: 'static'});
-				Boxes.checkSubmission($stateParams.bId, vm.submission, function(data) {
+				Boxes.checkSubmission(vm.box.id, vm.submission, function(data) {
 					vm.results = data;
 					setTimeout(function() {
 						$('#pendingModal').modal('hide');
@@ -165,32 +196,14 @@
 						return false;
 					}
 				}
-				Boxes.sendSubmission($stateParams.bId, vm.submission, function (data) {
+				Boxes.sendSubmission(vm.box.id, vm.submission, function (data) {
 					$('#submitModal').modal();
 				}, Errors.handleError);
 			};
 
-			Boxes.getBox($stateParams.bId, function(data) {
-				vm.box = data;
-			}, Errors.handleError);
-
-			if($stateParams.sId) {
-				Boxes.getSubmission($stateParams.bId, $stateParams.sId, function(data) {
-					vm.submission = data;
-				}, Errors.handleError);
-			} else {
-				Boxes.lastSubmission($stateParams.bId, function(data) {
-					vm.submission = data;
-				}, Errors.handleError);
-			}
-		})
-
-		.controller('BoxUserSubmissionsCtrl', function(Errors, Boxes, $stateParams) {
-			var vm = this;
-
-			Boxes.getSubmissions($stateParams.bId, function(data) {
-				vm.submissions = data;
-			}, Errors.handleError);
+			vm.session = session;
+			vm.box = box;
+			vm.submission = submission;
 		})
 
 		/* Directives */

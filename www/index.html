@@ -24,36 +24,7 @@
 		<link href='/stylesheets/app.css' rel='stylesheet'>
 	</head>
 	<body ng-cloak>
-		<nav class='navbar navbar-inverse navbar-primary navbar-fixed-top'>
-			<div class='container-fluid'>
-				<div class='col-xs-8'>
-					<div class='navbar-header dropdown'>
-						<a class='navbar-brand' ui-sref='home'>
-							<span class='glyphicon glyphicon-gift' />
-						</a>
-						<a class='navbar-brand' ui-sref='home'>
-							Box
-						</a>
-					</div>
-				</div>
-				<div class='col-xs-4'>
-					<user-menu user='session'></user-menu>
-				</div>
-			</div>
-		</nav>
-
-		<div class='container' ng-if='!session'>
-			<panel-403 />
-		</div>
-		<div class='container-fluid' ng-if='session'>
-			<ui-view></ui-view>
-		</div>
-
-		<div class='container-fluid text-center text-muted'>
-			<br>
-			<p>Box powered by <a href='http://nitlanguage.org'>nit</a>!</p>
-			<br>
-		</div>
+		<ui-view></ui-view>
 
 		<script src='https://code.jquery.com/jquery-1.12.4.min.js'
 			integrity='sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ='
