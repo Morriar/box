@@ -286,22 +286,6 @@ class Box
 		return submissions.last
 	end
 
-	# Check a submission (run tests and return the results)
-	fun check_submission(submission: Submission): SubmissionResult do
-		boxme("sub", submission.id, "tests")
-		return status_submission(submission)
-	end
-
-	# Query the status of the submission (without running it)
-	fun status_submission(submission: Submission): SubmissionResult do
-		var out = path / "out/tests"
-		var tests = new HashMap[String, TestResult]
-		for testfile in self.tests do
-			tests[testfile.name] = new TestResult(out, testfile.name)
-		end
-		return new SubmissionResult(tests.values.to_a)
-	end
-
 	redef fun core_serialize_to(v) do
 		v.serialize_attribute("id", id)
 		v.serialize_attribute("title", title)
@@ -419,6 +403,22 @@ class Submission
 		end
 
 		init(box, user, files)
+	end
+
+	# Check a submission (run tests and return the results)
+	fun check: SubmissionResult do
+		box.boxme("sub", id, "tests")
+		return status
+	end
+
+	# Query the status of the submission (without running it)
+	fun status: SubmissionResult do
+		var out = box.path / "out/tests"
+		var tests = new HashMap[String, TestResult]
+		for testfile in box.tests do
+			tests[testfile.name] = new TestResult(out, testfile.name)
+		end
+		return new SubmissionResult(tests.values.to_a)
 	end
 
 	# Approuve this submission
