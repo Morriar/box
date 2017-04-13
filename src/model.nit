@@ -192,7 +192,9 @@ class Box
 		var tests = new Array[TestFile]
 		for line in boxme("list-tests").split("\n") do
 			if line.is_empty then continue
-			tests.add new TestFile(line.trim)
+			var parts = line.split_once_on(" ")
+			var path = if parts.length == 2 then parts.last else parts.first
+			tests.add new TestFile(path.trim)
 		end
 		return tests
 	end

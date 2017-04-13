@@ -109,11 +109,13 @@ class TestBox
 	fun test_list_tests do
 		var box = new Box("data/test_model/box4")
 		var tests = box.tests
-		assert tests.length == 2
-		assert tests[0].name == "test1"
-		assert tests[0].path == "tests/test1.in"
-		assert tests[1].name == "test2"
-		assert tests[1].path == "tests/test2.in"
+		assert tests.length == 3
+		assert tests[0].name == "make"
+		assert tests[0].path == "make"
+		assert tests[1].name == "test1"
+		assert tests[1].path == "tests/test1.in"
+		assert tests[2].name == "test2"
+		assert tests[2].path == "tests/test2.in"
 	end
 
 	fun test_source_files do
