@@ -187,14 +187,33 @@ class Box
 		return res
 	end
 
-	# List the box tests (only the name)
-	var tests: Array[TestFile] is lazy do
-		var tests = new Array[TestFile]
+	# List all the box test cases
+	var tests: Array[TestCase] is lazy do
+		var tests = new Array[TestCase]
 		for line in boxme("list-tests").split("\n") do
 			if line.is_empty then continue
 			var parts = line.split_once_on(" ")
-			var path = if parts.length == 2 then parts.last else parts.first
-			tests.add new TestFile(path.trim)
+			var name = parts.first
+			var path = if parts.length == 2 then parts.last.trim else null
+			tests.add new TestCase(name, path)
+		end
+		return tests
+	end
+
+	# List all the public test cases
+	var public_tests: Array[TestCase] is lazy do
+		var tests = new Array[TestCase]
+		for test in self.tests do
+			if not test.is_private then tests.add test
+		end
+		return tests
+	end
+
+	# List all the private test cases
+	var private_tests: Array[TestCase] is lazy do
+		var tests = new Array[TestCase]
+		for test in self.tests do
+			if test.is_private then tests.add test
 		end
 		return tests
 	end
@@ -275,12 +294,59 @@ class Box
 		v.serialize_attribute("title", title)
 		v.serialize_attribute("is_active", is_active)
 		v.serialize_attribute("closes_at", close_date)
-		v.serialize_attribute("tests", new JsonArray.from(tests))
+		v.serialize_attribute("public_tests", public_tests.length)
+		v.serialize_attribute("private_tests", private_tests.length)
 	end
 
 	redef fun ==(o) do return o isa Box and o.id == id
 
 	redef fun to_s do return id
+end
+
+# A test case
+class TestCase
+	super Jsonable
+	serialize
+
+	# Test case name
+	var name: String
+
+	# Path to the test case `.in` file if any
+	var in_path: nullable String
+
+	# `.in` file content if any
+	var in_file: nullable String is lazy do return load_file(in_path)
+
+	# Path to the test case `.res` file if any
+	var res_path: nullable String is lazy do
+		var path = in_path
+		if path == null then return null
+		return "{path.strip_extension}.res"
+	end
+
+	# `.res` file content if any
+	var res_file: nullable String is lazy do return load_file(res_path)
+
+	# Is this test case private?
+	#
+	# Basically, a test case is private if we find `private` in it's in file.
+	var is_private: Bool is lazy do
+		var path = in_path
+		if path == null then return false
+		return path.has("private")
+	end
+
+	# Load the content of the file at `path`.
+	#
+	# If `path == null` then return null.
+	private fun load_file(path: nullable String): nullable String do
+		if path == null then return null
+		return path.to_path.read_all
+	end
+
+	redef fun ==(o) do return o isa TestCase and o.name == name
+
+	redef fun to_s do return name
 end
 
 # A box submission
@@ -445,22 +511,6 @@ class SourceFile
 	var extension: nullable String is lazy do return filename.file_extension
 
 	redef fun ==(o) do return o isa SourceFile and o.path == path
-
-	redef fun to_s do return path
-end
-
-# A test file
-class TestFile
-	super Jsonable
-	serialize
-
-	# Path to the test file
-	var path: String
-
-	# Test name
-	var name: String is lazy do return path.basename.strip_extension
-
-	redef fun ==(o) do return o isa TestFile and o.path == path
 
 	redef fun to_s do return path
 end
