@@ -496,6 +496,7 @@ main() {
 			  sub list         list all the submissions
 			  sub <cmd>        execute the command on all the submissions
 			  sub <name> <cmd> execute the command on the named submission
+			  bg <cmd>         execute the command in background
 			Advanced commands
 			  runone <in>      simple wrapper to make runone with an input file
 			  saferun <cmd>    run a command in a jail. see saferun()
@@ -521,6 +522,12 @@ main() {
 			test -e "$BOX_OUT/tests" && rm -r "$BOX_OUT/tests"
 			work
 			freeown
+			return
+			;;
+		bg)
+			shift
+			mkdir -p "$BOX_OUT"
+			main "$@" > "$BOX_OUT/$BASHPID.bg.log" &
 			return
 			;;
 		saferun)
