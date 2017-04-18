@@ -177,8 +177,10 @@ status() {
 		echo "[NOT RUN] $name."
 	elif [ -e $out.pass ]; then
 		echo "[PASS] $name. `head $out.pass`"
+		test -f "$out.msg" && sed 's/^/\t/' $out.msg
 	elif [ -e $out.fail ]; then
 		echo "[FAIL] $name. `head $out.fail`"
+		test -f "$out.msg" && sed 's/^/\t/' $out.msg
 		return 1
 	elif checkown; then
 		echo "[ABORTED] $name."
