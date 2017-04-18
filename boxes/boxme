@@ -176,13 +176,9 @@ status() {
 	if [ ! -e $out.cmd ]; then
 		echo "[NOT RUN] $name."
 	elif [ -e $out.pass ]; then
-		echo -n "[PASS] $name. "
-		cat $out.pass
-		echo ""
+		echo "[PASS] $name. `head $out.pass`"
 	elif [ -e $out.fail ]; then
-		echo -n "[FAIL] $name. "
-		cat $out.fail
-		echo ""
+		echo "[FAIL] $name. `head $out.fail`"
 		return 1
 	elif checkown; then
 		echo "[ABORTED] $name."
