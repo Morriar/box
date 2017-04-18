@@ -184,6 +184,13 @@ status() {
 # The following functions take care of the whole processing of a source or submission.
 # They prepare the tests and the working directory, building, executing testcases, etc.
 
+# Run build && check
+work() {
+	prepare &&
+	build &&
+	check
+}
+
 # Function called when the engine wants to setup the work directory.
 #
 # pwd is the root directory of the box.
@@ -441,6 +448,8 @@ main() {
 		tests)
 			# TODO filter specific tests?
 			test -e "$BOX_OUT" && rm -r "$BOX_OUT"
+			work
+			return
 			;;
 		saferun)
 			shift
@@ -507,9 +516,7 @@ main() {
 			;;
 	esac
 
-	prepare &&
-	build &&
-	check
+	work
 }
 
 export BOX_PUBLIC=
