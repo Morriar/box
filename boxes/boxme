@@ -391,6 +391,60 @@ list_users() {
 }
 
 ###############################################################################
+# Job management
+#
+# boxme can be run in background on a workload.
+# To do that, pid of the working boxme process is stored in the BOX_OUT directory to claim ownership
+
+# Check is the workload is already owned.
+#
+# returns 0 if not owned
+# returns 1 if already owned
+#
+# Cleanup dead processes if any.
+checkown() {
+	local pidfile="$BOX_OUT/pid"
+	if [ -f "$pidfile" ]; then
+		local pid=`cat "$pidfile"`
+		if ps --pid "$pid" > /dev/null 2>&1; then
+			# pid still running
+			verb "OWN: $pidfile owned by $pid that is running"
+			return 1
+		fi
+		# pid no more running. clear the pidfile
+		rm "$pidfile"
+		verb "OWN: $pidfile owned by $pid that is dead"
+		return 0
+	fi
+	verb "OWN: $pidfile does not exist"
+	return 0
+}
+
+# Check and create a pid tag when working in a BOX_OUT directory.
+#
+# returns 0 is the owning was successful
+#
+# FIXME: locking to avoid race conditions on the same workload
+claimown() {
+	if ! checkown; then
+		echo "Error: already running"
+		return 1
+	fi
+	mkdir -p "$BOX_OUT"
+	local pidfile="$BOX_OUT/pid"
+	echo $BASHPID > "$pidfile"
+	verb "OWN: $pidfile to `cat $pidfile`"
+}
+
+# remove the ownership
+#
+# This assume it is used correctly!
+freeown() {
+	verb "OWN: $pidfile $BASHPID release `cat "$BOX_OUT/pid"`"
+	rm "$BOX_OUT/pid"
+}
+
+###############################################################################
 # Various utilities
 
 # echo something on stderr if verbose mode
@@ -458,9 +512,11 @@ main() {
 			;;
 		tests)
 			# TODO filter specific tests?
+			claimown || return 1
 			test -e "$BOX_OUT/work" && rm -r "$BOX_OUT/work"
 			test -e "$BOX_OUT/tests" && rm -r "$BOX_OUT/tests"
 			work
+			freeown
 			return
 			;;
 		saferun)
