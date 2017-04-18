@@ -389,6 +389,15 @@ list_users() {
 }
 
 ###############################################################################
+# Various utilities
+
+# echo something on stderr if verbose mode
+verb() {
+	test "$BOX_VERB" = 0 && return
+	echo >&2 "$*"
+}
+
+###############################################################################
 # Main program
 
 # The main function of the script
