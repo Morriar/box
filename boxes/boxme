@@ -145,6 +145,18 @@ checkrun_core() {
 		echo "diff -u $res $out.out" >> $out.log
 		if ! diff -u $res $out.out > $out.diff; then
 			echo "diff -u $res $out.out" > $out.fail
+			if diff -iwBu $res $out.out > /dev/null; then
+				# Diff only in whitespaces
+				printf "There are whitespace differences between expected output and the produced output.\n\nTo pass the test, there should be no superfluous (nor missing) spaces, tabulations and blank lines.\n" > $out.msg
+			elif [ ! -s "$out.out" ]; then
+				# empty out
+				echo "Expected an output but nothing was produced." > $out.msg
+			elif [ ! -s "$res" ]; then
+				# empty res
+				echo "Expected no output but something was produced." > $out.msg
+			else
+				echo "The expected output and the produced output are different." > $out.msg
+			fi
 			return 1
 		fi
 	else
