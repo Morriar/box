@@ -344,6 +344,8 @@ submissions() {
 		return 0
 	fi
 	for sub in submissions/*; do
+		export BOX_SRC=$sub/src
+		export BOX_OUT=$sub/out
 		local line=`status_line "$sub"`
 		echo "$sub: $line"
 	done
@@ -484,11 +486,11 @@ main() {
 			for sub in "submissions/$1"; do
 				if [ -d "$sub" ]; then
 					shift
+					export BOX_SRC=$sub/src
+					export BOX_OUT=$sub/out
 					if [ -z "$1" ]; then
 						status_line "$sub"
 					else
-						export BOX_SRC=$sub/src
-						export BOX_OUT=$sub/out
 						main "$@"
 					fi
 					return
