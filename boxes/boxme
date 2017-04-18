@@ -456,7 +456,8 @@ main() {
 			;;
 		tests)
 			# TODO filter specific tests?
-			test -e "$BOX_OUT" && rm -r "$BOX_OUT"
+			test -e "$BOX_OUT/work" && rm -r "$BOX_OUT/work"
+			test -e "$BOX_OUT/tests" && rm -r "$BOX_OUT/tests"
 			work
 			return
 			;;
