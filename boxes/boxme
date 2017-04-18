@@ -172,8 +172,10 @@ status() {
 		cat $out.fail
 		echo ""
 		return 1
-	else
+	elif checkown; then
 		echo "[ABORTED] $name."
+	else
+		echo "[RUNNING] $name."
 	fi
 	return 0
 }
@@ -183,6 +185,13 @@ status() {
 #
 # The following functions take care of the whole processing of a source or submission.
 # They prepare the tests and the working directory, building, executing testcases, etc.
+
+# Run build && check
+work() {
+	prepare &&
+	build &&
+	check
+}
 
 # Function called when the engine wants to setup the work directory.
 #
@@ -337,6 +346,8 @@ submissions() {
 		return 0
 	fi
 	for sub in submissions/*; do
+		export BOX_SRC=$sub/src
+		export BOX_OUT=$sub/out
 		local line=`status_line "$sub"`
 		echo "$sub: $line"
 	done
@@ -350,10 +361,12 @@ status_line() {
 		echo "not run"
 		return
 	fi
+	local running=""
+	checkown || running="running "
 	local runs=`ls "$sub/out/tests/"*.cmd  2>/dev/null | wc -l`
 	local pass=`ls "$sub/out/tests/"*.pass 2>/dev/null | wc -l`
 	local fail=`ls "$sub/out/tests/"*.fail 2>/dev/null | wc -l`
-	echo "$runs run, $pass passed, $fail failed"
+	echo "$running$runs run, $pass passed, $fail failed"
 }
 
 ###############################################################################
@@ -379,6 +392,69 @@ user_approuved() {
 # List the users that submitted something
 list_users() {
 	ls -d submissions/* | sed -n 's|^submissions/[0-9]*_||p' | sort -u
+}
+
+###############################################################################
+# Job management
+#
+# boxme can be run in background on a workload.
+# To do that, pid of the working boxme process is stored in the BOX_OUT directory to claim ownership
+
+# Check is the workload is already owned.
+#
+# returns 0 if not owned
+# returns 1 if already owned
+#
+# Cleanup dead processes if any.
+checkown() {
+	local pidfile="$BOX_OUT/pid"
+	if [ -f "$pidfile" ]; then
+		local pid=`cat "$pidfile"`
+		if ps --pid "$pid" > /dev/null 2>&1; then
+			# pid still running
+			verb "OWN: $pidfile owned by $pid that is running"
+			return 1
+		fi
+		# pid no more running. clear the pidfile
+		rm "$pidfile"
+		verb "OWN: $pidfile owned by $pid that is dead"
+		return 0
+	fi
+	verb "OWN: $pidfile does not exist"
+	return 0
+}
+
+# Check and create a pid tag when working in a BOX_OUT directory.
+#
+# returns 0 is the owning was successful
+#
+# FIXME: locking to avoid race conditions on the same workload
+claimown() {
+	if ! checkown; then
+		echo "Error: already running"
+		return 1
+	fi
+	mkdir -p "$BOX_OUT"
+	local pidfile="$BOX_OUT/pid"
+	echo $BASHPID > "$pidfile"
+	verb "OWN: $pidfile to `cat $pidfile`"
+}
+
+# remove the ownership
+#
+# This assume it is used correctly!
+freeown() {
+	verb "OWN: $pidfile $BASHPID release `cat "$BOX_OUT/pid"`"
+	rm "$BOX_OUT/pid"
+}
+
+###############################################################################
+# Various utilities
+
+# echo something on stderr if verbose mode
+verb() {
+	test "$BOX_VERB" = 0 && return
+	echo >&2 "$*"
 }
 
 ###############################################################################
@@ -420,6 +496,7 @@ main() {
 			  sub list         list all the submissions
 			  sub <cmd>        execute the command on all the submissions
 			  sub <name> <cmd> execute the command on the named submission
+			  bg <cmd>         execute the command in background
 			Advanced commands
 			  runone <in>      simple wrapper to make runone with an input file
 			  saferun <cmd>    run a command in a jail. see saferun()
@@ -440,7 +517,18 @@ main() {
 			;;
 		tests)
 			# TODO filter specific tests?
-			test -e "$BOX_OUT" && rm -r "$BOX_OUT"
+			claimown || return 1
+			test -e "$BOX_OUT/work" && rm -r "$BOX_OUT/work"
+			test -e "$BOX_OUT/tests" && rm -r "$BOX_OUT/tests"
+			work
+			freeown
+			return
+			;;
+		bg)
+			shift
+			mkdir -p "$BOX_OUT"
+			main "$@" > "$BOX_OUT/$BASHPID.bg.log" &
+			return
 			;;
 		saferun)
 			shift
@@ -465,11 +553,11 @@ main() {
 			for sub in "submissions/$1"; do
 				if [ -d "$sub" ]; then
 					shift
+					export BOX_SRC=$sub/src
+					export BOX_OUT=$sub/out
 					if [ -z "$1" ]; then
 						status_line "$sub"
 					else
-						export BOX_SRC=$sub/src
-						export BOX_OUT=$sub/out
 						main "$@"
 					fi
 					return
@@ -507,9 +595,7 @@ main() {
 			;;
 	esac
 
-	prepare &&
-	build &&
-	check
+	work
 }
 
 export BOX_PUBLIC=
