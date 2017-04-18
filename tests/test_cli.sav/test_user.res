@@ -53,7 +53,6 @@ user3
 	 ^
 	src/hello.c:1:1: error: expected '=', ',', ';', 'asm' or '__attribute__' at end of input
 	make: *** [all] Error 1
-
 # user2: 1_user2
 [FAIL] make. Test exited with 2
 	src/hello.c:1:1: error: unknown type name 'BAD'
@@ -61,7 +60,6 @@ user3
 	 ^
 	src/hello.c:1:1: error: expected '=', ',', ';', 'asm' or '__attribute__' at end of input
 	make: *** [all] Error 1
-
 # user3: no approuval
 
 == boxme -p user tests ==
@@ -72,7 +70,6 @@ user3
 	 ^
 	src/hello.c:1:1: error: expected '=', ',', ';', 'asm' or '__attribute__' at end of input
 	make: *** [all] Error 1
-
 # user2: 1_user2
 [FAIL] make. Test exited with 2
 	src/hello.c:1:1: error: unknown type name 'BAD'
@@ -80,7 +77,6 @@ user3
 	 ^
 	src/hello.c:1:1: error: expected '=', ',', ';', 'asm' or '__attribute__' at end of input
 	make: *** [all] Error 1
-
 # user3: no approuval
 
 == boxme user list ==
@@ -101,7 +97,6 @@ user3
 	 ^
 	src/hello.c:1:1: error: expected '=', ',', ';', 'asm' or '__attribute__' at end of input
 	make: *** [all] Error 1
-
 [NOT RUN] test1.
 [NOT RUN] test2.
 [NOT RUN] test3.
@@ -112,7 +107,6 @@ user3
 	 ^
 	src/hello.c:1:1: error: expected '=', ',', ';', 'asm' or '__attribute__' at end of input
 	make: *** [all] Error 1
-
 [NOT RUN] test1.
 [NOT RUN] test2.
 [NOT RUN] test3.
@@ -126,7 +120,6 @@ user3
 	 ^
 	src/hello.c:1:1: error: expected '=', ',', ';', 'asm' or '__attribute__' at end of input
 	make: *** [all] Error 1
-
 [NOT RUN] test1.
 [NOT RUN] test2.
 # user2: 1_user2
@@ -136,7 +129,6 @@ user3
 	 ^
 	src/hello.c:1:1: error: expected '=', ',', ';', 'asm' or '__attribute__' at end of input
 	make: *** [all] Error 1
-
 [NOT RUN] test1.
 [NOT RUN] test2.
 # user3: no approuval

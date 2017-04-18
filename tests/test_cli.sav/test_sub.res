@@ -157,56 +157,56 @@ test2 tests/test2.in
 [PASS] make. 
 [PASS] test1. 
 [FAIL] test2. diff -u tests/test2.res submissions/sub1/out/tests/test2.out
-
+	The expected output and the produced output are different.
 [FAIL] test3. diff -u tests-private/test3.res submissions/sub1/out/tests/test3.out
-
+	The expected output and the produced output are different.
 
 == boxme -p sub sub1 tests ==
 [PASS] make. 
 [PASS] test1. 
 [FAIL] test2. diff -u tests/test2.res submissions/sub1/out/tests/test2.out
-
+	The expected output and the produced output are different.
 
 == boxme -j copy sub sub1 tests ==
 [PASS] make. 
 [PASS] test1. 
 [FAIL] test2. diff -u tests/test2.res submissions/sub1/out/tests/test2.out
-
+	The expected output and the produced output are different.
 [FAIL] test3. diff -u tests-private/test3.res submissions/sub1/out/tests/test3.out
-
+	The expected output and the produced output are different.
 
 == boxme -p -j copy sub sub1 tests ==
 [PASS] make. 
 [PASS] test1. 
 [FAIL] test2. diff -u tests/test2.res submissions/sub1/out/tests/test2.out
-
+	The expected output and the produced output are different.
 
 == boxme -j none sub sub1 tests ==
 [PASS] make. 
 [PASS] test1. 
 [FAIL] test2. diff -u tests/test2.res submissions/sub1/out/tests/test2.out
-
+	The expected output and the produced output are different.
 [FAIL] test3. diff -u tests-private/test3.res submissions/sub1/out/tests/test3.out
-
+	The expected output and the produced output are different.
 
 == boxme -p -j none sub sub1 tests ==
 [PASS] make. 
 [PASS] test1. 
 [FAIL] test2. diff -u tests/test2.res submissions/sub1/out/tests/test2.out
-
+	The expected output and the produced output are different.
 
 == boxme sub sub1 status ==
 [PASS] make. 
 [PASS] test1. 
 [FAIL] test2. diff -u tests/test2.res submissions/sub1/out/tests/test2.out
-
+	The expected output and the produced output are different.
 [NOT RUN] test3.
 
 == boxme -p sub sub1 status ==
 [PASS] make. 
 [PASS] test1. 
 [FAIL] test2. diff -u tests/test2.res submissions/sub1/out/tests/test2.out
-
+	The expected output and the produced output are different.
 
 == boxme sub sub1 ==
 3 run, 2 passed, 1 failed
@@ -244,7 +244,6 @@ submissions/sub2: 0 run, 0 passed, 0 failed
 	 ^
 	src/hello.c:1:1: error: expected '=', ',', ';', 'asm' or '__attribute__' at end of input
 	make: *** [all] Error 1
-
 # submissions/10_user2/
 [FAIL] make. Test exited with 2
 	src/hello.c:1:1: error: unknown type name 'BAD'
@@ -252,7 +251,6 @@ submissions/sub2: 0 run, 0 passed, 0 failed
 	 ^
 	src/hello.c:1:1: error: expected '=', ',', ';', 'asm' or '__attribute__' at end of input
 	make: *** [all] Error 1
-
 # submissions/1_user1/
 [FAIL] make. Test exited with 2
 	src/hello.c:1:1: error: unknown type name 'BAD'
@@ -260,7 +258,6 @@ submissions/sub2: 0 run, 0 passed, 0 failed
 	 ^
 	src/hello.c:1:1: error: expected '=', ',', ';', 'asm' or '__attribute__' at end of input
 	make: *** [all] Error 1
-
 # submissions/1_user2/
 [FAIL] make. Test exited with 2
 	src/hello.c:1:1: error: unknown type name 'BAD'
@@ -268,7 +265,6 @@ submissions/sub2: 0 run, 0 passed, 0 failed
 	 ^
 	src/hello.c:1:1: error: expected '=', ',', ';', 'asm' or '__attribute__' at end of input
 	make: *** [all] Error 1
-
 # submissions/1_user3/
 [FAIL] make. Test exited with 2
 	src/hello.c:1:1: error: unknown type name 'BAD'
@@ -276,7 +272,6 @@ submissions/sub2: 0 run, 0 passed, 0 failed
 	 ^
 	src/hello.c:1:1: error: expected '=', ',', ';', 'asm' or '__attribute__' at end of input
 	make: *** [all] Error 1
-
 # submissions/2_user1/
 [FAIL] make. Test exited with 2
 	src/hello.c:1:1: error: unknown type name 'BAD'
@@ -284,7 +279,6 @@ submissions/sub2: 0 run, 0 passed, 0 failed
 	 ^
 	src/hello.c:1:1: error: expected '=', ',', ';', 'asm' or '__attribute__' at end of input
 	make: *** [all] Error 1
-
 # submissions/2_user2/
 [FAIL] make. Test exited with 2
 	src/hello.c:1:1: error: unknown type name 'BAD'
@@ -292,14 +286,13 @@ submissions/sub2: 0 run, 0 passed, 0 failed
 	 ^
 	src/hello.c:1:1: error: expected '=', ',', ';', 'asm' or '__attribute__' at end of input
 	make: *** [all] Error 1
-
 # submissions/sub1/
 [PASS] make. 
 [PASS] test1. 
 [FAIL] test2. diff -u tests/test2.res submissions/sub1//out/tests/test2.out
-
+	The expected output and the produced output are different.
 [FAIL] test3. diff -u tests-private/test3.res submissions/sub1//out/tests/test3.out
-
+	The expected output and the produced output are different.
 # submissions/sub2/
 [FAIL] make. Test exited with 2
 	src/hello.c:1:1: error: unknown type name 'BAD'
@@ -309,7 +302,6 @@ submissions/sub2: 0 run, 0 passed, 0 failed
 	 BAD C FILE
 	       ^
 	make: *** [all] Error 1
-
 
 == boxme -p sub tests ==
 # submissions/10_user1/
@@ -319,7 +311,6 @@ submissions/sub2: 0 run, 0 passed, 0 failed
 	 ^
 	src/hello.c:1:1: error: expected '=', ',', ';', 'asm' or '__attribute__' at end of input
 	make: *** [all] Error 1
-
 # submissions/10_user2/
 [FAIL] make. Test exited with 2
 	src/hello.c:1:1: error: unknown type name 'BAD'
@@ -327,7 +318,6 @@ submissions/sub2: 0 run, 0 passed, 0 failed
 	 ^
 	src/hello.c:1:1: error: expected '=', ',', ';', 'asm' or '__attribute__' at end of input
 	make: *** [all] Error 1
-
 # submissions/1_user1/
 [FAIL] make. Test exited with 2
 	src/hello.c:1:1: error: unknown type name 'BAD'
@@ -335,7 +325,6 @@ submissions/sub2: 0 run, 0 passed, 0 failed
 	 ^
 	src/hello.c:1:1: error: expected '=', ',', ';', 'asm' or '__attribute__' at end of input
 	make: *** [all] Error 1
-
 # submissions/1_user2/
 [FAIL] make. Test exited with 2
 	src/hello.c:1:1: error: unknown type name 'BAD'
@@ -343,7 +332,6 @@ submissions/sub2: 0 run, 0 passed, 0 failed
 	 ^
 	src/hello.c:1:1: error: expected '=', ',', ';', 'asm' or '__attribute__' at end of input
 	make: *** [all] Error 1
-
 # submissions/1_user3/
 [FAIL] make. Test exited with 2
 	src/hello.c:1:1: error: unknown type name 'BAD'
@@ -351,7 +339,6 @@ submissions/sub2: 0 run, 0 passed, 0 failed
 	 ^
 	src/hello.c:1:1: error: expected '=', ',', ';', 'asm' or '__attribute__' at end of input
 	make: *** [all] Error 1
-
 # submissions/2_user1/
 [FAIL] make. Test exited with 2
 	src/hello.c:1:1: error: unknown type name 'BAD'
@@ -359,7 +346,6 @@ submissions/sub2: 0 run, 0 passed, 0 failed
 	 ^
 	src/hello.c:1:1: error: expected '=', ',', ';', 'asm' or '__attribute__' at end of input
 	make: *** [all] Error 1
-
 # submissions/2_user2/
 [FAIL] make. Test exited with 2
 	src/hello.c:1:1: error: unknown type name 'BAD'
@@ -367,12 +353,11 @@ submissions/sub2: 0 run, 0 passed, 0 failed
 	 ^
 	src/hello.c:1:1: error: expected '=', ',', ';', 'asm' or '__attribute__' at end of input
 	make: *** [all] Error 1
-
 # submissions/sub1/
 [PASS] make. 
 [PASS] test1. 
 [FAIL] test2. diff -u tests/test2.res submissions/sub1//out/tests/test2.out
-
+	The expected output and the produced output are different.
 # submissions/sub2/
 [FAIL] make. Test exited with 2
 	src/hello.c:1:1: error: unknown type name 'BAD'
@@ -382,7 +367,6 @@ submissions/sub2: 0 run, 0 passed, 0 failed
 	 BAD C FILE
 	       ^
 	make: *** [all] Error 1
-
 
 == boxme -j copy sub tests ==
 # submissions/10_user1/
@@ -392,7 +376,6 @@ submissions/sub2: 0 run, 0 passed, 0 failed
 	 ^
 	src/hello.c:1:1: error: expected '=', ',', ';', 'asm' or '__attribute__' at end of input
 	make: *** [all] Error 1
-
 # submissions/10_user2/
 [FAIL] make. Test exited with 2
 	src/hello.c:1:1: error: unknown type name 'BAD'
@@ -400,7 +383,6 @@ submissions/sub2: 0 run, 0 passed, 0 failed
 	 ^
 	src/hello.c:1:1: error: expected '=', ',', ';', 'asm' or '__attribute__' at end of input
 	make: *** [all] Error 1
-
 # submissions/1_user1/
 [FAIL] make. Test exited with 2
 	src/hello.c:1:1: error: unknown type name 'BAD'
@@ -408,7 +390,6 @@ submissions/sub2: 0 run, 0 passed, 0 failed
 	 ^
 	src/hello.c:1:1: error: expected '=', ',', ';', 'asm' or '__attribute__' at end of input
 	make: *** [all] Error 1
-
 # submissions/1_user2/
 [FAIL] make. Test exited with 2
 	src/hello.c:1:1: error: unknown type name 'BAD'
@@ -416,7 +397,6 @@ submissions/sub2: 0 run, 0 passed, 0 failed
 	 ^
 	src/hello.c:1:1: error: expected '=', ',', ';', 'asm' or '__attribute__' at end of input
 	make: *** [all] Error 1
-
 # submissions/1_user3/
 [FAIL] make. Test exited with 2
 	src/hello.c:1:1: error: unknown type name 'BAD'
@@ -424,7 +404,6 @@ submissions/sub2: 0 run, 0 passed, 0 failed
 	 ^
 	src/hello.c:1:1: error: expected '=', ',', ';', 'asm' or '__attribute__' at end of input
 	make: *** [all] Error 1
-
 # submissions/2_user1/
 [FAIL] make. Test exited with 2
 	src/hello.c:1:1: error: unknown type name 'BAD'
@@ -432,7 +411,6 @@ submissions/sub2: 0 run, 0 passed, 0 failed
 	 ^
 	src/hello.c:1:1: error: expected '=', ',', ';', 'asm' or '__attribute__' at end of input
 	make: *** [all] Error 1
-
 # submissions/2_user2/
 [FAIL] make. Test exited with 2
 	src/hello.c:1:1: error: unknown type name 'BAD'
@@ -440,14 +418,13 @@ submissions/sub2: 0 run, 0 passed, 0 failed
 	 ^
 	src/hello.c:1:1: error: expected '=', ',', ';', 'asm' or '__attribute__' at end of input
 	make: *** [all] Error 1
-
 # submissions/sub1/
 [PASS] make. 
 [PASS] test1. 
 [FAIL] test2. diff -u tests/test2.res submissions/sub1//out/tests/test2.out
-
+	The expected output and the produced output are different.
 [FAIL] test3. diff -u tests-private/test3.res submissions/sub1//out/tests/test3.out
-
+	The expected output and the produced output are different.
 # submissions/sub2/
 [FAIL] make. Test exited with 2
 	src/hello.c:1:1: error: unknown type name 'BAD'
@@ -457,7 +434,6 @@ submissions/sub2: 0 run, 0 passed, 0 failed
 	 BAD C FILE
 	       ^
 	make: *** [all] Error 1
-
 
 == boxme -p -j copy sub tests ==
 # submissions/10_user1/
@@ -467,7 +443,6 @@ submissions/sub2: 0 run, 0 passed, 0 failed
 	 ^
 	src/hello.c:1:1: error: expected '=', ',', ';', 'asm' or '__attribute__' at end of input
 	make: *** [all] Error 1
-
 # submissions/10_user2/
 [FAIL] make. Test exited with 2
 	src/hello.c:1:1: error: unknown type name 'BAD'
@@ -475,7 +450,6 @@ submissions/sub2: 0 run, 0 passed, 0 failed
 	 ^
 	src/hello.c:1:1: error: expected '=', ',', ';', 'asm' or '__attribute__' at end of input
 	make: *** [all] Error 1
-
 # submissions/1_user1/
 [FAIL] make. Test exited with 2
 	src/hello.c:1:1: error: unknown type name 'BAD'
@@ -483,7 +457,6 @@ submissions/sub2: 0 run, 0 passed, 0 failed
 	 ^
 	src/hello.c:1:1: error: expected '=', ',', ';', 'asm' or '__attribute__' at end of input
 	make: *** [all] Error 1
-
 # submissions/1_user2/
 [FAIL] make. Test exited with 2
 	src/hello.c:1:1: error: unknown type name 'BAD'
@@ -491,7 +464,6 @@ submissions/sub2: 0 run, 0 passed, 0 failed
 	 ^
 	src/hello.c:1:1: error: expected '=', ',', ';', 'asm' or '__attribute__' at end of input
 	make: *** [all] Error 1
-
 # submissions/1_user3/
 [FAIL] make. Test exited with 2
 	src/hello.c:1:1: error: unknown type name 'BAD'
@@ -499,7 +471,6 @@ submissions/sub2: 0 run, 0 passed, 0 failed
 	 ^
 	src/hello.c:1:1: error: expected '=', ',', ';', 'asm' or '__attribute__' at end of input
 	make: *** [all] Error 1
-
 # submissions/2_user1/
 [FAIL] make. Test exited with 2
 	src/hello.c:1:1: error: unknown type name 'BAD'
@@ -507,7 +478,6 @@ submissions/sub2: 0 run, 0 passed, 0 failed
 	 ^
 	src/hello.c:1:1: error: expected '=', ',', ';', 'asm' or '__attribute__' at end of input
 	make: *** [all] Error 1
-
 # submissions/2_user2/
 [FAIL] make. Test exited with 2
 	src/hello.c:1:1: error: unknown type name 'BAD'
@@ -515,12 +485,11 @@ submissions/sub2: 0 run, 0 passed, 0 failed
 	 ^
 	src/hello.c:1:1: error: expected '=', ',', ';', 'asm' or '__attribute__' at end of input
 	make: *** [all] Error 1
-
 # submissions/sub1/
 [PASS] make. 
 [PASS] test1. 
 [FAIL] test2. diff -u tests/test2.res submissions/sub1//out/tests/test2.out
-
+	The expected output and the produced output are different.
 # submissions/sub2/
 [FAIL] make. Test exited with 2
 	src/hello.c:1:1: error: unknown type name 'BAD'
@@ -530,7 +499,6 @@ submissions/sub2: 0 run, 0 passed, 0 failed
 	 BAD C FILE
 	       ^
 	make: *** [all] Error 1
-
 
 == boxme -j none sub tests ==
 # submissions/10_user1/
@@ -540,7 +508,6 @@ submissions/sub2: 0 run, 0 passed, 0 failed
 	 ^
 	src/hello.c:1:1: error: expected '=', ',', ';', 'asm' or '__attribute__' at end of input
 	make: *** [all] Error 1
-
 # submissions/10_user2/
 [FAIL] make. Test exited with 2
 	src/hello.c:1:1: error: unknown type name 'BAD'
@@ -548,7 +515,6 @@ submissions/sub2: 0 run, 0 passed, 0 failed
 	 ^
 	src/hello.c:1:1: error: expected '=', ',', ';', 'asm' or '__attribute__' at end of input
 	make: *** [all] Error 1
-
 # submissions/1_user1/
 [FAIL] make. Test exited with 2
 	src/hello.c:1:1: error: unknown type name 'BAD'
@@ -556,7 +522,6 @@ submissions/sub2: 0 run, 0 passed, 0 failed
 	 ^
 	src/hello.c:1:1: error: expected '=', ',', ';', 'asm' or '__attribute__' at end of input
 	make: *** [all] Error 1
-
 # submissions/1_user2/
 [FAIL] make. Test exited with 2
 	src/hello.c:1:1: error: unknown type name 'BAD'
@@ -564,7 +529,6 @@ submissions/sub2: 0 run, 0 passed, 0 failed
 	 ^
 	src/hello.c:1:1: error: expected '=', ',', ';', 'asm' or '__attribute__' at end of input
 	make: *** [all] Error 1
-
 # submissions/1_user3/
 [FAIL] make. Test exited with 2
 	src/hello.c:1:1: error: unknown type name 'BAD'
@@ -572,7 +536,6 @@ submissions/sub2: 0 run, 0 passed, 0 failed
 	 ^
 	src/hello.c:1:1: error: expected '=', ',', ';', 'asm' or '__attribute__' at end of input
 	make: *** [all] Error 1
-
 # submissions/2_user1/
 [FAIL] make. Test exited with 2
 	src/hello.c:1:1: error: unknown type name 'BAD'
@@ -580,7 +543,6 @@ submissions/sub2: 0 run, 0 passed, 0 failed
 	 ^
 	src/hello.c:1:1: error: expected '=', ',', ';', 'asm' or '__attribute__' at end of input
 	make: *** [all] Error 1
-
 # submissions/2_user2/
 [FAIL] make. Test exited with 2
 	src/hello.c:1:1: error: unknown type name 'BAD'
@@ -588,14 +550,13 @@ submissions/sub2: 0 run, 0 passed, 0 failed
 	 ^
 	src/hello.c:1:1: error: expected '=', ',', ';', 'asm' or '__attribute__' at end of input
 	make: *** [all] Error 1
-
 # submissions/sub1/
 [PASS] make. 
 [PASS] test1. 
 [FAIL] test2. diff -u tests/test2.res submissions/sub1//out/tests/test2.out
-
+	The expected output and the produced output are different.
 [FAIL] test3. diff -u tests-private/test3.res submissions/sub1//out/tests/test3.out
-
+	The expected output and the produced output are different.
 # submissions/sub2/
 [FAIL] make. Test exited with 2
 	src/hello.c:1:1: error: unknown type name 'BAD'
@@ -605,7 +566,6 @@ submissions/sub2: 0 run, 0 passed, 0 failed
 	 BAD C FILE
 	       ^
 	make: *** [all] Error 1
-
 
 == boxme -p -j none sub tests ==
 # submissions/10_user1/
@@ -615,7 +575,6 @@ submissions/sub2: 0 run, 0 passed, 0 failed
 	 ^
 	src/hello.c:1:1: error: expected '=', ',', ';', 'asm' or '__attribute__' at end of input
 	make: *** [all] Error 1
-
 # submissions/10_user2/
 [FAIL] make. Test exited with 2
 	src/hello.c:1:1: error: unknown type name 'BAD'
@@ -623,7 +582,6 @@ submissions/sub2: 0 run, 0 passed, 0 failed
 	 ^
 	src/hello.c:1:1: error: expected '=', ',', ';', 'asm' or '__attribute__' at end of input
 	make: *** [all] Error 1
-
 # submissions/1_user1/
 [FAIL] make. Test exited with 2
 	src/hello.c:1:1: error: unknown type name 'BAD'
@@ -631,7 +589,6 @@ submissions/sub2: 0 run, 0 passed, 0 failed
 	 ^
 	src/hello.c:1:1: error: expected '=', ',', ';', 'asm' or '__attribute__' at end of input
 	make: *** [all] Error 1
-
 # submissions/1_user2/
 [FAIL] make. Test exited with 2
 	src/hello.c:1:1: error: unknown type name 'BAD'
@@ -639,7 +596,6 @@ submissions/sub2: 0 run, 0 passed, 0 failed
 	 ^
 	src/hello.c:1:1: error: expected '=', ',', ';', 'asm' or '__attribute__' at end of input
 	make: *** [all] Error 1
-
 # submissions/1_user3/
 [FAIL] make. Test exited with 2
 	src/hello.c:1:1: error: unknown type name 'BAD'
@@ -647,7 +603,6 @@ submissions/sub2: 0 run, 0 passed, 0 failed
 	 ^
 	src/hello.c:1:1: error: expected '=', ',', ';', 'asm' or '__attribute__' at end of input
 	make: *** [all] Error 1
-
 # submissions/2_user1/
 [FAIL] make. Test exited with 2
 	src/hello.c:1:1: error: unknown type name 'BAD'
@@ -655,7 +610,6 @@ submissions/sub2: 0 run, 0 passed, 0 failed
 	 ^
 	src/hello.c:1:1: error: expected '=', ',', ';', 'asm' or '__attribute__' at end of input
 	make: *** [all] Error 1
-
 # submissions/2_user2/
 [FAIL] make. Test exited with 2
 	src/hello.c:1:1: error: unknown type name 'BAD'
@@ -663,12 +617,11 @@ submissions/sub2: 0 run, 0 passed, 0 failed
 	 ^
 	src/hello.c:1:1: error: expected '=', ',', ';', 'asm' or '__attribute__' at end of input
 	make: *** [all] Error 1
-
 # submissions/sub1/
 [PASS] make. 
 [PASS] test1. 
 [FAIL] test2. diff -u tests/test2.res submissions/sub1//out/tests/test2.out
-
+	The expected output and the produced output are different.
 # submissions/sub2/
 [FAIL] make. Test exited with 2
 	src/hello.c:1:1: error: unknown type name 'BAD'
@@ -678,7 +631,6 @@ submissions/sub2: 0 run, 0 passed, 0 failed
 	 BAD C FILE
 	       ^
 	make: *** [all] Error 1
-
 
 == boxme sub sub2 status ==
 [FAIL] make. Test exited with 2
@@ -689,7 +641,6 @@ submissions/sub2: 0 run, 0 passed, 0 failed
 	 BAD C FILE
 	       ^
 	make: *** [all] Error 1
-
 [NOT RUN] test1.
 [NOT RUN] test2.
 [NOT RUN] test3.
@@ -703,7 +654,6 @@ submissions/sub2: 0 run, 0 passed, 0 failed
 	 BAD C FILE
 	       ^
 	make: *** [all] Error 1
-
 [NOT RUN] test1.
 [NOT RUN] test2.
 
@@ -743,7 +693,6 @@ submissions/sub2: 1 run, 0 passed, 1 failed
 	 ^
 	src/hello.c:1:1: error: expected '=', ',', ';', 'asm' or '__attribute__' at end of input
 	make: *** [all] Error 1
-
 [NOT RUN] test1.
 [NOT RUN] test2.
 [NOT RUN] test3.
@@ -754,7 +703,6 @@ submissions/sub2: 1 run, 0 passed, 1 failed
 	 ^
 	src/hello.c:1:1: error: expected '=', ',', ';', 'asm' or '__attribute__' at end of input
 	make: *** [all] Error 1
-
 [NOT RUN] test1.
 [NOT RUN] test2.
 [NOT RUN] test3.
@@ -765,7 +713,6 @@ submissions/sub2: 1 run, 0 passed, 1 failed
 	 ^
 	src/hello.c:1:1: error: expected '=', ',', ';', 'asm' or '__attribute__' at end of input
 	make: *** [all] Error 1
-
 [NOT RUN] test1.
 [NOT RUN] test2.
 [NOT RUN] test3.
@@ -776,7 +723,6 @@ submissions/sub2: 1 run, 0 passed, 1 failed
 	 ^
 	src/hello.c:1:1: error: expected '=', ',', ';', 'asm' or '__attribute__' at end of input
 	make: *** [all] Error 1
-
 [NOT RUN] test1.
 [NOT RUN] test2.
 [NOT RUN] test3.
@@ -787,7 +733,6 @@ submissions/sub2: 1 run, 0 passed, 1 failed
 	 ^
 	src/hello.c:1:1: error: expected '=', ',', ';', 'asm' or '__attribute__' at end of input
 	make: *** [all] Error 1
-
 [NOT RUN] test1.
 [NOT RUN] test2.
 [NOT RUN] test3.
@@ -798,7 +743,6 @@ submissions/sub2: 1 run, 0 passed, 1 failed
 	 ^
 	src/hello.c:1:1: error: expected '=', ',', ';', 'asm' or '__attribute__' at end of input
 	make: *** [all] Error 1
-
 [NOT RUN] test1.
 [NOT RUN] test2.
 [NOT RUN] test3.
@@ -809,7 +753,6 @@ submissions/sub2: 1 run, 0 passed, 1 failed
 	 ^
 	src/hello.c:1:1: error: expected '=', ',', ';', 'asm' or '__attribute__' at end of input
 	make: *** [all] Error 1
-
 [NOT RUN] test1.
 [NOT RUN] test2.
 [NOT RUN] test3.
@@ -817,7 +760,7 @@ submissions/sub2: 1 run, 0 passed, 1 failed
 [PASS] make. 
 [PASS] test1. 
 [FAIL] test2. diff -u tests/test2.res submissions/sub1//out/tests/test2.out
-
+	The expected output and the produced output are different.
 [NOT RUN] test3.
 # submissions/sub2/
 [FAIL] make. Test exited with 2
@@ -828,7 +771,6 @@ submissions/sub2: 1 run, 0 passed, 1 failed
 	 BAD C FILE
 	       ^
 	make: *** [all] Error 1
-
 [NOT RUN] test1.
 [NOT RUN] test2.
 [NOT RUN] test3.
@@ -841,7 +783,6 @@ submissions/sub2: 1 run, 0 passed, 1 failed
 	 ^
 	src/hello.c:1:1: error: expected '=', ',', ';', 'asm' or '__attribute__' at end of input
 	make: *** [all] Error 1
-
 [NOT RUN] test1.
 [NOT RUN] test2.
 # submissions/10_user2/
@@ -851,7 +792,6 @@ submissions/sub2: 1 run, 0 passed, 1 failed
 	 ^
 	src/hello.c:1:1: error: expected '=', ',', ';', 'asm' or '__attribute__' at end of input
 	make: *** [all] Error 1
-
 [NOT RUN] test1.
 [NOT RUN] test2.
 # submissions/1_user1/
@@ -861,7 +801,6 @@ submissions/sub2: 1 run, 0 passed, 1 failed
 	 ^
 	src/hello.c:1:1: error: expected '=', ',', ';', 'asm' or '__attribute__' at end of input
 	make: *** [all] Error 1
-
 [NOT RUN] test1.
 [NOT RUN] test2.
 # submissions/1_user2/
@@ -871,7 +810,6 @@ submissions/sub2: 1 run, 0 passed, 1 failed
 	 ^
 	src/hello.c:1:1: error: expected '=', ',', ';', 'asm' or '__attribute__' at end of input
 	make: *** [all] Error 1
-
 [NOT RUN] test1.
 [NOT RUN] test2.
 # submissions/1_user3/
@@ -881,7 +819,6 @@ submissions/sub2: 1 run, 0 passed, 1 failed
 	 ^
 	src/hello.c:1:1: error: expected '=', ',', ';', 'asm' or '__attribute__' at end of input
 	make: *** [all] Error 1
-
 [NOT RUN] test1.
 [NOT RUN] test2.
 # submissions/2_user1/
@@ -891,7 +828,6 @@ submissions/sub2: 1 run, 0 passed, 1 failed
 	 ^
 	src/hello.c:1:1: error: expected '=', ',', ';', 'asm' or '__attribute__' at end of input
 	make: *** [all] Error 1
-
 [NOT RUN] test1.
 [NOT RUN] test2.
 # submissions/2_user2/
@@ -901,14 +837,13 @@ submissions/sub2: 1 run, 0 passed, 1 failed
 	 ^
 	src/hello.c:1:1: error: expected '=', ',', ';', 'asm' or '__attribute__' at end of input
 	make: *** [all] Error 1
-
 [NOT RUN] test1.
 [NOT RUN] test2.
 # submissions/sub1/
 [PASS] make. 
 [PASS] test1. 
 [FAIL] test2. diff -u tests/test2.res submissions/sub1//out/tests/test2.out
-
+	The expected output and the produced output are different.
 # submissions/sub2/
 [FAIL] make. Test exited with 2
 	src/hello.c:1:1: error: unknown type name 'BAD'
@@ -918,7 +853,6 @@ submissions/sub2: 1 run, 0 passed, 1 failed
 	 BAD C FILE
 	       ^
 	make: *** [all] Error 1
-
 [NOT RUN] test1.
 [NOT RUN] test2.
 
