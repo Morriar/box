@@ -118,4 +118,10 @@ class TestBoxCli
 		boxp("user list")
 		boxp("user status")
 	end
+
+	fun test_testcase do
+		boxdir = "data/test_cli/testcase/"
+		clean
+		box("tests")
+	end
 end
