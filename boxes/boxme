@@ -232,7 +232,7 @@ prepare_core() {
 		cp -ra $testdir/*.in $BOX_WORK/$testdir
 	done
 	cp -ra src $BOX_WORK/src
-	cp -ra $BOX_SRC/* $BOX_WORK/src
+	cp -ra $BOX_SRC/* $BOX_WORK/src 2> /dev/null
 	cp -ra Makefile $BOX_WORK/
 }
 
@@ -273,7 +273,7 @@ explode_tests() {
 # You might redefine this function but it is often better to implement the build in the Makefile.
 build() {
 	if test -f $BOX_WORK/Makefile; then
-		run "make" "make"
+		run "make" "make" "--no-print-directory"
 	fi
 }
 
@@ -316,7 +316,7 @@ check() {
 #     run "$1" src/hello.sh $(cat "$2")
 runtestcase() {
 	if [ -e "Makefile" ]; then
-		run "$1" make -s runone IN="$2"
+		run "$1" make --no-print-directory -s runone IN="$2"
 	else
 		echo "FatalError: runone not implemented" >&2
 		return 1
@@ -462,7 +462,7 @@ main() {
 				submissions
 				exit
 			fi
-			for sub in "$1" "submissions/$1"; do
+			for sub in "submissions/$1"; do
 				if [ -d "$sub" ]; then
 					shift
 					if [ -z "$1" ]; then
@@ -491,6 +491,7 @@ main() {
 			fi
 			for user in `list_users`; do
 				sub=`user_approuved "$user"`
+				sub=`basename "$sub"`
 				if [ -z "$sub" ]; then
 					echo "# $user: no approuval"
 				else
