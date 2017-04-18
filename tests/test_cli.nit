@@ -27,11 +27,14 @@ class TestBoxCli
 		"LC_ALL".setenv("C")
 	end
 
+	# default boxdir
+	var boxdir = "data/test_cli/simple_c/"
+
 	# Run a box command with arguments
 	fun box(args: String)
 	do
 		print "== boxme {args} =="
-		args = "-C data/test_cli/simple_c/ {args}"
+		args = "-C {boxdir} {args}"
 		print(boxme_cmd(args.split(" ")...))
 	end
 
@@ -55,14 +58,14 @@ class TestBoxCli
 	fun make(args: String...)
 	do
 		print "== make {args.join(" ")} =="
-		args.prepend(["-C", "data/test_cli/simple_c/", "--no-print-directory"])
+		args.prepend(["-C", boxdir, "--no-print-directory"])
 		print(make_cmd(args...))
 	end
 
 	# Make clean and clean submissions
 	fun clean do
 		make("clean")
-		system("rm -r data/test_cli/simple_c/submissions/*/out 2> /dev/null")
+		system("rm -r {boxdir}/submissions/*/out 2> /dev/null")
 	end
 
 	fun test_base_cmds do
