@@ -145,6 +145,18 @@ checkrun_core() {
 		echo "diff -u $res $out.out" >> $out.log
 		if ! diff -u $res $out.out > $out.diff; then
 			echo "diff -u $res $out.out" > $out.fail
+			if diff -iwBu $res $out.out > /dev/null; then
+				# Diff only in whitespaces
+				printf "There are whitespace differences between expected output and the produced output.\n\nTo pass the test, there should be no superfluous (nor missing) spaces, tabulations and blank lines.\n" > $out.msg
+			elif [ ! -s "$out.out" ]; then
+				# empty out
+				echo "Expected an output but nothing was produced." > $out.msg
+			elif [ ! -s "$res" ]; then
+				# empty res
+				echo "Expected no output but something was produced." > $out.msg
+			else
+				echo "The expected output and the produced output are different." > $out.msg
+			fi
 			return 1
 		fi
 	else
@@ -164,13 +176,11 @@ status() {
 	if [ ! -e $out.cmd ]; then
 		echo "[NOT RUN] $name."
 	elif [ -e $out.pass ]; then
-		echo -n "[PASS] $name. "
-		cat $out.pass
-		echo ""
+		echo "[PASS] $name. `head $out.pass`"
+		test -f "$out.msg" && sed 's/^/\t/' $out.msg
 	elif [ -e $out.fail ]; then
-		echo -n "[FAIL] $name. "
-		cat $out.fail
-		echo ""
+		echo "[FAIL] $name. `head $out.fail`"
+		test -f "$out.msg" && sed 's/^/\t/' $out.msg
 		return 1
 	elif checkown; then
 		echo "[ABORTED] $name."

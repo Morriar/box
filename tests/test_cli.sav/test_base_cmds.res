@@ -43,65 +43,65 @@ test2 tests/test2.in
 == boxme tests ==
 [PASS] make. 
 [FAIL] test1. diff -u tests/test1.res out/tests/test1.out
-
+	The expected output and the produced output are different.
 [FAIL] test2. diff -u tests/test2.res out/tests/test2.out
-
+	The expected output and the produced output are different.
 [FAIL] test3. diff -u tests-private/test3.res out/tests/test3.out
-
+	The expected output and the produced output are different.
 
 == boxme -p tests ==
 [PASS] make. 
 [FAIL] test1. diff -u tests/test1.res out/tests/test1.out
-
+	The expected output and the produced output are different.
 [FAIL] test2. diff -u tests/test2.res out/tests/test2.out
-
+	The expected output and the produced output are different.
 
 == boxme -j copy tests ==
 [PASS] make. 
 [FAIL] test1. diff -u tests/test1.res out/tests/test1.out
-
+	The expected output and the produced output are different.
 [FAIL] test2. diff -u tests/test2.res out/tests/test2.out
-
+	The expected output and the produced output are different.
 [FAIL] test3. diff -u tests-private/test3.res out/tests/test3.out
-
+	The expected output and the produced output are different.
 
 == boxme -p -j copy tests ==
 [PASS] make. 
 [FAIL] test1. diff -u tests/test1.res out/tests/test1.out
-
+	The expected output and the produced output are different.
 [FAIL] test2. diff -u tests/test2.res out/tests/test2.out
-
+	The expected output and the produced output are different.
 
 == boxme -j none tests ==
 [PASS] make. 
 [FAIL] test1. diff -u tests/test1.res out/tests/test1.out
-
+	The expected output and the produced output are different.
 [FAIL] test2. diff -u tests/test2.res out/tests/test2.out
-
+	The expected output and the produced output are different.
 [FAIL] test3. diff -u tests-private/test3.res out/tests/test3.out
-
+	The expected output and the produced output are different.
 
 == boxme -p -j none tests ==
 [PASS] make. 
 [FAIL] test1. diff -u tests/test1.res out/tests/test1.out
-
+	The expected output and the produced output are different.
 [FAIL] test2. diff -u tests/test2.res out/tests/test2.out
-
+	The expected output and the produced output are different.
 
 == boxme status ==
 [PASS] make. 
 [FAIL] test1. diff -u tests/test1.res out/tests/test1.out
-
+	The expected output and the produced output are different.
 [FAIL] test2. diff -u tests/test2.res out/tests/test2.out
-
+	The expected output and the produced output are different.
 [NOT RUN] test3.
 
 == boxme -p status ==
 [PASS] make. 
 [FAIL] test1. diff -u tests/test1.res out/tests/test1.out
-
+	The expected output and the produced output are different.
 [FAIL] test2. diff -u tests/test2.res out/tests/test2.out
-
+	The expected output and the produced output are different.
 
 == make clean ==
 rm -rf bin/ out/
