@@ -268,6 +268,37 @@ class TestBox
 	end
 end
 
+class TestSubmission
+	super TestSuite
+
+	var user1 = new User("u1")
+	var user2 = new User("u2")
+	var box: Box
+
+	redef fun before_test do
+		box = new Box("data/test_model/box4")
+		box.clean_submissions
+	end
+
+	redef fun after_test do
+		box.clean_submissions
+	end
+
+	fun test_new do
+		var files = box.source_files
+		var sub = new Submission(box, user1.id, files)
+		assert sub.box == box
+		assert sub.user == user1.id
+		assert sub.files.length == files.length
+		assert sub.teammate == null
+		assert not sub.is_approuved
+		assert sub.status.tests_passed == 0
+		assert sub.status.tests_failed == 3
+		assert not sub.status.is_runned
+		assert not sub.status.is_passed
+	end
+end
+
 class TestSourceFile
 	super TestSuite
 
