@@ -68,7 +68,7 @@
 		<br>
 	</div>
 
-	<div ng-if='vm.session && vm.box.is_active'>
+	<div ng-if='vm.session && vm.box.is_active && vm.box.allow_submissions'>
 		<div class='card'>
 			<form ng-submit='vm.sendSubmission()'>
 				<div class='card-left bg-dark bg-primary text-center'>
