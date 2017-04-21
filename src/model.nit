@@ -170,6 +170,13 @@ class Box
 		return active
 	end
 
+	# Does this box allow student to submit their work?
+	var allow_submissions: Bool is lazy do
+		var v = config["allow_submissions"]
+		if v != null and v == "false" then return false
+		return true
+	end
+
 	# Box unique ID
 	#
 	# Default is `path.basename`.
@@ -290,6 +297,7 @@ class Box
 	redef fun core_serialize_to(v) do
 		v.serialize_attribute("id", id)
 		v.serialize_attribute("title", title)
+		v.serialize_attribute("allow_submissions", allow_submissions)
 		v.serialize_attribute("is_active", is_active)
 		v.serialize_attribute("closes_at", close_date)
 		v.serialize_attribute("public_tests", public_tests.length)

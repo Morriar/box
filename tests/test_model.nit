@@ -99,6 +99,15 @@ class TestBox
 		assert not box.is_active
 	end
 
+	fun test_box_allow_submissions do
+		var box = new Box("data/test_model/box1")
+		assert box.allow_submissions
+		box = new Box("data/test_model/box2")
+		assert not box.allow_submissions
+		box = new Box("data/test_model/box4")
+		assert box.allow_submissions
+	end
+
 	fun test_box_close_date do
 		var box = new Box("data/test_model/box1")
 		assert box.close_date == null

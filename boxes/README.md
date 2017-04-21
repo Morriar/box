@@ -33,6 +33,7 @@ All the configuration options are optional:
 * `owner`: user that own the box (default is `null`)
 * `active`: set `false` to refuse new submissions (default is `true`)
 * `closes_at`: timestamp until when the box accepts new submissions
+* `allow_submissions`: set `false` to disable student submissions but keep the box active (default is `true`)
 * `title`: pretty title for the HTML frontend (default is the box `id`)
 
 ### Makefile
