@@ -240,6 +240,32 @@ class TestBox
 
 		box.clean_submissions
 	end
+
+	fun test_user_submissions do
+		var box = new Box("data/test_model/box1")
+		box.clean_submissions
+		assert box.submissions.is_empty
+
+		var u1 = new User("user1")
+		var sub = new Submission(box, u1.id, box.source_files)
+		sub.save_files
+		assert box.user_submissions(u1).length == 1
+
+		var u2 = new User("user2")
+		sub = new Submission(box, u2.id, box.source_files)
+		sub.save_files
+		assert box.user_submissions(u1).length == 1
+		assert box.user_submissions(u2).length == 1
+
+		1.0.sleep
+
+		sub = new Submission(box, u1.id, box.source_files)
+		sub.save_files
+		assert box.user_submissions(u1).length == 2
+		assert box.user_submissions(u2).length == 1
+
+		box.clean_submissions
+	end
 end
 
 class TestSourceFile
