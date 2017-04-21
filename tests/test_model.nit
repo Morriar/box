@@ -187,6 +187,24 @@ class TestBox
 		assert box.id == "terrasa_a:Box4"
 		assert box.owner == "terrasa_a"
 	end
+
+	fun test_last_submission do
+		var user = new User("dev")
+		var box = new Box("data/test_model/box1")
+		box.clean_submissions
+		assert box.submissions.is_empty
+
+		var sub = box.last_submission(user)
+		var id = sub.id
+		assert sub.user == "dev"
+		assert box.submissions.length == 1
+
+		sub = box.last_submission(user)
+		assert sub.id == id
+		assert box.submissions.length == 1
+
+		box.clean_submissions
+	end
 end
 
 class TestSourceFile
