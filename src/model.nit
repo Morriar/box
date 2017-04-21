@@ -270,6 +270,11 @@ class Box
 		return res
 	end
 
+	# Delete all the submissions for `self`
+	fun clean_submissions do
+		sys.system "rm -rf {path / "submissions"}"
+	end
+
 	# Get the submission with `id`
 	fun get_submission(id: String): nullable Submission do
 		if not (path / "submissions" / id).file_exists then return null
