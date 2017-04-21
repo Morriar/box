@@ -157,6 +157,11 @@ class APIBoxSubmit
 		var box = get_box(req, res)
 		if box == null then return
 
+		if not box.allow_submissions then
+			res.api_error("Box does not accept submissions", 403)
+			return
+		end
+
 		if not box.is_active then
 			res.api_error("Box is closed", 403)
 			return

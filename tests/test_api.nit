@@ -193,6 +193,7 @@ class TestAPIBoxSubmitPut
 
 	redef fun client_test do
 		system "curl -X PUT -s {host}:{port}/api/boxes/NOTFOUND/submit"
+		system "curl -X PUT -s {host}:{port}/api/boxes/dev:BoxNit/submit"
 
 		var box = model.get_box("dev:BoxJava").as(not null)
 		var files = box.source_files
