@@ -161,49 +161,52 @@ class TestAPIBoxSubmit
 		system "curl -s {host}:{port}/api/boxes/NOTFOUND/submit"
 		system "curl -s {host}:{port}/api/boxes/BoxPep/submit"
 		system "curl -s {host}:{port}/api/boxes/dev:BoxNit/submit"
-		# TODO try to get a new submission from scratch
-		# clean_submissions("BoxJava")
-		# system "curl -s {host}:{port}/api/boxes/dev:BoxJava/submit"
+		clean_submissions("BoxJava")
+		system "curl -s {host}:{port}/api/boxes/dev:BoxJava/submit"
+		clean_submissions("BoxJava")
 	end
 
 	fun test_api_box_submit do run_test(app)
 end
 
-# TODO fix timestamps
-# TODO fix path
-# class TestAPIBoxSubmitPost
-#	super TestAPI
-#
-#	redef fun client_test do
-#		system "curl -X POST -s {host}:{port}/api/boxes/NOTFOUND/submit"
-#
-#		var box = model.get_box("dev:BoxJava").as(not null)
-#		var files = box.source_files
-#		var sub = new SubmissionForm(files)
-#		sub.to_json.write_to_file "tmp{testid}"
-#		system "curl -X POST -d @tmp{testid} -s {host}:{port}/api/boxes/{box.id}/submit"
-#		system "rm -rf tmp{testid}"
-#		clean_submissions("BoxJava")
-#	end
-#
-#	fun test_api_box_submit_post do run_test(app)
-# end
+class TestAPIBoxSubmitPost
+	super TestAPI
 
-# TODO fix timestamps
-# class TestAPIBoxSubmitPut
-#	super TestAPI
-#
-#	redef fun client_test do
-#		system "curl -X PUT -s {host}:{port}/api/boxes/NOTFOUND/submit"
-#
-#		var box = model.get_box("dev:BoxJava").as(not null)
-#		var files = box.source_files
-#		var sub = new SubmissionForm(files)
-#		sub.to_json.write_to_file "tmp{testid}"
-#		system "curl -X PUT -d @tmp{testid} -s {host}:{port}/api/boxes/{box.id}/submit"
-#		system "rm -rf tmp{testid}"
-#		clean_submissions("BoxJava")
-#	end
-#
-#	fun test_api_box_submit_put do run_test(app)
-# end
+	redef fun client_test do
+		system "curl -X POST -s {host}:{port}/api/boxes/NOTFOUND/submit"
+
+		var box = model.get_box("dev:BoxJava").as(not null)
+		var files = box.source_files
+		var sub = new SubmissionForm(files)
+		var json = "test_api_box_submit_post.json"
+		sub.to_json.write_to_file json
+		system "curl -X POST -d @{json} -s {host}:{port}/api/boxes/{box.id}/submit"
+		system "rm -f {json}"
+		clean_submissions("BoxJava")
+	end
+
+	fun test_api_box_submit_post do run_test(app)
+end
+
+class TestAPIBoxSubmitPut
+	super TestAPI
+
+	redef fun client_test do
+		system "curl -X PUT -s {host}:{port}/api/boxes/NOTFOUND/submit"
+
+		var box = model.get_box("dev:BoxJava").as(not null)
+		var files = box.source_files
+		var sub = new SubmissionForm(files)
+		var json = "test_api_box_submit_put.json"
+		sub.to_json.write_to_file json
+		system "curl -X PUT -d @{json} -s {host}:{port}/api/boxes/{box.id}/submit"
+		system "rm -f {json}"
+		clean_submissions("BoxJava")
+	end
+
+	fun test_api_box_submit_put do run_test(app)
+end
+
+redef class Submission
+	redef var timestamp = 0
+end
