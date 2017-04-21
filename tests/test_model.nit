@@ -308,6 +308,18 @@ class TestSubmission
 		assert sub.status.is_runned
 		assert not sub.status.is_passed
 	end
+
+	fun test_approuve do
+		var files = box.source_files
+		var sub = new Submission(box, user1.id, files)
+		sub.save_files
+		sub.approuve
+		assert sub.is_approuved
+		assert sub.status.tests_passed == 0
+		assert sub.status.tests_failed == 3
+		assert not sub.status.is_runned
+		assert not sub.status.is_passed
+	end
 end
 
 class TestSourceFile

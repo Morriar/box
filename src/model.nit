@@ -391,7 +391,7 @@ class Submission
 	var id: String is lazy do return "{timestamp}_{user}".strip_id
 
 	# Is this submission approuved by the student?
-	var is_approuved: Bool is lazy do return (path / "APPROUVED").file_exists
+	fun is_approuved: Bool do return (path / "APPROUVED").file_exists
 
 	init do
 		save_files
