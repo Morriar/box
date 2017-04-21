@@ -224,6 +224,22 @@ class TestBox
 
 		box.clean_submissions
 	end
+
+	fun test_submissions do
+		var box = new Box("data/test_model/box1")
+		box.clean_submissions
+		assert box.submissions.is_empty
+
+		var sub = new Submission(box, "user1", box.source_files)
+		sub.save_files
+		assert box.submissions.length == 1
+
+		sub = new Submission(box, "user2", box.source_files)
+		sub.save_files
+		assert box.submissions.length == 2
+
+		box.clean_submissions
+	end
 end
 
 class TestSourceFile
