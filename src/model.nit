@@ -270,6 +270,11 @@ class Box
 		return res
 	end
 
+	# Delete all the submissions for `self`
+	fun clean_submissions do
+		sys.system "rm -rf {path / "submissions"}"
+	end
+
 	# Get the submission with `id`
 	fun get_submission(id: String): nullable Submission do
 		if not (path / "submissions" / id).file_exists then return null
@@ -386,7 +391,7 @@ class Submission
 	var id: String is lazy do return "{timestamp}_{user}".strip_id
 
 	# Is this submission approuved by the student?
-	var is_approuved: Bool is lazy do return (path / "APPROUVED").file_exists
+	fun is_approuved: Bool do return (path / "APPROUVED").file_exists
 
 	init do
 		save_files
@@ -408,7 +413,13 @@ class Submission
 			files.add new SourceFile(file, (path / file).to_path.read_all)
 		end
 
-		init(box, user, files)
+		var teammate = null
+		if is_approuved then
+			parts = (path / "APPROUVED").to_path.read_all.split(" teammate: ")
+			if parts.length == 2 then teammate = parts.last.trim
+		end
+
+		init(box, user, files, teammate)
 	end
 
 	# Check a submission (run tests and return the results)

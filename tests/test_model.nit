@@ -187,6 +187,159 @@ class TestBox
 		assert box.id == "terrasa_a:Box4"
 		assert box.owner == "terrasa_a"
 	end
+
+	fun test_last_submission do
+		var user = new User("dev")
+		var box = new Box("data/test_model/box1")
+		box.clean_submissions
+		assert box.submissions.is_empty
+
+		var sub = box.last_submission(user)
+		var id = sub.id
+		assert sub.user == "dev"
+		assert box.submissions.length == 1
+
+		sub = box.last_submission(user)
+		assert sub.id == id
+		assert box.submissions.length == 1
+
+		box.clean_submissions
+	end
+
+	fun test_get_submission do
+		var user = new User("dev")
+		var box = new Box("data/test_model/box1")
+		box.clean_submissions
+		assert box.submissions.is_empty
+
+		var sub = null
+		sub = box.last_submission(user)
+		var id = sub.id
+		assert sub.user == "dev"
+		assert box.submissions.length == 1
+
+		sub = box.get_submission(id)
+		assert sub != null
+		assert sub.id == id
+
+		box.clean_submissions
+	end
+
+	fun test_submissions do
+		var box = new Box("data/test_model/box1")
+		box.clean_submissions
+		assert box.submissions.is_empty
+
+		var sub = new Submission(box, "user1", box.source_files)
+		sub.save_files
+		assert box.submissions.length == 1
+
+		sub = new Submission(box, "user2", box.source_files)
+		sub.save_files
+		assert box.submissions.length == 2
+
+		box.clean_submissions
+	end
+
+	fun test_user_submissions do
+		var box = new Box("data/test_model/box1")
+		box.clean_submissions
+		assert box.submissions.is_empty
+
+		var u1 = new User("user1")
+		var sub = new Submission(box, u1.id, box.source_files)
+		sub.save_files
+		assert box.user_submissions(u1).length == 1
+
+		var u2 = new User("user2")
+		sub = new Submission(box, u2.id, box.source_files)
+		sub.save_files
+		assert box.user_submissions(u1).length == 1
+		assert box.user_submissions(u2).length == 1
+
+		1.0.sleep
+
+		sub = new Submission(box, u1.id, box.source_files)
+		sub.save_files
+		assert box.user_submissions(u1).length == 2
+		assert box.user_submissions(u2).length == 1
+
+		box.clean_submissions
+	end
+end
+
+class TestSubmission
+	super TestSuite
+
+	var user1 = new User("u1")
+	var user2 = new User("u2")
+	var box: Box
+
+	redef fun before_test do
+		box = new Box("data/test_model/box4")
+		box.clean_submissions
+	end
+
+	redef fun after_test do
+		box.clean_submissions
+	end
+
+	fun test_new do
+		var files = box.source_files
+		var sub = new Submission(box, user1.id, files)
+		assert sub.box == box
+		assert sub.user == user1.id
+		assert sub.files.length == files.length
+		assert sub.teammate == null
+		assert not sub.is_approuved
+		assert sub.status.tests_passed == 0
+		assert sub.status.tests_failed == 3
+		assert not sub.status.is_runned
+		assert not sub.status.is_passed
+	end
+
+	fun test_check do
+		var files = box.source_files
+		var sub = new Submission(box, user1.id, files)
+		sub.check
+		assert not sub.is_approuved
+		assert sub.status.tests_passed == 1 # make
+		assert sub.status.tests_failed == 2
+		assert sub.status.is_runned
+		assert not sub.status.is_passed
+	end
+
+	fun test_approuve do
+		var files = box.source_files
+		var sub = new Submission(box, user1.id, files)
+		sub.save_files
+		sub.approuve
+		assert sub.is_approuved
+		assert sub.status.tests_passed == 0
+		assert sub.status.tests_failed == 3
+		assert not sub.status.is_runned
+		assert not sub.status.is_passed
+	end
+
+	fun test_teammate do
+		var files = box.source_files
+		var sub = new Submission(box, user1.id, files)
+		sub.teammate = user2.id
+		sub.approuve
+		assert sub.is_approuved
+		assert sub.status.tests_passed == 0
+		assert sub.status.tests_failed == 3
+		assert not sub.status.is_runned
+		assert not sub.status.is_passed
+
+		sub = box.last_submission(user1)
+		assert sub.is_approuved
+		assert sub.status.tests_passed == 0
+		assert sub.status.tests_failed == 3
+		assert not sub.status.is_runned
+		assert not sub.status.is_passed
+		assert sub.teammate == user2.id
+	end
 end
 
 class TestSourceFile
