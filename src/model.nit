@@ -413,7 +413,13 @@ class Submission
 			files.add new SourceFile(file, (path / file).to_path.read_all)
 		end
 
-		init(box, user, files)
+		var teammate = null
+		if is_approuved then
+			parts = (path / "APPROUVED").to_path.read_all.split(" teammate: ")
+			if parts.length == 2 then teammate = parts.last.trim
+		end
+
+		init(box, user, files, teammate)
 	end
 
 	# Check a submission (run tests and return the results)
