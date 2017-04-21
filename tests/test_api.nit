@@ -27,6 +27,11 @@ abstract class TestAPI
 	var testid: Int = "NIT_TESTING_ID".environ.to_i
 
 	redef fun before_test do
+		# Drop MAKELEVEL to avoid makelevel output variation
+		"MAKELEVEL".setenv("")
+		# Force local to avoid l10n variation in messages (e.g. make)
+		"LC_ALL".setenv("C")
+
 		config = new AppConfig
 		config.parse_options(new Array[String])
 
