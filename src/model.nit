@@ -197,6 +197,7 @@ class Box
 		for file in source_files_list do
 			res.add new SourceFile(file, (path / file).to_path.read_all)
 		end
+		(new FileComparator).sort(res)
 		return res
 	end
 
@@ -532,6 +533,7 @@ end
 # See `Box.source_files`.
 class SourceFile
 	super Jsonable
+	super Comparable
 	serialize
 
 	# Path to the file from the box root directory
@@ -565,6 +567,14 @@ class SubmissionComparator
 
 	redef type COMPARED: Submission
 	redef fun compare(a, b) do return a.timestamp <=> b.timestamp
+end
+
+# Compare files by alphnumeric order
+class FileComparator
+	super DefaultComparator
+
+	redef type COMPARED: SourceFile
+	redef fun compare(a, b) do return a.path <=> b.path
 end
 
 redef class String
