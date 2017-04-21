@@ -1,20 +1,14 @@
 <ul class='nav navbar-nav navbar-right'>
 	<li class='dropdown'>
 		<a class='btn btn-link dropdown-toggle' type='button' data-toggle='dropdown'>
-			<img class='flag' ng-src='/langs/lang-{{vm.currentLang}}.png' />
+			<span class='text-uppercase'>{{vm.currentLang}}</span>
 		</a>
 		<ul class='dropdown-menu dropdown-menu-right'>
 			<li>
-				<a ng-click='vm.select("en")'>
-					<img class='flag' ng-src='/langs/lang-en.png' />
-					&nbsp;&nbsp;English
-				</a>
+				<a ng-click='vm.select("en")'>English</a>
 			</li>
 			<li>
-				<a ng-click='vm.select("fr")'>
-					<img class='flag' ng-src='/langs/lang-fr.png' />
-					&nbsp;&nbsp;Français
-				</a>
+				<a ng-click='vm.select("fr")'>Français</a>
 			</li>
 		</ul>
 	</li>
