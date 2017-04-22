@@ -61,6 +61,8 @@ abstract class APIBoxHandler
 		if not deserializer.errors.is_empty then
 			res.error 400
 			print "Error deserializing submission"
+			print deserializer.errors.join("\n")
+			print post.write_to_string
 			return null
 		end
 		return submission_form
@@ -212,25 +214,6 @@ class APIBoxUserSubmission
 	redef fun get(req, res) do
 		var submission = get_submission(req, res)
 		if submission == null then return
-		res.json submission
-	end
-
-	redef fun post(req, res) do
-		var box = get_box(req, res)
-		if box == null then return
-		var user = get_auth_user(req, res)
-		if user == null then return
-		var submission = get_submission(req, res)
-		if submission == null then return
-		var sub_form = deserialize_submission(req, res)
-		if sub_form == null then return
-
-		if submission == box.last_submission(user) then
-			submission.files = sub_form.files
-			submission.save_files
-		else
-			submission = new Submission(box, user.id, sub_form.files, sub_form.teammate)
-		end
 		res.json submission
 	end
 end

@@ -144,11 +144,6 @@
 						.success(cb)
 						.error(cbErr);
 				},
-				saveSubmission: function(bid, sid, data, cb, cbErr) {
-					$http.post(apiUrl + '/boxes/' + bid + '/submissions/' + sid, data)
-						.success(cb)
-						.error(cbErr);
-				},
 				lastSubmission: function(bid, cb, cbErr) {
 					$http.get(apiUrl + '/boxes/' + bid + '/submit')
 						.success(cb)
@@ -172,15 +167,11 @@
 		.controller('BoxSubmitCtrl', function(Errors, Boxes, $scope, $anchorScroll, session, box, submission) {
 			var vm = this;
 
-			$scope.$on('code-change', function(event, file) {
-				Boxes.saveSubmission(
-					vm.box.id, vm.submission.id, vm.submission, function(data) {
-				}, Errors.handleError);
-			})
-
 			vm.checkSubmission = function() {
 				$('#pendingModal').modal({backdrop: 'static'});
-				Boxes.checkSubmission(vm.box.id, vm.submission, function(data) {
+				Boxes.checkSubmission(vm.box.id, {
+						files: vm.submission.files
+					}, function(data) {
 					vm.submission.status = data;
 					setTimeout(function() {
 						$('#pendingModal').modal('hide');
@@ -205,7 +196,10 @@
 			};
 
 			vm.postSubmission = function() {
-				Boxes.sendSubmission(vm.box.id, vm.submission, function (data) {
+				Boxes.sendSubmission(vm.box.id, {
+						files: vm.submission.files,
+						teammate: vm.submission.teammate
+					}, function (data) {
 					$('#warningModal').modal('hide');
 					$('#submitModal').modal();
 				}, Errors.handleError);
