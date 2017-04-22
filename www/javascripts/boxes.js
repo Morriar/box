@@ -169,7 +169,9 @@
 
 			vm.checkSubmission = function() {
 				$('#pendingModal').modal({backdrop: 'static'});
-				Boxes.checkSubmission(vm.box.id, vm.submission, function(data) {
+				Boxes.checkSubmission(vm.box.id, {
+						files: vm.submission.files
+					}, function(data) {
 					vm.submission.status = data;
 					setTimeout(function() {
 						$('#pendingModal').modal('hide');
@@ -194,7 +196,10 @@
 			};
 
 			vm.postSubmission = function() {
-				Boxes.sendSubmission(vm.box.id, vm.submission, function (data) {
+				Boxes.sendSubmission(vm.box.id, {
+						files: vm.submission.files,
+						teammate: vm.submission.teammate
+					}, function (data) {
 					$('#warningModal').modal('hide');
 					$('#submitModal').modal();
 				}, Errors.handleError);
