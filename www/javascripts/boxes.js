@@ -144,11 +144,6 @@
 						.success(cb)
 						.error(cbErr);
 				},
-				saveSubmission: function(bid, sid, data, cb, cbErr) {
-					$http.post(apiUrl + '/boxes/' + bid + '/submissions/' + sid, data)
-						.success(cb)
-						.error(cbErr);
-				},
 				lastSubmission: function(bid, cb, cbErr) {
 					$http.get(apiUrl + '/boxes/' + bid + '/submit')
 						.success(cb)
@@ -171,12 +166,6 @@
 
 		.controller('BoxSubmitCtrl', function(Errors, Boxes, $scope, $anchorScroll, session, box, submission) {
 			var vm = this;
-
-			$scope.$on('code-change', function(event, file) {
-				Boxes.saveSubmission(
-					vm.box.id, vm.submission.id, vm.submission, function(data) {
-				}, Errors.handleError);
-			})
 
 			vm.checkSubmission = function() {
 				$('#pendingModal').modal({backdrop: 'static'});
