@@ -22,8 +22,14 @@ if config.help then
 	exit 0
 end
 
+var boxes_dir = ["boxes/"]
+if config.args.not_empty then boxes_dir = config.args
+
 var model = new Model
-model.load_boxes("boxes/")
+for dir in boxes_dir do
+	model.load_boxes(dir)
+end
+print "Loaded {model.boxes.length} boxes from {boxes_dir.length} directories"
 
 var app = new App
 

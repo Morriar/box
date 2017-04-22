@@ -23,5 +23,8 @@ debug:
 web:
 	./bin/app
 
+web-debug:
+	./bin/app boxes/ tests/data/test_model/ tests/data/test_api/ tests/data/test_boxes/
+
 check:
 	cd tests/ && make check
