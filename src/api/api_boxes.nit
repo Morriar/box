@@ -61,6 +61,8 @@ abstract class APIBoxHandler
 		if not deserializer.errors.is_empty then
 			res.error 400
 			print "Error deserializing submission"
+			print deserializer.errors.join("\n")
+			print post.write_to_string
 			return null
 		end
 		return submission_form
