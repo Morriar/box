@@ -175,6 +175,7 @@ class TestAPIBoxSubmitPost
 	redef fun client_test do
 		system "curl -X POST -s {host}:{port}/api/boxes/NOTFOUND/submit"
 
+		clean_submissions("BoxJava")
 		var box = model.get_box("dev:BoxJava").as(not null)
 		var files = box.source_files
 		var sub = new SubmissionForm(files)
@@ -195,6 +196,7 @@ class TestAPIBoxSubmitPut
 		system "curl -X PUT -s {host}:{port}/api/boxes/NOTFOUND/submit"
 		system "curl -X PUT -s {host}:{port}/api/boxes/dev:BoxNit/submit"
 
+		clean_submissions("BoxJava")
 		var box = model.get_box("dev:BoxJava").as(not null)
 		var files = box.source_files
 		var sub = new SubmissionForm(files)
@@ -210,4 +212,10 @@ end
 
 redef class Submission
 	redef var timestamp = 0
+
+	redef fun check do
+		"PENDING".write_to_file(path / "PENDING")
+		box.boxme("-p", "sub", id, "tests")
+		return status
+	end
 end

@@ -302,10 +302,8 @@ class TestSubmission
 		var files = box.source_files
 		var sub = new Submission(box, user1.id, files)
 		sub.check
+		assert sub.is_pending
 		assert not sub.is_approuved
-		assert sub.status.tests_passed == 1 # make
-		assert sub.status.tests_failed == 2
-		assert sub.status.is_runned
 		assert not sub.status.is_passed
 	end
 
