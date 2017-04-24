@@ -68,6 +68,12 @@
 							Boxes.lastSubmission($stateParams.bId,
 								d.resolve, function() {d.resolve()});
 							return d.promise;
+						},
+						status: function(Boxes, $q, $stateParams) {
+							var d = $q.defer();
+							Boxes.lastSubmissionStatus($stateParams.bId,function(data) {console.log(data); 
+								d.resolve(data)}, function() {d.resolve()});
+							return d.promise;
 						}
 					},
 					controller: 'BoxSubmitCtrl',
@@ -81,6 +87,12 @@
 						submission: function(Boxes, $q, $stateParams) {
 							var d = $q.defer();
 							Boxes.getSubmission($stateParams.bId, $stateParams.sId,
+								d.resolve, function() {d.resolve()});
+							return d.promise;
+						},
+						status: function(Boxes, $q, $stateParams) {
+							var d = $q.defer();
+							Boxes.getSubmissionStatus($stateParams.bId, $stateParams.sId,
 								d.resolve, function() {d.resolve()});
 							return d.promise;
 						}
@@ -98,7 +110,7 @@
 							Boxes.getSubmissions($stateParams.bId,
 								d.resolve, function() {d.resolve()});
 							return d.promise;
-						}
+						},
 					},
 					controller: function(box, submissions) {
 						this.box = box;
@@ -144,8 +156,18 @@
 						.success(cb)
 						.error(cbErr);
 				},
+				getSubmissionStatus: function(bid, sid, cb, cbErr) {
+					$http.get(apiUrl + '/boxes/' + bid + '/submissions/' + sid + '/status')
+						.success(cb)
+						.error(cbErr);
+				},
 				lastSubmission: function(bid, cb, cbErr) {
 					$http.get(apiUrl + '/boxes/' + bid + '/submit')
+						.success(cb)
+						.error(cbErr);
+				},
+				lastSubmissionStatus: function(bid, cb, cbErr) {
+					$http.get(apiUrl + '/boxes/' + bid + '/submit/status')
 						.success(cb)
 						.error(cbErr);
 				},
@@ -164,19 +186,26 @@
 
 		/* Controllers */
 
-		.controller('BoxSubmitCtrl', function(Errors, Boxes, $scope, $anchorScroll, session, box, submission) {
+		.controller('BoxSubmitCtrl', function(Errors, Boxes, $scope, $anchorScroll, session, box, submission, status) {
 			var vm = this;
 
+			vm.checkSubmissionStatus = function() {
+				Boxes.getSubmissionStatus(vm.box.id, vm.submission.id, function(data) {
+					vm.status = data;
+					if(vm.status.is_pending) {
+						setTimeout(function() {
+							vm.checkSubmissionStatus();
+						}, 1000);
+					}
+				}, Errors.handleError);
+			}
+
 			vm.checkSubmission = function() {
-				$('#pendingModal').modal({backdrop: 'static'});
 				Boxes.checkSubmission(vm.box.id, {
 						files: vm.submission.files
 					}, function(data) {
-					vm.submission.status = data;
-					setTimeout(function() {
-						$('#pendingModal').modal('hide');
-						$anchorScroll('submit');
-					}, 500);
+					vm.submission = data;
+					vm.checkSubmissionStatus();
 				}, Errors.handleError);
 			}
 
@@ -188,7 +217,7 @@
 						return false;
 					}
 				}
-				if(!vm.submission.status.is_runned || !vm.submission.status.is_passed) {
+				if(!vm.status.is_runned || !vm.status.is_passed) {
 					$('#warningModal').modal();
 				} else {
 					vm.postSubmission();
@@ -208,6 +237,9 @@
 			vm.session = session;
 			vm.box = box;
 			vm.submission = submission;
+			vm.status = status;
+
+			vm.checkSubmissionStatus();
 		})
 
 		/* Directives */
