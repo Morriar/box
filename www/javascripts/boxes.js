@@ -239,7 +239,9 @@
 			vm.submission = submission;
 			vm.status = status;
 
-			vm.checkSubmissionStatus();
+			if(vm.submission) {
+				vm.checkSubmissionStatus();
+			}
 		})
 
 		/* Directives */
