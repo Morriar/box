@@ -152,7 +152,8 @@ class APIBoxSubmit
 		if sub_form == null then return
 
 		var submission = new Submission(box, user.id, sub_form.files, sub_form.teammate)
-		res.json submission.check
+		submission.check
+		res.json submission
 	end
 
 	redef fun put(req, res) do

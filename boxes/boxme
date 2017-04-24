@@ -531,6 +531,7 @@ main() {
 			test -e "$BOX_OUT/work" && rm -r "$BOX_OUT/work"
 			test -e "$BOX_OUT/tests" && rm -r "$BOX_OUT/tests"
 			work
+			rm -f "$sub/PENDING"
 			freeown
 			return
 			;;
