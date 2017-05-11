@@ -67,13 +67,13 @@ public class LightCombat extends HeavyCombat {
     }
 
     @Requires({"target != null", "target != this", "!getWeapons().isEmpty()"})
-    @Ensures({"result"})
+    @Ensures({"result"}) // We are guaranted that `target != null` by the requires
     @Override
     public Boolean fire(Ship target) {
         return super.fire(target);
     }
 
-    @Requires("getHull() > 0")
+    @Requires("hull > 0")
     @Ensures("getHull() == old(getHull()) - hull")
     @Override
     public Boolean damage(Integer hull) {
