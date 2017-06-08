@@ -43,11 +43,15 @@ class Model
 
 	# Load all boxes from `path`
 	fun load_boxes(path: String) do
-		for file in path.files do
-			if not is_box(path / file) then continue
-			var box = new Box(path / file)
-			boxes[box.id] = box
-		end
+		for file in path.files do load_box(path / file)
+	end
+
+	# Load a box in `path`
+	fun load_box(path: String): nullable Box do
+		if not is_box(path) then return null
+		var box = new Box(path)
+		boxes[box.id] = box
+		return box
 	end
 
 	# Is `path` a correct box directory?
