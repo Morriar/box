@@ -92,7 +92,6 @@ end
 
 # A user can own boxes and make submissions
 class User
-	super Jsonable
 	serialize
 
 	# User unique identifier (from shib uqam)
@@ -132,7 +131,6 @@ end
 #
 # A Box is a container for submissions and tests.
 class Box
-	super Jsonable
 	super Comparable
 	serialize
 
@@ -316,7 +314,6 @@ end
 
 # A test case
 class TestCase
-	super Jsonable
 	serialize
 
 	# Box this test belongs to
@@ -365,7 +362,6 @@ end
 
 # A box submission
 class Submission
-	super Jsonable
 	super Comparable
 	serialize
 
@@ -467,7 +463,6 @@ end
 
 # A test result
 class TestResult
-	super Jsonable
 	serialize
 
 	# Test result base path
@@ -504,7 +499,6 @@ end
 
 # A submission result
 class SubmissionResult
-	super Jsonable
 	serialize
 
 	# Submission these results belong to
@@ -551,7 +545,6 @@ end
 #
 # See `Box.source_files`.
 class SourceFile
-	super Jsonable
 	super Comparable
 	serialize
 
