@@ -12,9 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-all:
+all: bin/app bin/boxit
+
+bin/app:
 	mkdir -p bin/
 	nitc src/app.nit -o bin/app
+
+bin/boxit:
+	mkdir -p bin/
+	nitc src/boxit.nit -o bin/boxit
 
 debug:
 	mkdir -p bin/
