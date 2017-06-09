@@ -263,7 +263,9 @@ class Box
 	# Get all the submissions for `self`
 	fun submissions: Array[Submission] do
 		var res = new Array[Submission]
-		for file in (path / "submissions").files do
+		var files = (path / "submissions").files
+		default_comparator.sort(files)
+		for file in files do
 			var submission = get_submission(file)
 			if submission == null then continue
 			res.add submission
