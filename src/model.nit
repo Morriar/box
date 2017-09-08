@@ -43,11 +43,15 @@ class Model
 
 	# Load all boxes from `path`
 	fun load_boxes(path: String) do
-		for file in path.files do
-			if not is_box(path / file) then continue
-			var box = new Box(path / file)
-			boxes[box.id] = box
-		end
+		for file in path.files do load_box(path / file)
+	end
+
+	# Load a box in `path`
+	fun load_box(path: String): nullable Box do
+		if not is_box(path) then return null
+		var box = new Box(path)
+		boxes[box.id] = box
+		return box
 	end
 
 	# Is `path` a correct box directory?
@@ -92,7 +96,6 @@ end
 
 # A user can own boxes and make submissions
 class User
-	super Jsonable
 	serialize
 
 	# User unique identifier (from shib uqam)
@@ -132,7 +135,6 @@ end
 #
 # A Box is a container for submissions and tests.
 class Box
-	super Jsonable
 	super Comparable
 	serialize
 
@@ -261,7 +263,9 @@ class Box
 	# Get all the submissions for `self`
 	fun submissions: Array[Submission] do
 		var res = new Array[Submission]
-		for file in (path / "submissions").files do
+		var files = (path / "submissions").files
+		default_comparator.sort(files)
+		for file in files do
 			var submission = get_submission(file)
 			if submission == null then continue
 			res.add submission
@@ -316,7 +320,6 @@ end
 
 # A test case
 class TestCase
-	super Jsonable
 	serialize
 
 	# Box this test belongs to
@@ -365,7 +368,6 @@ end
 
 # A box submission
 class Submission
-	super Jsonable
 	super Comparable
 	serialize
 
@@ -467,7 +469,6 @@ end
 
 # A test result
 class TestResult
-	super Jsonable
 	serialize
 
 	# Test result base path
@@ -504,7 +505,6 @@ end
 
 # A submission result
 class SubmissionResult
-	super Jsonable
 	serialize
 
 	# Submission these results belong to
@@ -551,7 +551,6 @@ end
 #
 # See `Box.source_files`.
 class SourceFile
-	super Jsonable
 	super Comparable
 	serialize
 
