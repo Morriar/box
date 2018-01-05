@@ -1,25 +1,45 @@
 # Box
 
-Some notes I took on a meeting
+A tool to submit and check student assignments.
 
-## Use cases
+<table>
+	<tr>
+		<td><img src='https://raw.githubusercontent.com/Morriar/box/master/doc/example1.png'></td>
+		<td><img src='https://raw.githubusercontent.com/Morriar/box/master/doc/example2.png'></td>
+	</tr>
+</table>
 
-### Students
+## Building
 
-* create team
-* test / submit work (file / zip)
-* comment submission
-* submissions history
+Run in console:
 
-### Prof
+~~~bash
+make
+~~~
 
-* create box
-* manage tests (public / private)
-* test box submissions
-* show box status / history
-* show reports
-* mail groupe
-* add final correction
+## Configuring
 
-Random todo:
-* we need to test a box (ie: to know if the box works independently of its submissions)
+See the `app.ini` file to configure the popcorn app:
+
+* `app.host`: app hostname
+* `app.port`: app port
+* `app.root_url`: used for redirect/call back from 3rd-party authentications.
+  To use if behind a reverse proxy or if host is 0.0.0.0
+
+## Running the web interface
+
+Run in console:
+
+~~~bash
+make web
+~~~
+
+## Using with command line
+
+See `boxes/README.md` for the complete documentation of the command line tools.
+
+## Contributing
+
+The `Box` team is happy to receive contributions and suggestions.
+Give a look at the Github repo
+[https://github.com/Morriar/box](https://github.com/Morriar/box).
