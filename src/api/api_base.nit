@@ -63,7 +63,7 @@ redef class Box
 		var readme = self.readme
 		if readme == null then return null
 		var proc = new MarkdownProcessor
-		proc.emitter.decorator = new DescDecorator(path, "data")
+		proc.decorator = new DescDecorator(path, "data")
 		return proc.process(readme).write_to_string
 	end
 
