@@ -395,6 +395,9 @@ class Submission
 	# Is this submission approuved by the student?
 	fun is_approuved: Bool do return (path / "APPROUVED").file_exists
 
+	# Is this submission waiting to be runned?
+	fun is_pending: Bool do return (path / "PENDING").file_exists
+
 	init do
 		save_files
 	end
@@ -426,7 +429,8 @@ class Submission
 
 	# Check a submission (run tests and return the results)
 	fun check: SubmissionResult do
-		box.boxme("-p", "sub", id, "tests")
+		"PENDING".write_to_file(path / "PENDING")
+		box.boxme("-p",  "bg", "sub", id, "tests")
 		return status
 	end
 
@@ -463,7 +467,6 @@ class Submission
 		v.serialize_attribute("timestamp", timestamp)
 		v.serialize_attribute("id", id)
 		v.serialize_attribute("is_approuved", is_approuved)
-		v.serialize_attribute("status", status)
 	end
 end
 
@@ -539,6 +542,9 @@ class SubmissionResult
 		end
 		return res
 	end
+
+	# Is the submission pending?
+	var is_pending: Bool is lazy do return submission.is_pending
 
 	# Is the submission runned?
 	var is_runned: Bool is lazy do return path.file_exists

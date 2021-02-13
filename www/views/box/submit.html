@@ -17,7 +17,7 @@
 		<br>
 	</div>
 
-	<div id='submit' ng-if='vm.session'>
+	<div id='submit' ng-if='vm.session && !vm.status.is_pending'>
 		<div class='card'>
 			<div class='card-left bg-dark bg-primary text-center'>
 				<span class='glyphicon glyphicon-check' />
@@ -39,32 +39,42 @@
 		<br>
 	</div>
 
-	<div class='card' ng-if='vm.submission.status.is_runned'>
+	<div class='card' ng-if='vm.status.is_pending'>
+		<div class='card-body bg-dark bg-warning text-center'>
+			<h1>{{ 'PENDING' | translate }}</h1>
+			<br/><br/>
+			<h1><span class='glyphicon glyphicon-refresh rotate' /></h1>
+			<br/><br/>
+			<p class='lead'>{{ 'TESTING_YOUR_SUBMISSION' | translate }}</p>
+		</div>
+	</div>
+
+	<div class='card' ng-if='!vm.status.is_pending && vm.status.is_runned'>
 		<div class='card-body bg-dark text-center' ng-class='{
-				 "bg-danger": !vm.submission.status.is_passed,
-				 "bg-success": vm.submission.status.is_passed
+				 "bg-danger": !vm.status.is_passed,
+				 "bg-success": vm.status.is_passed
 			}'>
-			<h1 ng-if='!vm.submission.status.is_passed'>
+			<h1 ng-if='!vm.status.is_passed'>
 				<b>{{ 'ERROR' | translate }}</b>
 				<br/><br/>
 				<span class='glyphicon glyphicon-remove' />
 				<br/><br/>
 			</h1>
-			<h1 ng-if='vm.submission.status.is_passed'>
+			<h1 ng-if='vm.status.is_passed'>
 				<b>{{ 'SUCCESS' | translate }}</b>
 				<br/><br/>
 				<span class='glyphicon glyphicon-ok' />
 				<br/><br/>
 			</h1>
 			<p class='lead'>
-				{{vm.submission.status.tests_passed}} / {{vm.box.public_tests}}
+				{{vm.status.tests_passed}} / {{vm.box.public_tests}}
 				{{ 'TESTS_PASSED' | translate }}
 			</p>
 		</div>
 	</div>
 
-	<div ng-if='vm.submission.status.is_runned'>
-		<test-panel ng-repeat='result in vm.submission.status.tests_results' test='result' />
+	<div ng-if='!vm.status.is_pending && vm.status.is_runned'>
+		<test-panel ng-repeat='result in vm.status.tests_results' test='result' />
 		<br>
 	</div>
 
@@ -87,10 +97,13 @@
 						</div>
 					</div>
 					<br>
-					<div ng-if='!vm.submission.status.is_runned' class='text-danger'>
+					<div ng-if='vm.status.is_pending' class='text-danger'>
+						<p>{{ 'WARN_PENDING' | translate }}</p>
+					</div>
+					<div ng-if='!vm.status.is_pending && !vm.status.is_runned' class='text-danger'>
 						<p>{{ 'WARN_UNCHECKED' | translate }}</p>
 					</div>
-					<div ng-if='!vm.submission.status.is_passed' class='text-danger'>
+					<div ng-if='!vm.status.is_pending && !vm.status.is_passed' class='text-danger'>
 						<p>{{ 'WARN_FAILURE' | translate }}</p>
 					</div>
 					<div ng-if='vm.submission.is_approuved' class='text-warning'>
@@ -110,21 +123,6 @@
 
 	<!-- modals -->
 
-	<div class='modal fade' id='pendingModal' tabindex='-1'>
-		<div class='modal-dialog'>
-			<div class='modal-content bg-dark bg-warning'>
-				<div class='modal-body text-center'>
-					<h1>{{ 'PENDING' | translate }}</h1>
-					<br>
-					<br>
-					<h1><span class='glyphicon glyphicon-refresh rotate' /></h1>
-					<br>
-					<br>
-					<p class='lead'>{{ 'TESTING_YOUR_SUBMISSION' | translate }}</p>
-				</div>
-			</div>
-		</div>
-	</div>
 	<div class='modal fade' id='warningModal' tabindex='-1'>
 		<div class='modal-dialog'>
 			<div class='modal-content'>
@@ -134,10 +132,10 @@
 					</button>
 				</div>
 				<div class='modal-body text-center'>
-					<h1 class='text-danger' ng-if='!vm.submission.status.is_runned'>
+					<h1 class='text-danger' ng-if='!vm.status.is_runned'>
 						{{ 'NOTRUNNED' | translate }}
 					</h1>
-					<h1 class='text-danger' ng-if='vm.submission.status.is_runned && !vm.submission.status.is_passed'>
+					<h1 class='text-danger' ng-if='vm.status.is_runned && !vm.status.is_passed'>
 						{{ 'WARNING' | translate }}
 					</h1>
 					<br>
@@ -145,11 +143,11 @@
 					<h1><span class='text-danger glyphicon glyphicon-alert' /></h1>
 					<br>
 					<br>
-					<p class='lead' ng-if='!vm.submission.status.is_runned'>
+					<p class='lead' ng-if='!vm.status.is_runned'>
 						{{ 'WARN_UNCHECKED' | translate }}<br>
 						{{ 'ARE_YOU_SURE' | translate }}
 					</p>
-					<p class='lead' ng-if='vm.submission.status.is_runned && !vm.submission.status.is_passed'>
+					<p class='lead' ng-if='vm.status.is_runned && !vm.status.is_passed'>
 						{{ 'WARN_FAILURE' | translate }}<br>
 						{{ 'ARE_YOU_SURE' | translate }}
 					</p>

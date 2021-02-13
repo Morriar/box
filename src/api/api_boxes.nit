@@ -29,8 +29,10 @@ redef class APIRouter
 		use("/boxes/:bid", new APIBox(config, model))
 		use("/boxes/:bid/tests", new APIBoxTests(config, model))
 		use("/boxes/:bid/submit", new APIBoxSubmit(config, model))
+		use("/boxes/:bid/submit/status", new APIBoxSubmitStatus(config, model))
 		use("/boxes/:bid/submissions", new APIBoxUserSubmissions(config, model))
 		use("/boxes/:bid/submissions/:sid", new APIBoxUserSubmission(config, model))
+		use("/boxes/:bid/submissions/:sid/status", new APIBoxUserSubmissionStatus(config, model))
 	end
 end
 
@@ -150,7 +152,8 @@ class APIBoxSubmit
 		if sub_form == null then return
 
 		var submission = new Submission(box, user.id, sub_form.files, sub_form.teammate)
-		res.json submission.check
+		submission.check
+		res.json submission
 	end
 
 	redef fun put(req, res) do
@@ -177,6 +180,24 @@ class APIBoxSubmit
 		submission.files = sub_form.files
 		submission.save_files
 		res.json submission.approuve
+	end
+end
+
+# Box submission status handler
+#
+# GET: return the last submission status
+class APIBoxSubmitStatus
+	super APIAuthHandler
+	super APIBoxHandler
+
+	redef fun get(req, res) do
+		var box = get_box(req, res)
+		if box == null then return
+		var user = get_auth_user(req, res)
+		if user == null then return
+
+		var submission = box.last_submission(user)
+		res.json submission.status
 	end
 end
 
@@ -215,6 +236,19 @@ class APIBoxUserSubmission
 		var submission = get_submission(req, res)
 		if submission == null then return
 		res.json submission
+	end
+end
+
+# Box submission status handler
+#
+# GET: return the submission status
+class APIBoxUserSubmissionStatus
+	super APIBoxUserSubmission
+
+	redef fun get(req, res) do
+		var submission = get_submission(req, res)
+		if submission == null then return
+		res.json submission.status
 	end
 end
 
